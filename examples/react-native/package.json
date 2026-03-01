@@ -1,25 +1,27 @@
 {
-	"name": "universal-video-uploader-rn-example",
-	"private": true,
-	"version": "0.0.1",
-	"main": "node_modules/expo/AppEntry.js",
-	"scripts": {
-		"start": "expo start",
-		"android": "expo start --android",
-		"ios": "expo start --ios",
-		"verify:bundle": "npx expo export --platform ios --dev --output-dir /tmp/uvu-bundle-check && echo '✅ Metro bundle resolved successfully'"
-	},
-	"dependencies": {
-		"@hyperserve/universal-video-uploader": "workspace:*",
-		"expo": "55.0.4",
-		"expo-document-picker": "55.0.8",
-		"expo-status-bar": "55.0.4",
-		"react": "19.2.0",
-		"react-native": "0.83.2"
-	},
-	"devDependencies": {
-		"@types/react": "19.2.14",
-		"babel-preset-expo": "55.0.10",
-		"typescript": "5.9.3"
-	}
+  "name": "universal-video-uploader-rn-example",
+  "private": true,
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "build:ios": "expo run:ios",
+    "build:android": "expo run:android",
+    "verify:bundle": "npx expo export --platform ios --dev --output-dir /tmp/uvu-bundle-check && echo '✅ Metro bundle resolved successfully'"
+  },
+  "dependencies": {
+    "@hyperserve/universal-video-uploader": "workspace:*",
+    "expo": "55.0.4",
+    "expo-document-picker": "55.0.8",
+    "expo-status-bar": "55.0.4",
+    "react": "19.2.0",
+    "react-native": "0.83.2"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "babel-preset-expo": "55.0.10",
+    "typescript": "5.9.3"
+  }
 }
