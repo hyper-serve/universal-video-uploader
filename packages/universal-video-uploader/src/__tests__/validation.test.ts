@@ -1,0 +1,96 @@
+import { describe, expect, it } from "vitest";
+import type { FileRef } from "../types.js";
+import {
+	allowedTypes,
+	composeValidators,
+	maxFileSize,
+} from "../validation/index.js";
+
+function makeFileRef(overrides: Partial<FileRef> = {}): FileRef {
+	return {
+		name: "test.mp4",
+		size: 1024 * 1024,
+		type: "video/mp4",
+		uri: "blob:test",
+		...overrides,
+	};
+}
+
+describe("maxFileSize", () => {
+	it("passes when file is under limit", () => {
+		const validator = maxFileSize(10 * 1024 * 1024);
+		const result = validator(makeFileRef({ size: 5 * 1024 * 1024 }));
+		expect(result).toEqual({ valid: true });
+	});
+
+	it("fails when file exceeds limit", () => {
+		const validator = maxFileSize(1 * 1024 * 1024);
+		const result = validator(makeFileRef({ size: 2 * 1024 * 1024 }));
+		expect(result).toEqual({
+			reason: "File exceeds maximum size of 1MB",
+			valid: false,
+		});
+	});
+
+	it("passes when file is exactly at limit", () => {
+		const validator = maxFileSize(1024);
+		const result = validator(makeFileRef({ size: 1024 }));
+		expect(result).toEqual({ valid: true });
+	});
+});
+
+describe("allowedTypes", () => {
+	it("passes when type matches exactly", () => {
+		const validator = allowedTypes(["video/mp4", "video/quicktime"]);
+		const result = validator(makeFileRef({ type: "video/mp4" }));
+		expect(result).toEqual({ valid: true });
+	});
+
+	it("fails when type does not match", () => {
+		const validator = allowedTypes(["video/mp4"]);
+		const result = validator(makeFileRef({ type: "image/png" }));
+		expect(result).toMatchObject({ valid: false });
+	});
+
+	it("supports wildcard patterns", () => {
+		const validator = allowedTypes(["video/*"]);
+		const result = validator(makeFileRef({ type: "video/webm" }));
+		expect(result).toEqual({ valid: true });
+	});
+
+	it("rejects non-matching wildcard", () => {
+		const validator = allowedTypes(["video/*"]);
+		const result = validator(makeFileRef({ type: "image/png" }));
+		expect(result).toMatchObject({ valid: false });
+	});
+});
+
+describe("composeValidators", () => {
+	it("passes when all validators pass", async () => {
+		const validator = composeValidators(
+			maxFileSize(10 * 1024 * 1024),
+			allowedTypes(["video/mp4"]),
+		);
+		const result = await validator(makeFileRef());
+		expect(result).toEqual({ valid: true });
+	});
+
+	it("fails on first failing validator", async () => {
+		const validator = composeValidators(
+			maxFileSize(100),
+			allowedTypes(["video/mp4"]),
+		);
+		const result = await validator(makeFileRef({ size: 200 }));
+		expect(result).toMatchObject({ valid: false });
+		expect(result).toHaveProperty("reason");
+	});
+
+	it("returns failure from second validator if first passes", async () => {
+		const validator = composeValidators(
+			maxFileSize(10 * 1024 * 1024),
+			allowedTypes(["video/webm"]),
+		);
+		const result = await validator(makeFileRef({ type: "video/mp4" }));
+		expect(result).toMatchObject({ valid: false });
+	});
+});

@@ -1,0 +1,24 @@
+{
+	"name": "universal-video-uploader-rn-example",
+	"private": true,
+	"version": "0.0.1",
+	"main": "node_modules/expo/AppEntry.js",
+	"scripts": {
+		"start": "expo start",
+		"android": "expo start --android",
+		"ios": "expo start --ios",
+		"verify:bundle": "npx expo export --platform ios --dev --output-dir /tmp/uvu-bundle-check && echo '✅ Metro bundle resolved successfully'"
+	},
+	"dependencies": {
+		"@hyperserve/universal-video-uploader": "workspace:*",
+		"expo": "~52.0.0",
+		"expo-document-picker": "~12.0.0",
+		"expo-status-bar": "~2.0.0",
+		"react": "18.2.0",
+		"react-native": "0.76.0"
+	},
+	"devDependencies": {
+		"@types/react": "18.2.64",
+		"typescript": "5.3.3"
+	}
+}

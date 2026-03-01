@@ -1,0 +1,21 @@
+{
+	"name": "universal-video-uploader-monorepo",
+	"private": true,
+	"workspaces": [
+		"packages/*",
+		"examples/*"
+	],
+	"scripts": {
+		"build": "bun run --filter '@hyperserve/universal-video-uploader' build",
+		"build:watch": "bun run --filter '@hyperserve/universal-video-uploader' build:watch",
+		"test": "bun run --filter '@hyperserve/universal-video-uploader' test",
+		"test:watch": "bun run --filter '@hyperserve/universal-video-uploader' test:watch",
+		"format:check": "biome format",
+		"format:write": "biome format --write",
+		"lint:check": "biome lint",
+		"lint:fix": "biome lint --write"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.6"
+	}
+}

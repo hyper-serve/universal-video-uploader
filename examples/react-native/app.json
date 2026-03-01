@@ -1,0 +1,18 @@
+{
+	"expo": {
+		"name": "Universal Video Uploader Example",
+		"slug": "universal-video-uploader-example",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"scheme": "videouploder",
+		"platforms": ["ios", "android"],
+		"ios": {
+			"supportsTablet": true
+		},
+		"android": {
+			"adaptiveIcon": {
+				"backgroundColor": "#ffffff"
+			}
+		}
+	}
+}
