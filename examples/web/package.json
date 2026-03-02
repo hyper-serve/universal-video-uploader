@@ -1,5 +1,5 @@
 {
-	"name": "universal-video-uploader-web-example",
+	"name": "@hyperserve/universal-video-uploader-web-example",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",

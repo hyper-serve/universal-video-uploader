@@ -13,7 +13,9 @@
 		"format:check": "biome format",
 		"format:write": "biome format --write",
 		"lint:check": "biome lint",
-		"lint:fix": "biome lint --write"
+		"lint:fix": "biome lint --write",
+		"start:web": "bun run --filter '@hyperserve/universal-video-uploader-web-example' dev",
+		"start:react-native": "bun run --filter '@hyperserve/universal-video-uploader-rn-example' start"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.4"

@@ -1,190 +1,64 @@
-import React from "react";
-import {
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
+import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import * as DocumentPicker from "expo-document-picker";
-import {
-	UploadProvider,
-	useUpload,
-	type FileRef,
-	type UploadConfig,
-} from "@hyperserve/universal-video-uploader";
-import {
-	FileItem,
-	FileList,
-	FilePicker,
-	ProgressBar,
-	StatusBadge,
-} from "@hyperserve/universal-video-uploader-native";
+import { ScrollView, StyleSheet, Text, Pressable, View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { UploadProvider } from "@hyperserve/universal-video-uploader";
+import { ComposableFull } from "./examples/ComposableFull";
+import { HeadlessFull } from "./examples/HeadlessFull";
+import { demoConfig } from "./examples/shared";
 
-const config: UploadConfig = {
-	apiKey: "YOUR_HYPERSERVE_API_KEY",
-	baseUrl: "https://api.hyperserve.io/v1",
-	uploadOptions: {
-		isPublic: true,
-		resolutions: "240p,480p",
-	},
-};
-
-async function pickVideos(): Promise<FileRef[]> {
-	const result = await DocumentPicker.getDocumentAsync({
-		multiple: true,
-		type: "video/*",
-	});
-	if (result.canceled) return [];
-	return result.assets
-		.filter((a) => a.mimeType?.startsWith("video/"))
-		.map((asset) => ({
-			name: asset.name,
-			size: asset.size ?? 0,
-			type: asset.mimeType ?? "video/mp4",
-			uri: asset.uri,
-		}));
-}
-
-function UploadScreen() {
-	const { files } = useUpload();
-
-	return (
-		<SafeAreaView style={styles.container}>
-			<StatusBar style="dark" />
-			<ScrollView contentContainerStyle={styles.scroll}>
-				<Text style={styles.title}>Universal Video Uploader</Text>
-				<Text style={styles.subtitle}>React Native Example</Text>
-
-				<FilePicker
-					pickFiles={pickVideos}
-					style={styles.pickButton}
-				/>
-
-				{files.length === 0 && (
-					<Text style={styles.emptyText}>
-						No files selected yet.
-					</Text>
-				)}
-
-				<View style={styles.list}>
-					<FileList emptyMessage="">
-						{(file) => (
-							<FileItem file={file} key={file.id}>
-								<View style={styles.cardHeader}>
-									<FileItem.FileName />
-									<StatusBadge status={file.status} />
-								</View>
-								<FileItem.FileSize />
-								{file.status === "uploading" && (
-									<ProgressBar progress={file.progress} />
-								)}
-								<FileItem.ErrorMessage />
-								<View style={styles.actions}>
-									<FileItem.RetryButton />
-									<FileItem.RemoveButton />
-								</View>
-							</FileItem>
-						)}
-					</FileList>
-				</View>
-			</ScrollView>
-		</SafeAreaView>
-	);
-}
-
-class ErrorBoundary extends React.Component<
-	{ children: React.ReactNode },
-	{ error: Error | null }
-> {
-	state = { error: null as Error | null };
-
-	static getDerivedStateFromError(error: Error) {
-		return { error };
-	}
-
-	render() {
-		if (this.state.error) {
-			return (
-				<SafeAreaView style={styles.errorContainer}>
-					<Text style={styles.errorTitle}>Something went wrong</Text>
-					<Text style={styles.errorDetail}>
-						{this.state.error.message}
-					</Text>
-				</SafeAreaView>
-			);
-		}
-		return this.props.children;
-	}
-}
+const tabs = [
+	{ id: "headless", label: "Headless (Full)", component: HeadlessFull },
+	{ id: "composable", label: "Composable UI (Full)", component: ComposableFull },
+] as const;
 
 export default function App() {
+	const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["id"]>("headless");
+	const Active = tabs.find((t) => t.id === activeTab)?.component ?? HeadlessFull;
+
 	return (
-		<ErrorBoundary>
-			<UploadProvider config={config}>
-				<UploadScreen />
-			</UploadProvider>
-		</ErrorBoundary>
+		<SafeAreaProvider>
+		<UploadProvider config={demoConfig}>
+			<SafeAreaView style={styles.container}>
+				<StatusBar style="dark" />
+				<ScrollView contentContainerStyle={styles.scroll}>
+					<Text style={styles.title}>Universal Video Uploader</Text>
+					<Text style={styles.subtitle}>React Native Examples</Text>
+					<Text style={styles.subtitleSmall}>
+						Two full demos with validation, retry/error, list-grid, and playback.
+					</Text>
+
+					<View style={styles.tabRow}>
+						{tabs.map((tab) => (
+							<Pressable
+								key={tab.id}
+								onPress={() => setActiveTab(tab.id)}
+								style={[styles.tab, activeTab === tab.id && styles.tabActive]}
+							>
+								<Text style={[styles.tabText, activeTab === tab.id && styles.tabTextActive]}>
+									{tab.label}
+								</Text>
+							</Pressable>
+						))}
+					</View>
+
+					<Active />
+				</ScrollView>
+			</SafeAreaView>
+		</UploadProvider>
+		</SafeAreaProvider>
 	);
 }
 
 const styles = StyleSheet.create({
-	actions: {
-		flexDirection: "row",
-		gap: 12,
-		marginTop: 4,
-	},
-	cardHeader: {
-		alignItems: "center",
-		flexDirection: "row",
-		justifyContent: "space-between",
-	},
-	container: {
-		backgroundColor: "#fff",
-		flex: 1,
-	},
-	emptyText: {
-		color: "#94a3b8",
-		marginTop: 32,
-		textAlign: "center",
-	},
-	errorContainer: {
-		alignItems: "center",
-		backgroundColor: "#fff",
-		flex: 1,
-		justifyContent: "center",
-		padding: 24,
-	},
-	errorDetail: {
-		color: "#64748b",
-		fontSize: 14,
-		textAlign: "center",
-	},
-	errorTitle: {
-		color: "#ef4444",
-		fontSize: 18,
-		fontWeight: "600",
-		marginBottom: 8,
-	},
-	list: {
-		marginTop: 16,
-	},
-	pickButton: {
-		marginBottom: 8,
-	},
-	scroll: {
-		padding: 20,
-		paddingTop: 48,
-	},
-	subtitle: {
-		color: "#64748b",
-		fontSize: 15,
-		marginBottom: 24,
-	},
-	title: {
-		fontSize: 22,
-		fontWeight: "700",
-		marginBottom: 4,
-	},
+	container: { backgroundColor: "#fff", flex: 1 },
+	scroll: { padding: 20, paddingTop: 48 },
+	subtitle: { color: "#64748b", fontSize: 15, marginBottom: 4 },
+	subtitleSmall: { color: "#94a3b8", fontSize: 12, marginBottom: 16 },
+	tab: { borderBottomColor: "transparent", borderBottomWidth: 2, paddingHorizontal: 8, paddingVertical: 8 },
+	tabActive: { borderBottomColor: "#3b82f6" },
+	tabRow: { borderBottomColor: "#e2e8f0", borderBottomWidth: 1, flexDirection: "row", gap: 8, marginBottom: 12 },
+	tabText: { color: "#64748b", fontSize: 13, fontWeight: "500" },
+	tabTextActive: { color: "#1e293b" },
+	title: { fontSize: 22, fontWeight: "700", marginBottom: 4 },
 });

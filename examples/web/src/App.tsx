@@ -1,16 +1,10 @@
 import React, { useState } from "react";
-import { BasicUpload } from "./examples/BasicUpload";
-import { CustomValidation } from "./examples/CustomValidation";
-import { DragAndDrop } from "./examples/DragAndDrop";
-import { ListAndGridViews } from "./examples/ListAndGridViews";
-import { WithPlayback } from "./examples/WithPlayback";
+import { ComposableFull } from "./examples/ComposableFull";
+import { HeadlessFull } from "./examples/HeadlessFull";
 
 const examples = [
-	{ component: BasicUpload, label: "Basic Upload" },
-	{ component: DragAndDrop, label: "Drag & Drop" },
-	{ component: ListAndGridViews, label: "List & Grid" },
-	{ component: CustomValidation, label: "Custom Validation" },
-	{ component: WithPlayback, label: "With Playback" },
+	{ component: HeadlessFull, label: "Headless (Full)" },
+	{ component: ComposableFull, label: "Composable UI (Full)" },
 ] as const;
 
 export function App() {
