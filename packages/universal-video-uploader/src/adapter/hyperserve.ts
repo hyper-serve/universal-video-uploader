@@ -1,13 +1,25 @@
-import type { FileRef, UploadAdapter, UploadOptions } from "../types.js";
+import type {
+	FileRef,
+	UploadAdapter,
+	UploadOptions,
+	UploadResult,
+} from "../types.js";
 
 export class HyperserveAdapter implements UploadAdapter {
+	private apiKey: string;
+	private baseUrl: string;
+
+	constructor(config: { apiKey: string; baseUrl: string }) {
+		this.apiKey = config.apiKey;
+		this.baseUrl = config.baseUrl;
+	}
+
 	upload(
 		file: FileRef,
 		options: UploadOptions,
-		config: { apiKey: string; baseUrl: string },
 		callbacks: { onProgress: (pct: number) => void },
 		signal: AbortSignal,
-	): Promise<{ videoId: string; isPublic: boolean }> {
+	): Promise<UploadResult> {
 		return new Promise((resolve, reject) => {
 			if (!file.raw) {
 				reject(new Error("File.raw is required for web uploads"));
@@ -46,7 +58,7 @@ export class HyperserveAdapter implements UploadAdapter {
 					try {
 						const response = JSON.parse(xhr.responseText);
 						resolve({
-							isPublic: response.isPublic,
+							metadata: { isPublic: response.isPublic },
 							videoId: response.id,
 						});
 					} catch {
@@ -70,8 +82,8 @@ export class HyperserveAdapter implements UploadAdapter {
 
 			signal.addEventListener("abort", () => xhr.abort());
 
-			xhr.open("POST", `${config.baseUrl}/video`);
-			xhr.setRequestHeader("X-API-KEY", config.apiKey);
+			xhr.open("POST", `${this.baseUrl}/video`);
+			xhr.setRequestHeader("X-API-KEY", this.apiKey);
 			xhr.send(formData);
 		});
 	}

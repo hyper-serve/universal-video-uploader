@@ -3,7 +3,12 @@ import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { UploadProvider } from "../context.js";
 import { useUpload } from "../hooks/useUpload.js";
-import type { FileRef, UploadAdapter, UploadConfig } from "../types.js";
+import type {
+	FileRef,
+	UploadAdapter,
+	UploadConfig,
+	UploadResult,
+} from "../types.js";
 
 function makeFileRef(name = "test.mp4"): FileRef {
 	return {
@@ -15,18 +20,21 @@ function makeFileRef(name = "test.mp4"): FileRef {
 }
 
 function createMockAdapter(
-	resolveWith?: { videoId: string; isPublic: boolean },
+	resolveWith?: UploadResult,
 	rejectWith?: Error,
 ): UploadAdapter {
 	return {
-		upload: vi.fn((_file, _options, _config, callbacks, _signal) => {
+		upload: vi.fn((_file, _options, callbacks, _signal) => {
 			if (rejectWith) {
 				return Promise.reject(rejectWith);
 			}
 			callbacks.onProgress(50);
 			callbacks.onProgress(100);
 			return Promise.resolve(
-				resolveWith ?? { isPublic: true, videoId: "video-123" },
+				resolveWith ?? {
+					metadata: { isPublic: true },
+					videoId: "video-123",
+				},
 			);
 		}),
 	};
@@ -34,8 +42,7 @@ function createMockAdapter(
 
 function makeConfig(overrides: Partial<UploadConfig> = {}): UploadConfig {
 	return {
-		apiKey: "test-key",
-		baseUrl: "https://api.example.com",
+		adapter: createMockAdapter(),
 		uploadOptions: {
 			isPublic: true,
 			resolutions: "240p,480p",
@@ -174,14 +181,14 @@ describe("UploadProvider + useUpload", () => {
 	it("retries failed files", async () => {
 		const callCount = { value: 0 };
 		const adapter: UploadAdapter = {
-			upload: vi.fn((_file, _options, _config, callbacks) => {
+			upload: vi.fn((_file, _options, callbacks) => {
 				callCount.value++;
 				if (callCount.value === 1) {
 					return Promise.reject(new Error("First attempt failed"));
 				}
 				callbacks.onProgress(100);
 				return Promise.resolve({
-					isPublic: true,
+					metadata: { isPublic: true },
 					videoId: "video-123",
 				});
 			}),
@@ -280,13 +287,16 @@ describe("UploadProvider + useUpload", () => {
 		let maxActive = 0;
 
 		const adapter: UploadAdapter = {
-			upload: vi.fn(async (_file, _options, _config, callbacks) => {
+			upload: vi.fn(async (_file, _options, callbacks) => {
 				activeCount++;
 				maxActive = Math.max(maxActive, activeCount);
 				await new Promise((r) => setTimeout(r, 100));
 				callbacks.onProgress(100);
 				activeCount--;
-				return { isPublic: true, videoId: `video-${Math.random()}` };
+				return {
+					metadata: { isPublic: true },
+					videoId: `video-${Math.random()}`,
+				};
 			}),
 		};
 

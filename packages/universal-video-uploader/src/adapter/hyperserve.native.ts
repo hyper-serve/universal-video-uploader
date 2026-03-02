@@ -1,4 +1,9 @@
-import type { FileRef, UploadAdapter, UploadOptions } from "../types.js";
+import type {
+	FileRef,
+	UploadAdapter,
+	UploadOptions,
+	UploadResult,
+} from "../types.js";
 
 export type BackgroundUploadModule = {
 	startUpload: (options: Record<string, unknown>) => Promise<string>;
@@ -19,41 +24,45 @@ function getBackgroundUpload(): BackgroundUploadModule | null {
 }
 
 export class HyperserveAdapter implements UploadAdapter {
+	private apiKey: string;
+	private baseUrl: string;
 	private bgUpload: BackgroundUploadModule | null;
 
-	constructor(bgUpload?: BackgroundUploadModule | null) {
+	constructor(
+		config: { apiKey: string; baseUrl: string },
+		bgUpload?: BackgroundUploadModule | null,
+	) {
+		this.apiKey = config.apiKey;
+		this.baseUrl = config.baseUrl;
 		this.bgUpload = bgUpload ?? getBackgroundUpload();
 	}
 
 	async upload(
 		file: FileRef,
 		options: UploadOptions,
-		config: { apiKey: string; baseUrl: string },
 		callbacks: { onProgress: (pct: number) => void },
 		signal: AbortSignal,
-	): Promise<{ videoId: string; isPublic: boolean }> {
+	): Promise<UploadResult> {
 		if (this.bgUpload) {
 			return this.backgroundUpload(
 				this.bgUpload,
 				file,
 				options,
-				config,
 				callbacks,
 				signal,
 			);
 		}
 
-		return this.fetchUpload(file, options, config, callbacks, signal);
+		return this.fetchUpload(file, options, callbacks, signal);
 	}
 
 	private backgroundUpload(
 		Upload: BackgroundUploadModule,
 		file: FileRef,
 		options: UploadOptions,
-		config: { apiKey: string; baseUrl: string },
 		callbacks: { onProgress: (pct: number) => void },
 		signal: AbortSignal,
-	): Promise<{ videoId: string; isPublic: boolean }> {
+	): Promise<UploadResult> {
 		const parameters: Record<string, string> = {
 			isPublic: String(options.isPublic),
 			resolutions: options.resolutions,
@@ -72,13 +81,13 @@ export class HyperserveAdapter implements UploadAdapter {
 		return new Promise((resolve, reject) => {
 			Upload.startUpload({
 				field: "file",
-				headers: { "X-API-KEY": config.apiKey },
+				headers: { "X-API-KEY": this.apiKey },
 				method: "POST",
 				notification: { enabled: false },
 				parameters,
 				path: file.uri,
 				type: "multipart",
-				url: `${config.baseUrl}/video`,
+				url: `${this.baseUrl}/video`,
 			})
 				.then((uploadId: string) => {
 					const listeners: Array<{ remove: () => void }> = [];
@@ -108,7 +117,7 @@ export class HyperserveAdapter implements UploadAdapter {
 									String(data.responseBody),
 								);
 								resolve({
-									isPublic: response.isPublic,
+									metadata: { isPublic: response.isPublic },
 									videoId: response.id,
 								});
 							} catch {
@@ -130,10 +139,9 @@ export class HyperserveAdapter implements UploadAdapter {
 	private async fetchUpload(
 		file: FileRef,
 		options: UploadOptions,
-		config: { apiKey: string; baseUrl: string },
 		callbacks: { onProgress: (pct: number) => void },
 		signal: AbortSignal,
-	): Promise<{ videoId: string; isPublic: boolean }> {
+	): Promise<UploadResult> {
 		const formData = new FormData();
 
 		formData.append("file", {
@@ -161,9 +169,9 @@ export class HyperserveAdapter implements UploadAdapter {
 
 		callbacks.onProgress(50);
 
-		const response = await fetch(`${config.baseUrl}/video`, {
+		const response = await fetch(`${this.baseUrl}/video`, {
 			body: formData,
-			headers: { "X-API-KEY": config.apiKey },
+			headers: { "X-API-KEY": this.apiKey },
 			method: "POST",
 			signal,
 		});
@@ -175,6 +183,6 @@ export class HyperserveAdapter implements UploadAdapter {
 		callbacks.onProgress(100);
 
 		const data = await response.json();
-		return { isPublic: data.isPublic, videoId: data.id };
+		return { metadata: { isPublic: data.isPublic }, videoId: data.id };
 	}
 }

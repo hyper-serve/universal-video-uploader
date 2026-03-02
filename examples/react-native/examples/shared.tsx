@@ -4,11 +4,11 @@ import * as DocumentPicker from "expo-document-picker";
 import {
 	allowedTypes,
 	composeValidators,
+	createHyperserveConfig,
 	maxDuration,
 	maxFileSize,
 	type FileRef,
 	type FileState,
-	type UploadConfig,
 } from "@hyperserve/universal-video-uploader";
 
 const validate = composeValidators(
@@ -17,15 +17,17 @@ const validate = composeValidators(
 	maxDuration(120),
 );
 
-export const demoConfig: UploadConfig = {
-	apiKey: "YOUR_HYPERSERVE_API_KEY",
-	baseUrl: "https://api.hyperserve.io/v1",
+export const demoConfig = createHyperserveConfig({
+	apiKey: process.env.EXPO_PUBLIC_HYPERSERVE_API_KEY ?? "",
+	baseUrl:
+		process.env.EXPO_PUBLIC_HYPERSERVE_BASE_URL ??
+		"https://api.hyperserve.io/v1",
 	uploadOptions: {
 		isPublic: true,
 		resolutions: "240p,480p,720p",
 	},
 	validate,
-};
+});
 
 export async function pickVideos(): Promise<FileRef[]> {
 	const result = await DocumentPicker.getDocumentAsync({

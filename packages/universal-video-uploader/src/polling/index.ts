@@ -1,3 +1,5 @@
+import type { StatusChecker, UploadResult } from "../types.js";
+
 type PollOptions = {
 	apiKey: string;
 	baseUrl: string;
@@ -82,4 +84,45 @@ export function pollVideoStatus(options: PollOptions): void {
 	};
 
 	poll();
+}
+
+export class HyperserveStatusChecker implements StatusChecker {
+	private apiKey: string;
+	private baseUrl: string;
+	private intervalMs: number;
+
+	constructor(config: {
+		apiKey: string;
+		baseUrl: string;
+		intervalMs?: number;
+	}) {
+		this.apiKey = config.apiKey;
+		this.baseUrl = config.baseUrl;
+		this.intervalMs = config.intervalMs ?? 3000;
+	}
+
+	checkStatus(options: {
+		uploadResult: UploadResult;
+		onStatusChange: (
+			status: "processing" | "ready" | "failed",
+			playbackUrl?: string,
+			statusDetail?: string,
+		) => void;
+		signal: AbortSignal;
+	}): void {
+		const isPublic = (options.uploadResult.metadata?.isPublic ??
+			true) as boolean;
+
+		pollVideoStatus({
+			apiKey: this.apiKey,
+			baseUrl: this.baseUrl,
+			intervalMs: this.intervalMs,
+			isPublic,
+			onStatusChange: (status, playbackUrl) => {
+				options.onStatusChange(status, playbackUrl);
+			},
+			signal: options.signal,
+			videoId: options.uploadResult.videoId,
+		});
+	}
 }

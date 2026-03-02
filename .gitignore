@@ -8,3 +8,6 @@ npm-debug.log*
 .expo
 ios/
 android/
+
+.env
+.env.local

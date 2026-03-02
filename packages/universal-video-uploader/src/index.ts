@@ -7,7 +7,12 @@ export {
 	revokeThumbnail,
 } from "./platform/thumbnail.js";
 export { HyperserveAdapter } from "./adapter/hyperserve.js";
-export { pollVideoStatus } from "./polling/index.js";
+export {
+	HyperserveStatusChecker,
+	pollVideoStatus,
+} from "./polling/index.js";
+export { createHyperserveConfig } from "./createHyperserveConfig.js";
+export type { HyperserveConfig } from "./createHyperserveConfig.js";
 export {
 	allowedTypes,
 	composeValidators,
@@ -18,10 +23,12 @@ export type {
 	FileRef,
 	FileState,
 	FileStatus,
+	StatusChecker,
 	UploadAdapter,
 	UploadConfig,
 	UploadContextValue,
 	UploadOptions,
+	UploadResult,
 	ValidationResult,
 	ViewMode,
 } from "./types.js";

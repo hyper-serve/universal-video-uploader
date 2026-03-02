@@ -24,6 +24,10 @@ const defaultConfig = {
 	baseUrl: "https://api.example.com",
 };
 
+function createAdapter() {
+	return new HyperserveAdapter(defaultConfig);
+}
+
 class MockXHR {
 	static instances: MockXHR[] = [];
 
@@ -91,14 +95,13 @@ describe("HyperserveAdapter (web)", () => {
 	});
 
 	it("sends multipart form data with correct headers", async () => {
-		const adapter = new HyperserveAdapter();
+		const adapter = createAdapter();
 		const ac = new AbortController();
 		const onProgress = vi.fn();
 
 		const uploadPromise = adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress },
 			ac.signal,
 		);
@@ -115,18 +118,20 @@ describe("HyperserveAdapter (web)", () => {
 		);
 
 		const result = await uploadPromise;
-		expect(result).toEqual({ isPublic: true, videoId: "video-123" });
+		expect(result).toEqual({
+			metadata: { isPublic: true },
+			videoId: "video-123",
+		});
 	});
 
 	it("reports progress", async () => {
-		const adapter = new HyperserveAdapter();
+		const adapter = createAdapter();
 		const ac = new AbortController();
 		const onProgress = vi.fn();
 
 		const uploadPromise = adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress },
 			ac.signal,
 		);
@@ -147,13 +152,12 @@ describe("HyperserveAdapter (web)", () => {
 	});
 
 	it("rejects on HTTP error", async () => {
-		const adapter = new HyperserveAdapter();
+		const adapter = createAdapter();
 		const ac = new AbortController();
 
 		const uploadPromise = adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress: vi.fn() },
 			ac.signal,
 		);
@@ -165,13 +169,12 @@ describe("HyperserveAdapter (web)", () => {
 	});
 
 	it("rejects on network error", async () => {
-		const adapter = new HyperserveAdapter();
+		const adapter = createAdapter();
 		const ac = new AbortController();
 
 		const uploadPromise = adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress: vi.fn() },
 			ac.signal,
 		);
@@ -183,7 +186,7 @@ describe("HyperserveAdapter (web)", () => {
 	});
 
 	it("rejects when file.raw is missing", async () => {
-		const adapter = new HyperserveAdapter();
+		const adapter = createAdapter();
 		const ac = new AbortController();
 		const ref: FileRef = {
 			name: "test.mp4",
@@ -196,7 +199,6 @@ describe("HyperserveAdapter (web)", () => {
 			adapter.upload(
 				ref,
 				defaultOptions,
-				defaultConfig,
 				{ onProgress: vi.fn() },
 				ac.signal,
 			),
@@ -204,7 +206,7 @@ describe("HyperserveAdapter (web)", () => {
 	});
 
 	it("includes optional fields in form data", async () => {
-		const adapter = new HyperserveAdapter();
+		const adapter = createAdapter();
 		const ac = new AbortController();
 
 		const uploadPromise = adapter.upload(
@@ -214,7 +216,6 @@ describe("HyperserveAdapter (web)", () => {
 				customUserMetadata: { tag: "test" },
 				thumbnailTimestamps: "1,5",
 			},
-			defaultConfig,
 			{ onProgress: vi.fn() },
 			ac.signal,
 		);

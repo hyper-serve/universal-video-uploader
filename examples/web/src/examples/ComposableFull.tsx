@@ -3,10 +3,10 @@ import {
 	UploadProvider,
 	allowedTypes,
 	composeValidators,
+	createHyperserveConfig,
 	maxDuration,
 	maxFileSize,
 	useUpload,
-	type UploadConfig,
 	type ViewMode,
 } from "@hyperserve/universal-video-uploader";
 import {
@@ -17,7 +17,7 @@ import {
 	StatusBadge,
 	Thumbnail,
 } from "@hyperserve/universal-video-uploader-react";
-import { CONFIG } from "../shared";
+import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
 
 const validate = composeValidators(
 	maxFileSize(500 * 1024 * 1024),
@@ -25,14 +25,15 @@ const validate = composeValidators(
 	maxDuration(120),
 );
 
-const config: UploadConfig = {
-	...CONFIG,
+const config = createHyperserveConfig({
+	apiKey: HYPERSERVE_API_KEY,
+	baseUrl: HYPERSERVE_BASE_URL,
 	uploadOptions: {
 		isPublic: true,
 		resolutions: "240p,480p,720p",
 	},
 	validate,
-};
+});
 
 function UploadUI() {
 	const { clearCompleted, files, setViewMode, viewMode } = useUpload();

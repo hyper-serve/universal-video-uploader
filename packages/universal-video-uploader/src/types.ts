@@ -23,6 +23,7 @@ export type FileState = {
 	playbackUrl: string | null;
 	videoId: string | null;
 	error: string | null;
+	statusDetail: string | null;
 };
 
 export type ValidationResult =
@@ -36,13 +37,17 @@ export type UploadOptions = {
 	customUserMetadata?: Record<string, unknown>;
 };
 
+export type UploadResult = {
+	videoId: string;
+	playbackUrl?: string;
+	metadata?: Record<string, unknown>;
+};
+
 export type UploadConfig = {
-	apiKey: string;
-	baseUrl: string;
-	adapter?: UploadAdapter;
+	adapter: UploadAdapter;
+	statusChecker?: StatusChecker;
 	validate?: (file: FileRef) => ValidationResult | Promise<ValidationResult>;
 	uploadOptions: UploadOptions;
-	pollingIntervalMs?: number;
 	maxConcurrentUploads?: number;
 };
 
@@ -62,8 +67,19 @@ export interface UploadAdapter {
 	upload(
 		file: FileRef,
 		options: UploadOptions,
-		config: { apiKey: string; baseUrl: string },
 		callbacks: { onProgress: (pct: number) => void },
 		signal: AbortSignal,
-	): Promise<{ videoId: string; isPublic: boolean }>;
+	): Promise<UploadResult>;
+}
+
+export interface StatusChecker {
+	checkStatus(options: {
+		uploadResult: UploadResult;
+		onStatusChange: (
+			status: "processing" | "ready" | "failed",
+			playbackUrl?: string,
+			statusDetail?: string,
+		) => void;
+		signal: AbortSignal;
+	}): void;
 }

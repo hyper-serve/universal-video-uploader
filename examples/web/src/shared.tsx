@@ -1,6 +1,4 @@
-import type { UploadConfig } from "@hyperserve/universal-video-uploader";
-
-export const CONFIG: Pick<UploadConfig, "apiKey" | "baseUrl"> = {
-	apiKey: "YOUR_HYPERSERVE_API_KEY",
-	baseUrl: "https://api.hyperserve.io/v1",
-};
+export const HYPERSERVE_API_KEY =
+	import.meta.env.VITE_HYPERSERVE_API_KEY ?? "";
+export const HYPERSERVE_BASE_URL =
+	import.meta.env.VITE_HYPERSERVE_BASE_URL ?? "https://api.hyperserve.io/v1";

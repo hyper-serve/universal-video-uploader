@@ -7,9 +7,7 @@ import React, {
 	useRef,
 	useState,
 } from "react";
-import { HyperserveAdapter } from "./adapter/hyperserve.js";
 import { createThumbnail, revokeThumbnail } from "./platform/thumbnail.js";
-import { pollVideoStatus } from "./polling/index.js";
 import type {
 	FileRef,
 	FileState,
@@ -52,7 +50,13 @@ function fileReducer(state: FileState[], action: FileAction): FileState[] {
 		case "RETRY_FILE":
 			return state.map((f) =>
 				f.id === action.id
-					? { ...f, error: null, progress: 0, status: "selected" as const }
+					? {
+							...f,
+							error: null,
+							progress: 0,
+							status: "selected" as const,
+							statusDetail: null,
+						}
 					: f,
 			);
 		case "CLEAR_COMPLETED":
@@ -77,11 +81,6 @@ export function UploadProvider({ config, children }: UploadProviderProps) {
 
 	const configRef = useRef(config);
 	configRef.current = config;
-
-	const adapter = useMemo(
-		() => config.adapter ?? new HyperserveAdapter(),
-		[config.adapter],
-	);
 
 	const abortControllers = useRef(new Map<string, AbortController>());
 	const processingIds = useRef(new Set<string>());
@@ -127,10 +126,9 @@ export function UploadProvider({ config, children }: UploadProviderProps) {
 			});
 
 			try {
-				const { videoId, isPublic } = await adapter.upload(
+				const uploadResult = await cfg.adapter.upload(
 					file.ref,
 					cfg.uploadOptions,
-					{ apiKey: cfg.apiKey, baseUrl: cfg.baseUrl },
 					{
 						onProgress: (pct) =>
 							dispatch({
@@ -142,32 +140,67 @@ export function UploadProvider({ config, children }: UploadProviderProps) {
 					ac.signal,
 				);
 
+				if (uploadResult.playbackUrl) {
+					dispatch({
+						id: file.id,
+						type: "UPDATE_FILE",
+						updates: {
+							playbackUrl: uploadResult.playbackUrl,
+							progress: 100,
+							status: "ready",
+							videoId: uploadResult.videoId,
+						},
+					});
+					processingIds.current.delete(file.id);
+					return;
+				}
+
 				dispatch({
 					id: file.id,
 					type: "UPDATE_FILE",
-					updates: { progress: 100, status: "processing", videoId },
+					updates: {
+						progress: 100,
+						status: "processing",
+						videoId: uploadResult.videoId,
+					},
 				});
 
-				pollVideoStatus({
-					apiKey: cfg.apiKey,
-					baseUrl: cfg.baseUrl,
-					intervalMs: cfg.pollingIntervalMs ?? 3000,
-					isPublic,
-					onStatusChange: (status, playbackUrl) => {
-						dispatch({
-							id: file.id,
-							type: "UPDATE_FILE",
-							updates: {
-								error: status === "failed" ? "Processing failed" : null,
-								playbackUrl: playbackUrl ?? null,
-								status: status === "ready" ? "ready" : "failed",
-							},
-						});
-						processingIds.current.delete(file.id);
-					},
-					signal: ac.signal,
-					videoId,
-				});
+				if (cfg.statusChecker) {
+					cfg.statusChecker.checkStatus({
+						onStatusChange: (status, playbackUrl, statusDetail) => {
+							if (status === "processing") {
+								dispatch({
+									id: file.id,
+									type: "UPDATE_FILE",
+									updates: {
+										statusDetail: statusDetail ?? null,
+									},
+								});
+								return;
+							}
+
+							dispatch({
+								id: file.id,
+								type: "UPDATE_FILE",
+								updates: {
+									error:
+										status === "failed"
+											? "Processing failed"
+											: null,
+									playbackUrl: playbackUrl ?? null,
+									status:
+										status === "ready" ? "ready" : "failed",
+									statusDetail: null,
+								},
+							});
+							processingIds.current.delete(file.id);
+						},
+						signal: ac.signal,
+						uploadResult,
+					});
+				} else {
+					processingIds.current.delete(file.id);
+				}
 			} catch (err) {
 				if (!ac.signal.aborted) {
 					dispatch({
@@ -183,7 +216,7 @@ export function UploadProvider({ config, children }: UploadProviderProps) {
 				processingIds.current.delete(file.id);
 			}
 		},
-		[adapter],
+		[],
 	);
 
 	useEffect(() => {
@@ -222,6 +255,7 @@ export function UploadProvider({ config, children }: UploadProviderProps) {
 			progress: 0,
 			ref,
 			status: "selected" as const,
+			statusDetail: null,
 			thumbnailUri: createThumbnail(ref),
 			videoId: null,
 		}));

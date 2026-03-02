@@ -22,6 +22,10 @@ const defaultConfig = {
 	baseUrl: "https://api.example.com",
 };
 
+function createAdapter(bgUpload?: BackgroundUploadModule | null) {
+	return new HyperserveAdapter(defaultConfig, bgUpload);
+}
+
 describe("HyperserveAdapter (native) - fetch fallback", () => {
 	beforeEach(() => {
 		vi.stubGlobal(
@@ -39,19 +43,21 @@ describe("HyperserveAdapter (native) - fetch fallback", () => {
 	});
 
 	it("uses fetch when no background upload module is available", async () => {
-		const adapter = new HyperserveAdapter(null);
+		const adapter = createAdapter(null);
 		const onProgress = vi.fn();
 		const ac = new AbortController();
 
 		const result = await adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress },
 			ac.signal,
 		);
 
-		expect(result).toEqual({ videoId: "video-123", isPublic: true });
+		expect(result).toEqual({
+			metadata: { isPublic: true },
+			videoId: "video-123",
+		});
 		expect(fetch).toHaveBeenCalledWith(
 			"https://api.example.com/video",
 			expect.objectContaining({
@@ -62,14 +68,13 @@ describe("HyperserveAdapter (native) - fetch fallback", () => {
 	});
 
 	it("reports progress as 50 then 100 in fetch fallback", async () => {
-		const adapter = new HyperserveAdapter(null);
+		const adapter = createAdapter(null);
 		const onProgress = vi.fn();
 		const ac = new AbortController();
 
 		await adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress },
 			ac.signal,
 		);
@@ -84,14 +89,13 @@ describe("HyperserveAdapter (native) - fetch fallback", () => {
 			vi.fn().mockResolvedValue({ ok: false, status: 500 }),
 		);
 
-		const adapter = new HyperserveAdapter(null);
+		const adapter = createAdapter(null);
 		const ac = new AbortController();
 
 		await expect(
 			adapter.upload(
 				makeFileRef(),
 				defaultOptions,
-				defaultConfig,
 				{ onProgress: vi.fn() },
 				ac.signal,
 			),
@@ -109,13 +113,12 @@ describe("HyperserveAdapter (native) - fetch fallback", () => {
 		);
 		vi.stubGlobal("fetch", fetchMock);
 
-		const adapter = new HyperserveAdapter(null);
+		const adapter = createAdapter(null);
 		const ac = new AbortController();
 
 		const promise = adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress: vi.fn() },
 			ac.signal,
 		);
@@ -126,7 +129,7 @@ describe("HyperserveAdapter (native) - fetch fallback", () => {
 	});
 
 	it("includes optional fields in the form data", async () => {
-		const adapter = new HyperserveAdapter(null);
+		const adapter = createAdapter(null);
 		const ac = new AbortController();
 
 		await adapter.upload(
@@ -136,7 +139,6 @@ describe("HyperserveAdapter (native) - fetch fallback", () => {
 				customUserMetadata: { tag: "test" },
 				thumbnailTimestamps: "1,5",
 			},
-			defaultConfig,
 			{ onProgress: vi.fn() },
 			ac.signal,
 		);
@@ -150,13 +152,12 @@ describe("HyperserveAdapter (native) - fetch fallback", () => {
 	});
 
 	it("appends file as RN-style object in form data", async () => {
-		const adapter = new HyperserveAdapter(null);
+		const adapter = createAdapter(null);
 		const ac = new AbortController();
 
 		await adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress: vi.fn() },
 			ac.signal,
 		);
@@ -215,14 +216,13 @@ describe("HyperserveAdapter (native) - background upload", () => {
 
 	it("uses background upload module when provided", async () => {
 		const bg = createMockBgUpload();
-		const adapter = new HyperserveAdapter(bg.module);
+		const adapter = createAdapter(bg.module);
 		const onProgress = vi.fn();
 		const ac = new AbortController();
 
 		const promise = adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress },
 			ac.signal,
 		);
@@ -240,12 +240,15 @@ describe("HyperserveAdapter (native) - background upload", () => {
 		});
 
 		const result = await promise;
-		expect(result).toEqual({ videoId: "video-456", isPublic: true });
+		expect(result).toEqual({
+			metadata: { isPublic: true },
+			videoId: "video-456",
+		});
 	});
 
 	it("passes correct upload options to startUpload", async () => {
 		const bg = createMockBgUpload();
-		const adapter = new HyperserveAdapter(bg.module);
+		const adapter = createAdapter(bg.module);
 		const ac = new AbortController();
 
 		const promise = adapter.upload(
@@ -255,7 +258,6 @@ describe("HyperserveAdapter (native) - background upload", () => {
 				customUserMetadata: { foo: "bar" },
 				thumbnailTimestamps: "2,4",
 			},
-			defaultConfig,
 			{ onProgress: vi.fn() },
 			ac.signal,
 		);
@@ -290,13 +292,12 @@ describe("HyperserveAdapter (native) - background upload", () => {
 
 	it("rejects on background upload error", async () => {
 		const bg = createMockBgUpload();
-		const adapter = new HyperserveAdapter(bg.module);
+		const adapter = createAdapter(bg.module);
 		const ac = new AbortController();
 
 		const promise = adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress: vi.fn() },
 			ac.signal,
 		);
@@ -310,13 +311,12 @@ describe("HyperserveAdapter (native) - background upload", () => {
 
 	it("rejects with invalid response on malformed JSON", async () => {
 		const bg = createMockBgUpload();
-		const adapter = new HyperserveAdapter(bg.module);
+		const adapter = createAdapter(bg.module);
 		const ac = new AbortController();
 
 		const promise = adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress: vi.fn() },
 			ac.signal,
 		);
@@ -330,13 +330,12 @@ describe("HyperserveAdapter (native) - background upload", () => {
 
 	it("cancels upload on abort signal", async () => {
 		const bg = createMockBgUpload();
-		const adapter = new HyperserveAdapter(bg.module);
+		const adapter = createAdapter(bg.module);
 		const ac = new AbortController();
 
 		const promise = adapter.upload(
 			makeFileRef(),
 			defaultOptions,
-			defaultConfig,
 			{ onProgress: vi.fn() },
 			ac.signal,
 		);
@@ -355,14 +354,13 @@ describe("HyperserveAdapter (native) - background upload", () => {
 			new Error("Permission denied"),
 		);
 
-		const adapter = new HyperserveAdapter(bg.module);
+		const adapter = createAdapter(bg.module);
 		const ac = new AbortController();
 
 		await expect(
 			adapter.upload(
 				makeFileRef(),
 				defaultOptions,
-				defaultConfig,
 				{ onProgress: vi.fn() },
 				ac.signal,
 			),

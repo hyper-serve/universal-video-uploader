@@ -1,1 +1,1 @@
-export type { UploadAdapter } from "../types.js";
+export type { UploadAdapter, UploadResult } from "../types.js";
