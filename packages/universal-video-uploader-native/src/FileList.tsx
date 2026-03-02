@@ -1,0 +1,73 @@
+import React from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import type { FileState, ViewMode } from "@hyperserve/universal-video-uploader";
+import { useUpload } from "@hyperserve/universal-video-uploader";
+import type { StyleProp, ViewStyle } from "react-native";
+
+export type FileListProps = {
+	mode?: ViewMode;
+	style?: StyleProp<ViewStyle>;
+	numColumns?: number;
+	emptyMessage?: React.ReactNode;
+	children: (file: FileState, index: number) => React.ReactElement;
+};
+
+export function FileList({
+	mode,
+	style,
+	numColumns = 2,
+	emptyMessage,
+	children,
+}: FileListProps) {
+	const { files, viewMode } = useUpload();
+	const resolvedMode = mode ?? viewMode;
+
+	if (files.length === 0 && emptyMessage) {
+		return (
+			<View style={styles.empty}>
+				{typeof emptyMessage === "string" ? (
+					<Text style={styles.emptyText}>{emptyMessage}</Text>
+				) : (
+					emptyMessage
+				)}
+			</View>
+		);
+	}
+
+	return (
+		<FlatList
+			contentContainerStyle={[styles.content, style]}
+			data={files}
+			key={resolvedMode === "grid" ? `grid-${numColumns}` : "list"}
+			keyExtractor={(item) => item.id}
+			numColumns={resolvedMode === "grid" ? numColumns : 1}
+			renderItem={({ item, index }) => (
+				<View
+					style={
+						resolvedMode === "grid" ? styles.gridItem : undefined
+					}
+				>
+					{children(item, index)}
+				</View>
+			)}
+		/>
+	);
+}
+
+const styles = StyleSheet.create({
+	content: {
+		gap: 12,
+	},
+	empty: {
+		alignItems: "center",
+		paddingVertical: 32,
+	},
+	emptyText: {
+		color: "#94a3b8",
+		textAlign: "center",
+	},
+	gridItem: {
+		flex: 1,
+		padding: 4,
+	},
+});

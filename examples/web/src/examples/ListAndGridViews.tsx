@@ -5,7 +5,14 @@ import {
 	useUpload,
 	type UploadConfig,
 } from "@hyperserve/universal-video-uploader";
-import { StatusBadge, ProgressBar, CONFIG } from "../shared";
+import {
+	FileItem,
+	FileList,
+	ProgressBar,
+	StatusBadge,
+	Thumbnail,
+} from "@hyperserve/universal-video-uploader-react";
+import { CONFIG } from "../shared";
 
 const config: UploadConfig = {
 	...CONFIG,
@@ -16,8 +23,7 @@ const config: UploadConfig = {
 };
 
 function UploadUI() {
-	const { files, addFiles, removeFile, retryFile, viewMode, setViewMode } =
-		useUpload();
+	const { addFiles, viewMode, setViewMode } = useUpload();
 	const inputRef = useRef<HTMLInputElement>(null);
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +39,14 @@ function UploadUI() {
 				Toggle between list and grid views. Same data, different layout.
 			</p>
 
-			<div style={{ alignItems: "center", display: "flex", gap: "1rem", marginBottom: "1.5rem" }}>
+			<div
+				style={{
+					alignItems: "center",
+					display: "flex",
+					gap: "1rem",
+					marginBottom: "1.5rem",
+				}}
+			>
 				<input
 					accept="video/*"
 					multiple
@@ -59,7 +72,7 @@ function UploadUI() {
 						}}
 						type="button"
 					>
-						☰ List
+						&#9776; List
 					</button>
 					<button
 						onClick={() => setViewMode("grid")}
@@ -69,70 +82,59 @@ function UploadUI() {
 						}}
 						type="button"
 					>
-						▦ Grid
+						&#9638; Grid
 					</button>
 				</div>
 			</div>
 
-			{viewMode === "list" ? (
-				<div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-					{files.map((file) => (
-						<div key={file.id} style={listItemStyle}>
-							{file.thumbnailUri && (
-								<video
-									muted
-									src={file.thumbnailUri}
-									style={{ borderRadius: 4, height: 48, objectFit: "cover", width: 64 }}
+			<FileList>
+				{(file) => (
+					<FileItem file={file} key={file.id}>
+						{viewMode === "list" ? (
+							<div
+								style={{
+									alignItems: "center",
+									display: "flex",
+									gap: "0.75rem",
+								}}
+							>
+								<Thumbnail
+									file={file}
+									style={{
+										borderRadius: 4,
+										height: 48,
+										width: 64,
+									}}
 								/>
-							)}
-							<div style={{ flex: 1, minWidth: 0 }}>
-								<div style={{ fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-									{file.ref.name}
+								<div style={{ flex: 1, minWidth: 0 }}>
+									<FileItem.FileName />
+									{file.status === "uploading" && (
+										<ProgressBar
+											progress={file.progress}
+										/>
+									)}
 								</div>
+								<StatusBadge status={file.status} />
+								<FileItem.RetryButton />
+								<FileItem.RemoveButton>
+									&#10005;
+								</FileItem.RemoveButton>
+							</div>
+						) : (
+							<>
+								<Thumbnail file={file} />
+								<FileItem.FileName
+									style={{ fontSize: "0.8rem" }}
+								/>
+								<StatusBadge status={file.status} />
 								{file.status === "uploading" && (
 									<ProgressBar progress={file.progress} />
 								)}
-							</div>
-							<StatusBadge status={file.status} />
-							{file.status === "failed" && (
-								<button onClick={() => retryFile(file.id)} style={linkBtnStyle} type="button">
-									Retry
-								</button>
-							)}
-							<button
-								onClick={() => removeFile(file.id)}
-								style={{ ...linkBtnStyle, color: "#ef4444" }}
-								type="button"
-							>
-								✕
-							</button>
-						</div>
-					))}
-				</div>
-			) : (
-				<div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))" }}>
-					{files.map((file) => (
-						<div key={file.id} style={gridItemStyle}>
-							{file.thumbnailUri ? (
-								<video
-									muted
-									src={file.thumbnailUri}
-									style={{ borderRadius: 6, height: 100, objectFit: "cover", width: "100%" }}
-								/>
-							) : (
-								<div style={{ alignItems: "center", background: "#f1f5f9", borderRadius: 6, display: "flex", fontSize: "2rem", height: 100, justifyContent: "center" }}>
-									🎥
-								</div>
-							)}
-							<div style={{ fontSize: "0.8rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-								{file.ref.name}
-							</div>
-							<StatusBadge status={file.status} />
-							{file.status === "uploading" && <ProgressBar progress={file.progress} />}
-						</div>
-					))}
-				</div>
-			)}
+							</>
+						)}
+					</FileItem>
+				)}
+			</FileList>
 		</div>
 	);
 }
@@ -173,30 +175,4 @@ const toggleBtnStyle: React.CSSProperties = {
 const toggleActiveStyle: React.CSSProperties = {
 	background: "#3b82f6",
 	color: "#fff",
-};
-
-const listItemStyle: React.CSSProperties = {
-	alignItems: "center",
-	border: "1px solid #e2e8f0",
-	borderRadius: 8,
-	display: "flex",
-	gap: "0.75rem",
-	padding: "0.75rem",
-};
-
-const gridItemStyle: React.CSSProperties = {
-	border: "1px solid #e2e8f0",
-	borderRadius: 8,
-	display: "flex",
-	flexDirection: "column",
-	gap: "0.4rem",
-	padding: "0.75rem",
-};
-
-const linkBtnStyle: React.CSSProperties = {
-	background: "none",
-	border: "none",
-	color: "#3b82f6",
-	cursor: "pointer",
-	fontSize: "0.8rem",
 };
