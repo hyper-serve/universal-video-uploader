@@ -5,18 +5,24 @@ import { UploadProvider } from "../context.js";
 import { useUpload } from "../hooks/useUpload.js";
 import type {
 	FileRef,
+	StatusChecker,
 	UploadAdapter,
 	UploadConfig,
 	UploadResult,
 } from "../types.js";
 
-function makeFileRef(name = "test.mp4"): FileRef {
-	return {
+function makeFileRef(name = "test.mp4", withRaw = false): FileRef {
+	const ref: FileRef = {
 		name,
 		size: 1024,
 		type: "video/mp4",
 		uri: `blob:${name}`,
 	};
+	if (withRaw) {
+		const blob = new Blob(["x"], { type: "video/mp4" });
+		ref.raw = new File([blob], name, { type: "video/mp4" });
+	}
+	return ref;
 }
 
 function createMockAdapter(
@@ -36,6 +42,18 @@ function createMockAdapter(
 					videoId: "video-123",
 				},
 			);
+		}),
+	};
+}
+
+function createMockStatusChecker(
+	onCheckStatus?: (invoke: (status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void) => void,
+): StatusChecker {
+	return {
+		checkStatus: vi.fn((options) => {
+			onCheckStatus?.((status, playbackUrl, statusDetail) => {
+				options.onStatusChange(status, playbackUrl, statusDetail);
+			});
 		}),
 	};
 }
@@ -122,6 +140,10 @@ describe("UploadProvider + useUpload", () => {
 
 		act(() => {
 			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
 		});
 
 		const fileId = result.current.files[0].id;
@@ -349,5 +371,202 @@ describe("UploadProvider + useUpload", () => {
 				result.current.files.filter((f) => f.status === "ready"),
 			).toHaveLength(0);
 		}
+	});
+
+	it("transitions to ready when adapter returns playbackUrl directly", async () => {
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			playbackUrl: "https://cdn.example.com/ready.mp4",
+			videoId: "video-1",
+		});
+		const statusChecker = createMockStatusChecker();
+		const config = makeConfig({ adapter, statusChecker });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		const file = result.current.files[0];
+		expect(file.status).toBe("ready");
+		expect(file.playbackUrl).toBe("https://cdn.example.com/ready.mp4");
+		expect(file.videoId).toBe("video-1");
+		expect(statusChecker.checkStatus).not.toHaveBeenCalled();
+	});
+
+	it("runs statusChecker when adapter returns without playbackUrl", async () => {
+		let invokeStatusChange: (status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void;
+		const statusChecker = createMockStatusChecker((invoke) => {
+			invokeStatusChange = invoke;
+		});
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			videoId: "video-1",
+		});
+		const config = makeConfig({ adapter, statusChecker });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(statusChecker.checkStatus).toHaveBeenCalled();
+		expect(result.current.files[0].status).toBe("processing");
+
+		act(() => {
+			invokeStatusChange!("processing", undefined, "480p: pending");
+		});
+		expect(result.current.files[0].statusDetail).toBe("480p: pending");
+
+		act(() => {
+			invokeStatusChange!("ready", "https://cdn.example.com/video.mp4");
+		});
+		expect(result.current.files[0].status).toBe("ready");
+		expect(result.current.files[0].playbackUrl).toBe("https://cdn.example.com/video.mp4");
+		expect(result.current.files[0].error).toBeNull();
+	});
+
+	it("transitions to failed when statusChecker reports failed", async () => {
+		let invokeStatusChange: (status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void;
+		const statusChecker = createMockStatusChecker((invoke) => {
+			invokeStatusChange = invoke;
+		});
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			videoId: "video-1",
+		});
+		const config = makeConfig({ adapter, statusChecker });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		act(() => {
+			invokeStatusChange!("failed");
+		});
+		expect(result.current.files[0].status).toBe("failed");
+		expect(result.current.files[0].error).toBe("Processing failed");
+	});
+
+	it("handles validation throwing", async () => {
+		const adapter = createMockAdapter();
+		const validate = vi.fn().mockRejectedValue(new Error("Validation crashed"));
+		const config = makeConfig({ adapter, validate });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].status).toBe("failed");
+		expect(result.current.files[0].error).toBe("Validation error");
+		expect(adapter.upload).not.toHaveBeenCalled();
+	});
+
+	it("aborts in-flight upload and re-enqueues on retry", async () => {
+		let callCount = 0;
+		const adapter: UploadAdapter = {
+			upload: vi.fn((_file, _opts, callbacks, signal) => {
+				callCount++;
+				return new Promise<UploadResult>((resolve, reject) => {
+					const onAbort = () =>
+						reject(new DOMException("Aborted", "AbortError"));
+					signal.addEventListener("abort", onAbort);
+					if (callCount === 2) {
+						signal.removeEventListener("abort", onAbort);
+						callbacks.onProgress(100);
+						resolve({
+							metadata: { isPublic: true },
+							playbackUrl: "https://cdn.example.com/ready.mp4",
+							videoId: "video-123",
+						});
+					}
+				});
+			}),
+		};
+		const config = makeConfig({ adapter });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].status).toBe("uploading");
+
+		act(() => {
+			result.current.retryFile(result.current.files[0].id);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(adapter.upload).toHaveBeenCalledTimes(2);
+		expect(result.current.files[0].status).toBe("ready");
+	});
+
+	it("aborts in-flight upload on unmount", async () => {
+		let capturedSignal: AbortSignal;
+		const adapter: UploadAdapter = {
+			upload: vi.fn((_file, _opts, _cb, signal) => {
+				capturedSignal = signal;
+				return new Promise(() => {});
+			}),
+		};
+		const config = makeConfig({ adapter });
+
+		const { result, unmount } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].status).toBe("uploading");
+
+		unmount();
+
+		expect(capturedSignal!.aborted).toBe(true);
 	});
 });
