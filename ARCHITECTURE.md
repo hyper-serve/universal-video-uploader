@@ -219,7 +219,7 @@ Validators are composable functions with the signature `(file: FileRef) => Valid
 |-----------|----------|-------------|
 | `maxFileSize(bytes)` | Both | Checks `file.size` |
 | `allowedTypes(types)` | Both | Checks `file.type` against MIME types (supports wildcards) |
-| `maxDuration(seconds)` | Web | Loads video metadata via DOM. Native variant warns and skips (see Known Limitations) |
+| `maxDuration(seconds)` | Both | Web uses DOM video element; native uses `expo-video-metadata` (optional peer dep, skips if missing) |
 | `composeValidators(...fns)` | Both | Runs validators in order, stops at first failure |
 
 ## Environment Variables
@@ -231,8 +231,12 @@ Examples use `.env` files (git-ignored) for API keys. `.env.example` files docum
 | Web (Vite) | `VITE_` | `examples/web/.env` |
 | React Native (Expo) | `EXPO_PUBLIC_` | `examples/react-native/.env` |
 
-## Known Limitations
+## Optional Native Dependencies
 
-- **Native thumbnails**: `createThumbnail` returns `null` on React Native. Could be wired to thumbnail URLs from the API response.
-- **`maxDuration` on RN**: Logs a warning and skips validation. The web version uses the DOM video element. A native implementation would require `expo-av` or similar.
-- **Background upload progress**: The RN example does not include `react-native-background-upload`, so the fetch fallback reports approximate progress (50% → 100%).
+All three are optional peer dependencies of the core package. When missing, the library gracefully degrades:
+
+| Package | Purpose | Fallback without it |
+|---------|---------|---------------------|
+| `expo-video-metadata` | `maxDuration` validation on native | Skips validation, warns once |
+| `expo-video-thumbnails` | Thumbnail generation on native | `thumbnailUri` stays `null` |
+| `react-native-background-upload` | True background upload with granular progress | Falls back to `fetch` with estimated progress |

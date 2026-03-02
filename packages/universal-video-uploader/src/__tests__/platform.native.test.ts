@@ -11,14 +11,14 @@ import {
 import type { FileRef } from "../types.js";
 
 describe("thumbnail.native", () => {
-	it("createThumbnail always returns null", () => {
+	it("createThumbnail returns null without expo-video-thumbnails", async () => {
 		const ref: FileRef = {
 			name: "test.mp4",
 			size: 1024,
 			type: "video/mp4",
 			uri: "file:///tmp/test.mp4",
 		};
-		expect(createThumbnail(ref)).toBeNull();
+		expect(await createThumbnail(ref)).toBeNull();
 	});
 
 	it("revokeThumbnail is a safe no-op", () => {

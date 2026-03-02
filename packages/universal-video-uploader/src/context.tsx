@@ -259,10 +259,22 @@ export function UploadProvider<TOptions>({
 			ref,
 			status: "selected" as const,
 			statusDetail: null,
-			thumbnailUri: createThumbnail(ref),
+			thumbnailUri: null,
 			videoId: null,
 		}));
 		dispatch({ files: newFiles, type: "ADD_FILES" });
+
+		for (const file of newFiles) {
+			createThumbnail(file.ref).then((uri) => {
+				if (uri) {
+					dispatch({
+						id: file.id,
+						type: "UPDATE_FILE",
+						updates: { thumbnailUri: uri },
+					});
+				}
+			});
+		}
 	}, []);
 
 	const removeFile = useCallback(

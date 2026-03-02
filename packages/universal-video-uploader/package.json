@@ -26,9 +26,17 @@
 	},
 	"peerDependencies": {
 		"react": ">=18.0.0",
+		"expo-video-metadata": ">=1.0.0",
+		"expo-video-thumbnails": ">=8.0.0",
 		"react-native-background-upload": ">=6.0.0"
 	},
 	"peerDependenciesMeta": {
+		"expo-video-metadata": {
+			"optional": true
+		},
+		"expo-video-thumbnails": {
+			"optional": true
+		},
 		"react-native-background-upload": {
 			"optional": true
 		}

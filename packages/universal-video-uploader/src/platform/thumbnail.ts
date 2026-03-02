@@ -1,6 +1,8 @@
 import type { FileRef } from "../types.js";
 
-export function createThumbnail(file: FileRef): string | null {
+export async function createThumbnail(
+	file: FileRef,
+): Promise<string | null> {
 	if (file.raw) {
 		return URL.createObjectURL(file.raw);
 	}

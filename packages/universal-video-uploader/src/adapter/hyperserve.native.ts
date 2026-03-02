@@ -15,12 +15,24 @@ export type BackgroundUploadModule = {
 	cancelUpload: (uploadId: string) => void;
 };
 
+let backgroundUploadModule: BackgroundUploadModule | null = null;
+let backgroundResolved = false;
+let warnedMissingBackgroundModule = false;
+
 function getBackgroundUpload(): BackgroundUploadModule | null {
+	if (backgroundResolved) return backgroundUploadModule;
+	backgroundResolved = true;
 	try {
-		return require("react-native-background-upload");
+		backgroundUploadModule = require("react-native-background-upload");
 	} catch {
-		return null;
+		if (!warnedMissingBackgroundModule) {
+			warnedMissingBackgroundModule = true;
+			console.warn(
+				"HyperserveAdapter: react-native-background-upload is not installed. Falling back to fetch-based upload with coarse progress reporting.",
+			);
+		}
 	}
+	return backgroundUploadModule;
 }
 
 export class HyperserveAdapter implements UploadAdapter<HyperserveUploadOptions> {
