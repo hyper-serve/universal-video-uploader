@@ -138,7 +138,11 @@ describe("pollVideoStatus", () => {
 		});
 
 		await vi.advanceTimersByTimeAsync(0);
-		expect(onStatusChange).toHaveBeenCalledWith("processing");
+		expect(onStatusChange).toHaveBeenCalledWith(
+			"processing",
+			undefined,
+			"pending",
+		);
 
 		await vi.advanceTimersByTimeAsync(2000);
 		expect(onStatusChange).toHaveBeenCalledWith(

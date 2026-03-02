@@ -1,4 +1,5 @@
 import type { FileRef, ValidationResult } from "../types.js";
+export { maxDuration } from "./maxDuration.js";
 
 export type Validator = (
 	file: FileRef,
@@ -34,40 +35,6 @@ export function allowedTypes(types: string[]): Validator {
 			};
 		}
 		return { valid: true };
-	};
-}
-
-export function maxDuration(seconds: number): Validator {
-	return (file) => {
-		if (!file.raw) {
-			return { valid: true };
-		}
-
-		return new Promise<ValidationResult>((resolve) => {
-			const video = document.createElement("video");
-			video.preload = "metadata";
-
-			const objectUrl = URL.createObjectURL(file.raw!);
-
-			video.onloadedmetadata = () => {
-				URL.revokeObjectURL(objectUrl);
-				if (video.duration > seconds) {
-					resolve({
-						reason: `Video exceeds maximum duration of ${seconds}s (got ${Math.round(video.duration)}s)`,
-						valid: false,
-					});
-				} else {
-					resolve({ valid: true });
-				}
-			};
-
-			video.onerror = () => {
-				URL.revokeObjectURL(objectUrl);
-				resolve({ valid: true });
-			};
-
-			video.src = objectUrl;
-		});
 	};
 }
 

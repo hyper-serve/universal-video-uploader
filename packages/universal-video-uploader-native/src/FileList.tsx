@@ -7,7 +7,7 @@ import type { StyleProp, ViewStyle } from "react-native";
 export type FileListProps = {
 	mode?: ViewMode;
 	style?: StyleProp<ViewStyle>;
-	numColumns?: number;
+	columns?: number;
 	emptyMessage?: React.ReactNode;
 	children: (file: FileState, index: number) => React.ReactElement;
 };
@@ -15,7 +15,7 @@ export type FileListProps = {
 export function FileList({
 	mode,
 	style,
-	numColumns = 2,
+	columns = 2,
 	emptyMessage,
 	children,
 }: FileListProps) {
@@ -38,9 +38,9 @@ export function FileList({
 		<FlatList
 			contentContainerStyle={[styles.content, style]}
 			data={files}
-			key={resolvedMode === "grid" ? `grid-${numColumns}` : "list"}
+			key={resolvedMode === "grid" ? `grid-${columns}` : "list"}
 			keyExtractor={(item) => item.id}
-			numColumns={resolvedMode === "grid" ? numColumns : 1}
+			numColumns={resolvedMode === "grid" ? columns : 1}
 			renderItem={({ item, index }) => (
 				<View
 					style={

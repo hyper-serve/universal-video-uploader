@@ -6,7 +6,7 @@ export type FileListProps = {
 	mode?: ViewMode;
 	style?: React.CSSProperties;
 	className?: string;
-	gridColumns?: string;
+	columns?: string;
 	emptyMessage?: React.ReactNode;
 	children: (file: FileState, index: number) => React.ReactNode;
 };
@@ -15,7 +15,7 @@ export function FileList({
 	mode,
 	style,
 	className,
-	gridColumns = "repeat(auto-fill, minmax(180px, 1fr))",
+	columns = "repeat(auto-fill, minmax(180px, 1fr))",
 	emptyMessage,
 	children,
 }: FileListProps) {
@@ -35,7 +35,7 @@ export function FileList({
 			? {
 					display: "grid",
 					gap: "1rem",
-					gridTemplateColumns: gridColumns,
+					gridTemplateColumns: columns,
 					...style,
 				}
 			: {

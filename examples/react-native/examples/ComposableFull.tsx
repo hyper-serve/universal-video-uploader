@@ -61,7 +61,7 @@ export function ComposableFull() {
 					</Pressable>
 				)}
 			</View>
-			<FileList emptyMessage="No files selected yet." mode={viewMode} numColumns={2}>
+			<FileList emptyMessage="No files selected yet." mode={viewMode} columns={2}>
 				{(file) => (
 					<FileItem file={file} key={file.id} style={viewMode === "grid" ? styles.gridCard : undefined}>
 						{viewMode === "grid" && <Thumbnail file={file} />}
