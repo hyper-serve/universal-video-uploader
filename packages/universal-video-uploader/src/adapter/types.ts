@@ -1,1 +1,5 @@
-export type { UploadAdapter, UploadResult } from "../types.js";
+export type {
+	HyperserveUploadOptions,
+	UploadAdapter,
+	UploadResult,
+} from "../types.js";

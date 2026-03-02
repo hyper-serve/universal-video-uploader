@@ -1,7 +1,7 @@
 import type {
 	FileRef,
+	HyperserveUploadOptions,
 	UploadAdapter,
-	UploadOptions,
 	UploadResult,
 } from "../types.js";
 
@@ -23,7 +23,7 @@ function getBackgroundUpload(): BackgroundUploadModule | null {
 	}
 }
 
-export class HyperserveAdapter implements UploadAdapter {
+export class HyperserveAdapter implements UploadAdapter<HyperserveUploadOptions> {
 	private apiKey: string;
 	private baseUrl: string;
 	private bgUpload: BackgroundUploadModule | null;
@@ -39,7 +39,7 @@ export class HyperserveAdapter implements UploadAdapter {
 
 	async upload(
 		file: FileRef,
-		options: UploadOptions,
+		options: HyperserveUploadOptions,
 		callbacks: { onProgress: (pct: number) => void },
 		signal: AbortSignal,
 	): Promise<UploadResult> {
@@ -59,7 +59,7 @@ export class HyperserveAdapter implements UploadAdapter {
 	private backgroundUpload(
 		Upload: BackgroundUploadModule,
 		file: FileRef,
-		options: UploadOptions,
+		options: HyperserveUploadOptions,
 		callbacks: { onProgress: (pct: number) => void },
 		signal: AbortSignal,
 	): Promise<UploadResult> {
@@ -138,7 +138,7 @@ export class HyperserveAdapter implements UploadAdapter {
 
 	private async fetchUpload(
 		file: FileRef,
-		options: UploadOptions,
+		options: HyperserveUploadOptions,
 		callbacks: { onProgress: (pct: number) => void },
 		signal: AbortSignal,
 	): Promise<UploadResult> {

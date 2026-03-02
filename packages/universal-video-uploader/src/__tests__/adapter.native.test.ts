@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { FileRef, UploadOptions } from "../types.js";
+import type { FileRef, HyperserveUploadOptions } from "../types.js";
 import type { BackgroundUploadModule } from "../adapter/hyperserve.native.js";
 import { HyperserveAdapter } from "../adapter/hyperserve.native.js";
 
@@ -12,7 +12,7 @@ function makeFileRef(name = "test.mp4"): FileRef {
 	};
 }
 
-const defaultOptions: UploadOptions = {
+const defaultOptions: HyperserveUploadOptions = {
 	isPublic: true,
 	resolutions: "240p,480p",
 };

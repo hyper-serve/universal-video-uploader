@@ -68,14 +68,17 @@ function fileReducer(state: FileState[], action: FileAction): FileState[] {
 
 export const UploadContext = createContext<UploadContextValue | null>(null);
 
-type UploadProviderProps = {
+type UploadProviderProps<TOptions> = {
 	children:
 		| React.ReactNode
 		| ((value: UploadContextValue) => React.ReactNode);
-	config: UploadConfig;
+	config: UploadConfig<TOptions>;
 };
 
-export function UploadProvider({ config, children }: UploadProviderProps) {
+export function UploadProvider<TOptions>({
+	config,
+	children,
+}: UploadProviderProps<TOptions>) {
 	const [files, dispatch] = useReducer(fileReducer, []);
 	const [viewMode, setViewMode] = useState<ViewMode>("list");
 

@@ -1,11 +1,11 @@
 import type {
 	FileRef,
+	HyperserveUploadOptions,
 	UploadAdapter,
-	UploadOptions,
 	UploadResult,
 } from "../types.js";
 
-export class HyperserveAdapter implements UploadAdapter {
+export class HyperserveAdapter implements UploadAdapter<HyperserveUploadOptions> {
 	private apiKey: string;
 	private baseUrl: string;
 
@@ -16,7 +16,7 @@ export class HyperserveAdapter implements UploadAdapter {
 
 	upload(
 		file: FileRef,
-		options: UploadOptions,
+		options: HyperserveUploadOptions,
 		callbacks: { onProgress: (pct: number) => void },
 		signal: AbortSignal,
 	): Promise<UploadResult> {

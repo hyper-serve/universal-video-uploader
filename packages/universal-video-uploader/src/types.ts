@@ -30,7 +30,7 @@ export type ValidationResult =
 	| { valid: true }
 	| { valid: false; reason: string };
 
-export type UploadOptions = {
+export type HyperserveUploadOptions = {
 	resolutions: string;
 	isPublic: boolean;
 	thumbnailTimestamps?: string;
@@ -43,11 +43,13 @@ export type UploadResult = {
 	metadata?: Record<string, unknown>;
 };
 
-export type UploadConfig = {
-	adapter: UploadAdapter;
+export type UploadConfig<
+	TOptions = Record<string, unknown>,
+> = {
+	adapter: UploadAdapter<TOptions>;
 	statusChecker?: StatusChecker;
 	validate?: (file: FileRef) => ValidationResult | Promise<ValidationResult>;
-	uploadOptions: UploadOptions;
+	uploadOptions: TOptions;
 	maxConcurrentUploads?: number;
 };
 
@@ -63,10 +65,10 @@ export type UploadContextValue = {
 	setViewMode: (mode: ViewMode) => void;
 };
 
-export interface UploadAdapter {
+export interface UploadAdapter<TOptions = Record<string, unknown>> {
 	upload(
 		file: FileRef,
-		options: UploadOptions,
+		options: TOptions,
 		callbacks: { onProgress: (pct: number) => void },
 		signal: AbortSignal,
 	): Promise<UploadResult>;

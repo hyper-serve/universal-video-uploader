@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { HyperserveAdapter } from "../adapter/hyperserve.js";
-import type { FileRef, UploadOptions } from "../types.js";
+import type { FileRef, HyperserveUploadOptions } from "../types.js";
 
 function makeFileRef(): FileRef {
 	const blob = new Blob(["fake video content"], { type: "video/mp4" });
@@ -14,7 +14,7 @@ function makeFileRef(): FileRef {
 	};
 }
 
-const defaultOptions: UploadOptions = {
+const defaultOptions: HyperserveUploadOptions = {
 	isPublic: true,
 	resolutions: "240p,480p",
 };

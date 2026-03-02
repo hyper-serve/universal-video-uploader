@@ -2,8 +2,8 @@ import { HyperserveAdapter } from "./adapter/hyperserve.js";
 import { HyperserveStatusChecker } from "./polling/index.js";
 import type {
 	FileRef,
+	HyperserveUploadOptions,
 	UploadConfig,
-	UploadOptions,
 	ValidationResult,
 } from "./types.js";
 
@@ -14,11 +14,13 @@ export type HyperserveConfig = {
 	baseUrl?: string;
 	maxConcurrentUploads?: number;
 	pollingIntervalMs?: number;
-	uploadOptions: UploadOptions;
+	uploadOptions: HyperserveUploadOptions;
 	validate?: (file: FileRef) => ValidationResult | Promise<ValidationResult>;
 };
 
-export function createHyperserveConfig(options: HyperserveConfig): UploadConfig {
+export function createHyperserveConfig(
+	options: HyperserveConfig,
+): UploadConfig<HyperserveUploadOptions> {
 	const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
 	const adapterConfig = { apiKey: options.apiKey, baseUrl };
 
