@@ -39,59 +39,43 @@ function UploadUI() {
 	const { clearCompleted, files, setViewMode, viewMode } = useUpload();
 	const hasCompleted = files.some((f) => f.status === "ready");
 
-	const modeToggle = (mode: ViewMode) => (
-		<button
-			onClick={() => setViewMode(mode)}
-			style={{
-				...toggleBtn,
-				...(viewMode === mode ? toggleBtnActive : {}),
-			}}
-			type="button"
-		>
-			{mode === "list" ? "\u2630 List" : "\u25a6 Grid"}
-		</button>
-	);
-
 	return (
-		<div>
-			<p style={{ color: "#64748b", marginBottom: "0.5rem" }}>
-				Composable UI demo using the component package with full features.
+		<div style={wrap}>
+			<p style={intro}>
+				Composable (Base) — library components with default props only.
 			</p>
-			<ul style={{ color: "#64748b", marginBottom: "1rem", paddingLeft: "1.2rem" }}>
-				<li>Drop/select input + validation + retry/remove + clear completed</li>
-				<li>List/Grid toggle + status + upload progress + error display</li>
-				<li>Playback rendering when a file is ready</li>
-			</ul>
 
 			<DropZone />
 
-			<div
-				style={{
-					alignItems: "center",
-					display: "flex",
-					gap: "0.75rem",
-					marginTop: "1rem",
-				}}
-			>
-				<div style={toggleGroup}>
-					{modeToggle("list")}
-					{modeToggle("grid")}
-				</div>
+			<div style={toolbar}>
+				<button
+					onClick={() => setViewMode("list" as ViewMode)}
+					style={{
+						...tab,
+						...(viewMode === "list" ? tabActive : {}),
+					}}
+					type="button"
+				>
+					List
+				</button>
+				<button
+					onClick={() => setViewMode("grid" as ViewMode)}
+					style={{
+						...tab,
+						...(viewMode === "grid" ? tabActive : {}),
+					}}
+					type="button"
+				>
+					Grid
+				</button>
 				{hasCompleted && (
-					<button
-						onClick={clearCompleted}
-						style={secondaryBtn}
-						type="button"
-					>
-						Clear Completed
+					<button onClick={clearCompleted} style={clearBtn} type="button">
+						Clear completed
 					</button>
 				)}
 			</div>
 
-			<FileList
-				emptyMessage="No files selected yet."
-				style={{ marginTop: "1rem" }}
-			>
+			<FileList emptyMessage="No files selected yet.">
 				{(file) => (
 					<FileItem
 						file={file}
@@ -103,35 +87,20 @@ function UploadUI() {
 						}
 					>
 						{viewMode === "grid" && <Thumbnail file={file} />}
-						<div
-							style={{
-								alignItems: "center",
-								display: "flex",
-								justifyContent: "space-between",
-							}}
-						>
+						<div style={row}>
 							<FileItem.FileName />
-							<div
-								style={{
-									alignItems: "center",
-									display: "flex",
-									gap: "0.5rem",
-								}}
-							>
+							<div style={badges}>
 								<StatusBadge status={file.status} />
 								<FileItem.RetryButton />
 								<FileItem.RemoveButton />
 							</div>
 						</div>
-
 						<FileItem.FileSize />
 						{file.status === "uploading" && (
 							<ProgressBar progress={file.progress} />
 						)}
 						{file.status === "processing" && (
-							<div style={{ color: "#f59e0b", fontSize: "0.85rem" }}>
-								Processing on server...
-							</div>
+							<div style={processing}>Processing on server…</div>
 						)}
 						{file.status === "ready" && file.playbackUrl && (
 							<Thumbnail file={file} playback />
@@ -144,7 +113,7 @@ function UploadUI() {
 	);
 }
 
-export function ComposableFull() {
+export function ComposableBase() {
 	return (
 		<UploadProvider config={config}>
 			<UploadUI />
@@ -152,32 +121,63 @@ export function ComposableFull() {
 	);
 }
 
-const toggleGroup: React.CSSProperties = {
+const wrap: React.CSSProperties = {
+	display: "flex",
+	flexDirection: "column",
+	gap: "1rem",
+};
+
+const intro: React.CSSProperties = {
+	color: "#64748b",
+	fontSize: "0.875rem",
+	margin: 0,
+};
+
+const toolbar: React.CSSProperties = {
+	alignItems: "center",
+	display: "flex",
+	gap: "0.5rem",
+};
+
+const tab: React.CSSProperties = {
+	background: "#fff",
 	border: "1px solid #e2e8f0",
 	borderRadius: 6,
-	display: "flex",
-	overflow: "hidden",
-};
-
-const toggleBtn: React.CSSProperties = {
-	background: "#fff",
-	border: "none",
 	cursor: "pointer",
 	fontSize: "0.85rem",
-	padding: "0.45rem 0.7rem",
+	padding: "0.4rem 0.65rem",
 };
 
-const toggleBtnActive: React.CSSProperties = {
+const tabActive: React.CSSProperties = {
 	background: "#3b82f6",
+	borderColor: "#3b82f6",
 	color: "#fff",
 };
 
-const secondaryBtn: React.CSSProperties = {
+const clearBtn: React.CSSProperties = {
 	background: "#f1f5f9",
 	border: "none",
 	borderRadius: 6,
 	color: "#334155",
 	cursor: "pointer",
 	fontSize: "0.85rem",
-	padding: "0.45rem 0.8rem",
+	marginLeft: "auto",
+	padding: "0.4rem 0.75rem",
+};
+
+const row: React.CSSProperties = {
+	alignItems: "center",
+	display: "flex",
+	justifyContent: "space-between",
+};
+
+const badges: React.CSSProperties = {
+	alignItems: "center",
+	display: "flex",
+	gap: "0.5rem",
+};
+
+const processing: React.CSSProperties = {
+	color: "#f59e0b",
+	fontSize: "0.85rem",
 };

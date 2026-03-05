@@ -133,6 +133,32 @@ describe("UploadProvider + useUpload", () => {
 	});
 
 	it("removes files via removeFile", async () => {
+		const uploadPromise = new Promise<UploadResult>(() => {});
+		const adapter = createMockAdapter();
+		vi.mocked(adapter.upload).mockReturnValue(uploadPromise);
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter })),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].status).toBe("uploading");
+		const fileId = result.current.files[0].id;
+
+		act(() => {
+			result.current.removeFile(fileId);
+		});
+
+		expect(result.current.files).toHaveLength(0);
+	});
+
+	it("removeFile is no-op when file is processing or ready", async () => {
 		const adapter = createMockAdapter();
 		const { result } = renderHook(() => useUpload(), {
 			wrapper: makeWrapper(makeConfig({ adapter })),
@@ -146,13 +172,14 @@ describe("UploadProvider + useUpload", () => {
 			await vi.advanceTimersByTimeAsync(0);
 		});
 
+		expect(["processing", "ready"]).toContain(result.current.files[0].status);
 		const fileId = result.current.files[0].id;
 
 		act(() => {
 			result.current.removeFile(fileId);
 		});
 
-		expect(result.current.files).toHaveLength(0);
+		expect(result.current.files).toHaveLength(1);
 	});
 
 	it("transitions file through upload lifecycle", async () => {

@@ -171,11 +171,21 @@ The built-in `HyperserveAdapter` and `HyperserveStatusChecker` provide first-par
 const config = createHyperserveConfig({
   apiKey: "...",
   baseUrl: "https://api.hyperserve.io/v1",  // optional, this is the default
-  uploadOptions: { resolutions: "480p,1080p", isPublic: true },
+  uploadOptions: {
+    resolutions: "480p,1080p",
+    isPublic: true,
+    customUserMetadata: { postId: "123", entityType: "post" },  // optional
+  },
   validate: composeValidators(maxFileSize(500 * 1024 * 1024)),
   pollingIntervalMs: 3000,
 });
 ```
+
+### Custom metadata
+
+`HyperserveUploadOptions` supports optional `customUserMetadata?: Record<string, unknown>`. The adapter sends it to Hyperserve as `custom_user_metadata` (JSON) on the create-video request. Hyperserve stores it and includes it in webhook payloads as `customMetadata` when processing completes (e.g. `video-processing-success`).
+
+Use this to associate uploads with entities in your app (e.g. post id, product id). Your backend webhook handler can read `videoId` and `customMetadata` from the event and persist the video to the correct record in your database, so you can retrieve and play it when users visit the relevant page. Upload options are shared for the whole provider session; all files added in that session receive the same `uploadOptions` (including `customUserMetadata`).
 
 ### Custom Backend
 

@@ -280,6 +280,12 @@ export function UploadProvider<TOptions>({
 	const removeFile = useCallback(
 		(id: string) => {
 			const file = files.find((f) => f.id === id);
+			if (
+				file?.status === "processing" ||
+				file?.status === "ready"
+			) {
+				return;
+			}
 			if (file?.thumbnailUri) {
 				revokeThumbnail(file.thumbnailUri);
 			}

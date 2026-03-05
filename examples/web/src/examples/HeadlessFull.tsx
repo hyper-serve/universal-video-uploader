@@ -8,7 +8,6 @@ import {
 	maxFileSize,
 	toFileRefs,
 	useUpload,
-	type ViewMode,
 } from "@hyperserve/universal-video-uploader";
 import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
 
@@ -28,29 +27,15 @@ const config = createHyperserveConfig({
 	validate,
 });
 
-const statusColors = {
-	failed: "#ef4444",
-	processing: "#f59e0b",
-	ready: "#22c55e",
-	selected: "#94a3b8",
-	uploading: "#3b82f6",
-	validating: "#8b5cf6",
-} as const;
+function formatSize(bytes: number): string {
+	const mb = bytes / (1024 * 1024);
+	return mb < 1 ? `${(bytes / 1024).toFixed(0)} KB` : `${mb.toFixed(1)} MB`;
+}
 
 function UploadUI() {
-	const {
-		addFiles,
-		clearCompleted,
-		files,
-		removeFile,
-		retryFile,
-		setViewMode,
-		viewMode,
-	} = useUpload();
+	const { addFiles, clearCompleted, files, removeFile, retryFile } = useUpload();
 	const inputRef = useRef<HTMLInputElement>(null);
-	const [isDragging, setIsDragging] = useState(false);
-
-	const hasCompleted = files.some((f) => f.status === "ready");
+	const [drag, setDrag] = useState(false);
 
 	const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files) {
@@ -59,40 +44,25 @@ function UploadUI() {
 		}
 	};
 
-	const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+	const onDrop = (e: React.DragEvent) => {
 		e.preventDefault();
-		setIsDragging(false);
-		const files = Array.from(e.dataTransfer.files).filter((f) =>
+		setDrag(false);
+		const list = Array.from(e.dataTransfer.files).filter((f) =>
 			f.type.startsWith("video/"),
 		);
-		if (files.length > 0) {
-			addFiles(toFileRefs(files));
-		}
+		if (list.length) addFiles(toFileRefs(list));
 	};
 
-	const modeToggle = (mode: ViewMode) => (
-		<button
-			onClick={() => setViewMode(mode)}
-			style={{
-				...toggleBtn,
-				...(viewMode === mode ? toggleBtnActive : {}),
-			}}
-			type="button"
-		>
-			{mode === "list" ? "\u2630 List" : "\u25a6 Grid"}
-		</button>
-	);
+	const hasDone = files.some((f) => f.status === "ready");
 
 	return (
-		<div>
-			<p style={{ color: "#64748b", marginBottom: "0.5rem" }}>
-				Headless-only demo with custom UI and full feature coverage.
-			</p>
-			<ul style={{ color: "#64748b", marginBottom: "1rem", paddingLeft: "1.2rem" }}>
-				<li>Validation: max size 500MB, MP4/QuickTime/WebM, max duration 120s</li>
-				<li>Retry + remove + clear completed</li>
-				<li>List/Grid toggle + playback when ready</li>
-			</ul>
+		<div style={layout}>
+			<header style={header}>
+				<h2 style={title}>Uploads</h2>
+				<p style={subtitle}>
+					Core only — no UI components. Custom layout and behavior.
+				</p>
+			</header>
 
 			<input
 				accept="video/*"
@@ -102,127 +72,94 @@ function UploadUI() {
 				style={{ display: "none" }}
 				type="file"
 			/>
-			<div
-				onDragLeave={() => setIsDragging(false)}
+
+			<section
+				onDragLeave={() => setDrag(false)}
 				onDragOver={(e) => {
 					e.preventDefault();
-					setIsDragging(true);
+					setDrag(true);
 				}}
 				onDrop={onDrop}
 				style={{
-					...dropZone,
-					background: isDragging ? "#eff6ff" : "#f8fafc",
-					borderColor: isDragging ? "#3b82f6" : "#cbd5e1",
+					...dropArea,
+					...(drag ? dropAreaActive : {}),
 				}}
 			>
-				<div style={{ fontSize: "2rem" }}>&#x1F3AC;</div>
-				<div style={{ color: "#64748b" }}>
-					{isDragging
-						? "Drop your videos here"
-						: "Drag & drop video files here"}
-				</div>
+				<span style={dropIcon}>↑</span>
+				<span style={dropText}>
+					{drag ? "Drop to add" : "Drag videos here or"}
+				</span>
 				<button
 					onClick={() => inputRef.current?.click()}
-					style={button}
+					style={primaryBtn}
 					type="button"
 				>
-					Select Videos
+					browse
 				</button>
-			</div>
+			</section>
 
-			<div
-				style={{
-					alignItems: "center",
-					display: "flex",
-					gap: "0.75rem",
-					marginTop: "1rem",
-				}}
-			>
-				<div style={toggleGroup}>
-					{modeToggle("list")}
-					{modeToggle("grid")}
-				</div>
-				{hasCompleted && (
-					<button
-						onClick={clearCompleted}
-						style={{ ...button, background: "#f1f5f9", color: "#334155" }}
-						type="button"
-					>
-						Clear Completed
+			{hasDone && (
+				<div style={toolbar}>
+					<button onClick={clearCompleted} style={ghostBtn} type="button">
+						Clear completed
 					</button>
-				)}
-			</div>
-
-			{files.length === 0 && (
-				<p style={{ color: "#94a3b8", marginTop: "1rem" }}>No files selected yet.</p>
+				</div>
 			)}
 
-			<div
-				style={
-					viewMode === "grid"
-						? {
-							display: "grid",
-							gap: "1rem",
-							gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-							marginTop: "1rem",
-						}
-						: { display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "1rem" }
-				}
-			>
-				{files.map((file) => (
-					<div key={file.id} style={card}>
-						<div
-							style={{ alignItems: "center", display: "flex", justifyContent: "space-between" }}
-						>
-							<div style={{ fontWeight: 500 }}>{file.ref.name}</div>
-							<div style={{ alignItems: "center", display: "flex", gap: "0.5rem" }}>
-								<span
-									style={{
-										color: statusColors[file.status],
-										fontSize: "0.8rem",
-										fontWeight: 600,
-									}}
-								>
-									{file.status}
+			{files.length === 0 ? (
+				<p style={empty}>No files. Add videos above.</p>
+			) : (
+				<ul style={list}>
+					{files.map((file) => (
+						<li key={file.id} style={row}>
+							<div style={rowMain}>
+								<span style={fileName}>{file.ref.name}</span>
+								<span style={meta}>
+									{formatSize(file.ref.size)} · {file.status}
 								</span>
+							</div>
+							{file.status === "uploading" && (
+								<div style={track}>
+									<div style={{ ...fill, width: `${file.progress}%` }} />
+								</div>
+							)}
+							{file.status === "processing" && (
+								<span style={warn}>Processing…</span>
+							)}
+							{file.error && <span style={err}>{file.error}</span>}
+							{file.status === "ready" && file.playbackUrl && (
+								<video
+									controls
+									src={file.playbackUrl}
+									style={video}
+								>
+									<track kind="captions" />
+								</video>
+							)}
+							<div style={rowActions}>
 								{file.status === "failed" && (
-									<button onClick={() => retryFile(file.id)} style={linkBtn} type="button">
+									<button
+										onClick={() => retryFile(file.id)}
+										style={textBtn}
+										type="button"
+									>
 										Retry
 									</button>
 								)}
-								<button
-									onClick={() => removeFile(file.id)}
-									style={{ ...linkBtn, color: "#ef4444" }}
-									type="button"
-								>
-									Remove
-								</button>
+								{file.status !== "processing" && file.status !== "ready" && (
+									<button
+										onClick={() => removeFile(file.id)}
+										style={{ ...textBtn, color: "#b91c1c" }}
+										type="button"
+									>
+										Remove
+									</button>
+								)}
 							</div>
-						</div>
-						<div style={{ color: "#94a3b8", fontSize: "0.8rem" }}>
-							{(file.ref.size / (1024 * 1024)).toFixed(1)} MB
-						</div>
-						{file.status === "uploading" && (
-							<div style={progressTrack}>
-								<div style={{ ...progressFill, width: `${file.progress}%` }} />
-							</div>
-						)}
-						{file.status === "processing" && (
-							<div style={{ color: "#f59e0b", fontSize: "0.85rem" }}>
-								Processing on server...
-							</div>
-						)}
-						{file.status === "ready" && file.playbackUrl && (
-							<video controls src={file.playbackUrl} style={{ borderRadius: 8, width: "100%" }}>
-								<track kind="captions" />
-							</video>
-						)}
-						{file.error && (
-							<div style={{ color: "#ef4444", fontSize: "0.85rem" }}>{file.error}</div>
-						)}
-					</div>
-				))}
-			</div>
+						</li>
+					))}
+				</ul>
+			)}
 		</div>
 	);
 }
@@ -235,76 +172,168 @@ export function HeadlessFull() {
 	);
 }
 
-const button: React.CSSProperties = {
-	background: "#3b82f6",
-	border: "none",
-	borderRadius: 6,
-	color: "#fff",
-	cursor: "pointer",
-	fontSize: "0.85rem",
-	padding: "0.45rem 0.85rem",
-};
-
-const linkBtn: React.CSSProperties = {
-	background: "none",
-	border: "none",
-	color: "#3b82f6",
-	cursor: "pointer",
-	fontSize: "0.8rem",
-	padding: "0.25rem",
-};
-
-const toggleGroup: React.CSSProperties = {
-	border: "1px solid #e2e8f0",
-	borderRadius: 6,
-	display: "flex",
-	overflow: "hidden",
-};
-
-const toggleBtn: React.CSSProperties = {
-	background: "#fff",
-	border: "none",
-	cursor: "pointer",
-	fontSize: "0.85rem",
-	padding: "0.45rem 0.7rem",
-};
-
-const toggleBtnActive: React.CSSProperties = {
-	background: "#3b82f6",
-	color: "#fff",
-};
-
-const dropZone: React.CSSProperties = {
-	alignItems: "center",
-	border: "2px dashed #cbd5e1",
-	borderRadius: 12,
+const layout: React.CSSProperties = {
 	display: "flex",
 	flexDirection: "column",
-	gap: "0.6rem",
-	justifyContent: "center",
-	minHeight: 150,
-	padding: "1rem",
-	transition: "all 0.2s",
+	gap: "1.25rem",
+	maxWidth: 560,
 };
 
-const card: React.CSSProperties = {
+const header: React.CSSProperties = {
+	borderBottom: "1px solid #e2e8f0",
+	paddingBottom: "0.75rem",
+};
+
+const title: React.CSSProperties = {
+	fontSize: "1.125rem",
+	fontWeight: 600,
+	margin: 0,
+};
+
+const subtitle: React.CSSProperties = {
+	color: "#64748b",
+	fontSize: "0.8125rem",
+	margin: "0.25rem 0 0",
+};
+
+const dropArea: React.CSSProperties = {
+	alignItems: "center",
 	background: "#f8fafc",
-	border: "1px solid #e2e8f0",
+	border: "1px dashed #cbd5e1",
 	borderRadius: 8,
+	display: "flex",
+	flexWrap: "wrap",
+	gap: "0.5rem",
+	justifyContent: "center",
+	minHeight: 100,
+	padding: "1rem",
+	transition: "background 0.15s, border-color 0.15s",
+};
+
+const dropAreaActive: React.CSSProperties = {
+	background: "#ecfdf5",
+	borderColor: "#10b981",
+};
+
+const dropIcon: React.CSSProperties = {
+	color: "#94a3b8",
+	fontSize: "1.25rem",
+};
+
+const dropText: React.CSSProperties = {
+	color: "#64748b",
+	fontSize: "0.875rem",
+};
+
+const primaryBtn: React.CSSProperties = {
+	background: "#0f766e",
+	border: "none",
+	borderRadius: 6,
+	color: "#fff",
+	cursor: "pointer",
+	fontSize: "0.8125rem",
+	padding: "0.35rem 0.75rem",
+};
+
+const ghostBtn: React.CSSProperties = {
+	background: "none",
+	border: "none",
+	color: "#64748b",
+	cursor: "pointer",
+	fontSize: "0.8125rem",
+	padding: "0.25rem 0",
+};
+
+const toolbar: React.CSSProperties = {
+	display: "flex",
+	justifyContent: "flex-start",
+};
+
+const empty: React.CSSProperties = {
+	color: "#94a3b8",
+	fontSize: "0.875rem",
+	margin: 0,
+};
+
+const list: React.CSSProperties = {
+	display: "flex",
+	flexDirection: "column",
+	gap: "0.75rem",
+	listStyle: "none",
+	margin: 0,
+	padding: 0,
+};
+
+const row: React.CSSProperties = {
+	background: "#fff",
+	border: "1px solid #e2e8f0",
+	borderRadius: 6,
 	display: "flex",
 	flexDirection: "column",
 	gap: "0.5rem",
-	padding: "0.9rem",
+	padding: "0.75rem 1rem",
 };
 
-const progressTrack: React.CSSProperties = {
+const rowMain: React.CSSProperties = {
+	display: "flex",
+	justifyContent: "space-between",
+	alignItems: "baseline",
+	gap: "0.5rem",
+};
+
+const fileName: React.CSSProperties = {
+	fontSize: "0.875rem",
+	fontWeight: 500,
+	overflow: "hidden",
+	textOverflow: "ellipsis",
+	whiteSpace: "nowrap",
+};
+
+const meta: React.CSSProperties = {
+	color: "#94a3b8",
+	fontSize: "0.75rem",
+};
+
+const track: React.CSSProperties = {
 	background: "#e2e8f0",
 	borderRadius: 4,
-	height: 6,
+	height: 4,
 	overflow: "hidden",
 };
 
-const progressFill: React.CSSProperties = {
-	background: "#3b82f6",
+const fill: React.CSSProperties = {
+	background: "#0f766e",
 	height: "100%",
+	transition: "width 0.2s",
+};
+
+const warn: React.CSSProperties = {
+	color: "#b45309",
+	fontSize: "0.8125rem",
+};
+
+const err: React.CSSProperties = {
+	color: "#b91c1c",
+	fontSize: "0.8125rem",
+};
+
+const video: React.CSSProperties = {
+	borderRadius: 6,
+	maxHeight: 200,
+	width: "100%",
+};
+
+const rowActions: React.CSSProperties = {
+	display: "flex",
+	gap: "0.5rem",
+	marginTop: "0.25rem",
+};
+
+const textBtn: React.CSSProperties = {
+	background: "none",
+	border: "none",
+	color: "#0f766e",
+	cursor: "pointer",
+	fontSize: "0.75rem",
+	padding: 0,
 };

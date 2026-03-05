@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from "react";
 import type { FileState } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
-import { formatFileSize } from "./fileFormatters";
+import { formatFileSize } from "./fileFormatters.js";
 
 type FileItemContextValue = {
 	file: FileState;
@@ -123,6 +123,9 @@ function RemoveButton({
 }: RemoveButtonProps) {
 	const { file } = useFileItemContext();
 	const { removeFile } = useUpload();
+	if (file.status === "processing" || file.status === "ready") {
+		return null;
+	}
 	return (
 		<button
 			aria-label={ariaLabel}
