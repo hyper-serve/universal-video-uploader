@@ -51,6 +51,9 @@ export type UploadConfig<
 	validate?: (file: FileRef) => ValidationResult | Promise<ValidationResult>;
 	uploadOptions: TOptions;
 	maxConcurrentUploads?: number;
+	maxFiles?: number;
+	onFileReady?: (file: FileState) => void;
+	onUploadFailed?: (file: FileState) => void;
 };
 
 export type ViewMode = "list" | "grid";
@@ -63,6 +66,8 @@ export type UploadContextValue = {
 	clearCompleted: () => void;
 	viewMode: ViewMode;
 	setViewMode: (mode: ViewMode) => void;
+	maxFiles?: number;
+	canAddMore: boolean;
 };
 
 export interface UploadAdapter<TOptions = Record<string, unknown>> {

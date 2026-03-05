@@ -11,6 +11,7 @@ import { createThumbnail, revokeThumbnail } from "./platform/thumbnail.js";
 import type {
 	FileRef,
 	FileState,
+	FileStatus,
 	UploadConfig,
 	UploadContextValue,
 	ViewMode,
@@ -84,6 +85,8 @@ export function UploadProvider<TOptions>({
 
 	const configRef = useRef(config);
 	configRef.current = config;
+	const filesCountRef = useRef(0);
+	filesCountRef.current = files.length;
 
 	const abortControllers = useRef(new Map<string, AbortController>());
 	const processingIds = useRef(new Set<string>());
@@ -251,7 +254,14 @@ export function UploadProvider<TOptions>({
 	}, []);
 
 	const addFiles = useCallback((refs: FileRef[]) => {
-		const newFiles: FileState[] = refs.map((ref) => ({
+		const maxFiles = configRef.current.maxFiles;
+		const currentCount = filesCountRef.current;
+		const allowed = maxFiles == null
+			? refs
+			: refs.slice(0, Math.max(0, maxFiles - currentCount));
+		if (allowed.length === 0) return;
+
+		const newFiles: FileState[] = allowed.map((ref) => ({
 			error: null,
 			id: generateId(),
 			playbackUrl: null,
@@ -319,11 +329,16 @@ export function UploadProvider<TOptions>({
 		dispatch({ type: "CLEAR_COMPLETED" });
 	}, [files]);
 
+	const maxFiles = configRef.current.maxFiles;
+	const canAddMore = maxFiles == null || files.length < maxFiles;
+
 	const value: UploadContextValue = useMemo(
 		() => ({
 			addFiles,
+			canAddMore,
 			clearCompleted,
 			files,
+			maxFiles,
 			removeFile,
 			retryFile,
 			setViewMode,
@@ -337,8 +352,31 @@ export function UploadProvider<TOptions>({
 			clearCompleted,
 			viewMode,
 			setViewMode,
+			maxFiles,
+			canAddMore,
 		],
 	);
+
+	const prevStatusById = useRef<Map<string, FileStatus>>(new Map());
+	useEffect(() => {
+		const cfg = configRef.current;
+		const onReady = cfg.onFileReady;
+		const onFailed = cfg.onUploadFailed;
+		if (!onReady && !onFailed) return;
+		const prev = prevStatusById.current;
+		for (const file of files) {
+			const p = prev.get(file.id);
+			if (file.status === "ready" && p !== undefined && p !== "ready") {
+				onReady?.(file);
+			} else if (file.status === "failed" && p !== undefined && p !== "failed") {
+				onFailed?.(file);
+			}
+			prev.set(file.id, file.status);
+		}
+		for (const id of prev.keys()) {
+			if (!files.some((f) => f.id === id)) prev.delete(id);
+		}
+	}, [files]);
 
 	return (
 		<UploadContext.Provider value={value}>

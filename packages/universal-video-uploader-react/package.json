@@ -20,6 +20,8 @@
 	"scripts": {
 		"build": "tsc",
 		"build:watch": "tsc --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"prepublishOnly": "bun run build"
 	},
 	"peerDependencies": {
@@ -29,10 +31,13 @@
 	},
 	"devDependencies": {
 		"@hyperserve/universal-video-uploader": "workspace:*",
+		"@testing-library/react": "16.3.2",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",
+		"jsdom": "28.1.0",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
-		"typescript": "5.9.3"
+		"typescript": "5.9.3",
+		"vitest": "4.0.18"
 	}
 }

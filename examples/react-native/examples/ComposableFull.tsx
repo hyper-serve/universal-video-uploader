@@ -1,9 +1,6 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import {
-	useUpload,
-	type ViewMode,
-} from "@hyperserve/universal-video-uploader";
+import { useUpload, type ViewMode } from "@hyperserve/universal-video-uploader";
 import {
 	FileItem,
 	FileList,
@@ -43,21 +40,21 @@ function ModeToggle({
 	);
 }
 
-export function ComposableFull() {
+export function ComposableBase() {
 	const { clearCompleted, files, setViewMode, viewMode } = useUpload();
 	const hasCompleted = files.some((f) => f.status === "ready");
 
 	return (
 		<View>
 			<Text style={styles.desc}>
-				Composable full demo: FilePicker + FileList + FileItem compound components.
+				Composable (Base) — native components with default props only.
 			</Text>
 			<View style={styles.controls}>
 				<FilePicker pickFiles={pickVideos} />
 				<ModeToggle mode={viewMode} setMode={setViewMode} />
 				{hasCompleted && (
 					<Pressable onPress={clearCompleted} style={styles.secondaryBtn}>
-						<Text style={styles.secondaryBtnText}>Clear Completed</Text>
+						<Text style={styles.secondaryBtnText}>Clear completed</Text>
 					</Pressable>
 				)}
 			</View>

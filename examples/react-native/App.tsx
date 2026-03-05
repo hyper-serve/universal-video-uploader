@@ -3,13 +3,19 @@ import { StatusBar } from "expo-status-bar";
 import { ScrollView, StyleSheet, Text, Pressable, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { UploadProvider } from "@hyperserve/universal-video-uploader";
-import { ComposableFull } from "./examples/ComposableFull";
+import { ComposableBase } from "./examples/ComposableFull";
+import { ComposableCustom } from "./examples/ComposableCustom";
 import { HeadlessFull } from "./examples/HeadlessFull";
 import { demoConfig } from "./examples/shared";
 
 const tabs = [
-	{ id: "headless", label: "Headless (Full)", component: HeadlessFull },
-	{ id: "composable", label: "Composable UI (Full)", component: ComposableFull },
+	{ id: "headless", label: "1. Headless", component: HeadlessFull },
+	{ id: "composable-base", label: "2. Composable (Base)", component: ComposableBase },
+	{
+		id: "composable-custom",
+		label: "3. Composable (Custom)",
+		component: ComposableCustom,
+	},
 ] as const;
 
 export default function App() {
@@ -22,10 +28,10 @@ export default function App() {
 			<SafeAreaView style={styles.container}>
 				<StatusBar style="dark" />
 				<ScrollView contentContainerStyle={styles.scroll}>
-					<Text style={styles.title}>Universal Video Uploader</Text>
-					<Text style={styles.subtitle}>React Native Examples</Text>
+					<Text style={styles.title}>Universal Video Uploader – Examples</Text>
+					<Text style={styles.subtitle}>React Native</Text>
 					<Text style={styles.subtitleSmall}>
-						Two full demos with validation, retry/error, list-grid, and playback.
+						Set your Hyperserve API key and base URL in Expo env, then explore each example.
 					</Text>
 
 					<View style={styles.tabRow}>

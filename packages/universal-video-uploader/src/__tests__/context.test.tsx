@@ -596,4 +596,144 @@ describe("UploadProvider + useUpload", () => {
 
 		expect(capturedSignal!.aborted).toBe(true);
 	});
+
+	it("exposes canAddMore and maxFiles from context", () => {
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig()),
+		});
+		expect(result.current.canAddMore).toBe(true);
+		expect(result.current.maxFiles).toBeUndefined();
+	});
+
+	it("respects maxFiles and sets canAddMore false when at cap", async () => {
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			playbackUrl: "https://cdn.example.com/done.mp4",
+			videoId: "v1",
+		});
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(
+				makeConfig({ adapter, maxFiles: 2 }),
+			),
+		});
+
+		expect(result.current.canAddMore).toBe(true);
+		expect(result.current.maxFiles).toBe(2);
+
+		act(() => {
+			result.current.addFiles([
+				makeFileRef("a.mp4"),
+				makeFileRef("b.mp4"),
+				makeFileRef("c.mp4"),
+			]);
+		});
+
+		expect(result.current.files).toHaveLength(2);
+		expect(result.current.canAddMore).toBe(false);
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(5000);
+		});
+
+		expect(result.current.files.every((f) => f.status === "ready")).toBe(true);
+		act(() => {
+			result.current.clearCompleted();
+		});
+		expect(result.current.files).toHaveLength(0);
+		expect(result.current.canAddMore).toBe(true);
+	});
+
+	it("calls onFileReady when file transitions to ready", async () => {
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			playbackUrl: "https://cdn.example.com/done.mp4",
+			videoId: "v1",
+		});
+		const onFileReady = vi.fn();
+		const config = makeConfig({ adapter, onFileReady });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].status).toBe("ready");
+		expect(onFileReady).toHaveBeenCalledTimes(1);
+		expect(onFileReady).toHaveBeenCalledWith(
+			expect.objectContaining({
+				id: result.current.files[0].id,
+				status: "ready",
+				playbackUrl: "https://cdn.example.com/done.mp4",
+				videoId: "v1",
+			}),
+		);
+	});
+
+	it("calls onUploadFailed when file transitions to failed", async () => {
+		const adapter = createMockAdapter(
+			undefined,
+			new Error("Upload failed"),
+		);
+		const onUploadFailed = vi.fn();
+		const config = makeConfig({ adapter, onUploadFailed });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].status).toBe("failed");
+		expect(onUploadFailed).toHaveBeenCalledTimes(1);
+		expect(onUploadFailed).toHaveBeenCalledWith(
+			expect.objectContaining({
+				id: result.current.files[0].id,
+				status: "failed",
+				error: "Upload failed",
+			}),
+		);
+	});
+
+	it("does not call onFileReady for files already ready before callback existed", async () => {
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			playbackUrl: "https://cdn.example.com/done.mp4",
+			videoId: "v1",
+		});
+		const onFileReady = vi.fn();
+		const config = makeConfig({ adapter, onFileReady });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(onFileReady).toHaveBeenCalledTimes(1);
+
+		onFileReady.mockClear();
+		act(() => {
+			result.current.clearCompleted();
+		});
+		expect(onFileReady).not.toHaveBeenCalled();
+	});
 });

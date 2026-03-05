@@ -13,7 +13,7 @@ import {
 
 const validate = composeValidators(
 	maxFileSize(500 * 1024 * 1024),
-	allowedTypes(["video/mp4", "video/quicktime", "video/webm"]),
+	allowedTypes(["video/*"]),
 	maxDuration(120),
 );
 

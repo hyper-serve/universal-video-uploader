@@ -3,10 +3,12 @@ import {
 	toFileRefs,
 	useUpload,
 } from "@hyperserve/universal-video-uploader";
+import { filterFilesByAccept } from "./acceptFilter.js";
 
 export type DropZoneProps = {
 	accept?: string;
 	multiple?: boolean;
+	disabled?: boolean;
 	style?: React.CSSProperties;
 	activeStyle?: React.CSSProperties;
 	className?: string;
@@ -19,19 +21,23 @@ export type DropZoneProps = {
 export function DropZone({
 	accept = "video/*",
 	multiple = true,
+	disabled = false,
 	style,
 	activeStyle,
 	className,
 	activeClassName,
 	children,
 }: DropZoneProps) {
-	const { addFiles } = useUpload();
+	const { addFiles, canAddMore } = useUpload();
 	const [isDragging, setIsDragging] = useState(false);
 	const inputRef = useRef<HTMLInputElement>(null);
 
+	const isDisabled = disabled || canAddMore === false;
+
 	const openPicker = useCallback(() => {
+		if (isDisabled) return;
 		inputRef.current?.click();
-	}, []);
+	}, [isDisabled]);
 
 	const handleFiles = useCallback(
 		(fileList: FileList | File[]) => {
@@ -43,10 +49,14 @@ export function DropZone({
 		[addFiles],
 	);
 
-	const handleDragOver = useCallback((e: React.DragEvent) => {
+	const handleDragOver = useCallback(
+		(e: React.DragEvent) => {
 		e.preventDefault();
+		if (isDisabled) return;
 		setIsDragging(true);
-	}, []);
+		},
+		[isDisabled],
+	);
 
 	const handleDragLeave = useCallback((e: React.DragEvent) => {
 		if (e.currentTarget.contains(e.relatedTarget as Node)) return;
@@ -57,9 +67,25 @@ export function DropZone({
 		(e: React.DragEvent) => {
 			e.preventDefault();
 			setIsDragging(false);
-			handleFiles(Array.from(e.dataTransfer.files));
+			if (isDisabled) return;
+			const raw = Array.from(e.dataTransfer.files);
+			const filtered = filterFilesByAccept(raw, accept);
+			if (filtered.length > 0) {
+				handleFiles(filtered);
+			}
 		},
-		[handleFiles],
+		[handleFiles, accept, isDisabled],
+	);
+
+	const handleKeyDown = useCallback(
+		(e: React.KeyboardEvent) => {
+			if (isDisabled) return;
+			if (e.key === "Enter" || e.key === " ") {
+				e.preventDefault();
+				openPicker();
+			}
+		},
+		[isDisabled, openPicker],
 	);
 
 	const handleInputChange = useCallback(
@@ -80,12 +106,14 @@ export function DropZone({
 		alignItems: "center",
 		border: "2px dashed #cbd5e1",
 		borderRadius: 12,
-		cursor: "pointer",
+		cursor: isDisabled ? "not-allowed" : "pointer",
 		display: "flex",
 		flexDirection: "column",
 		gap: "0.5rem",
 		justifyContent: "center",
 		minHeight: 160,
+		opacity: isDisabled ? 0.6 : 1,
+		pointerEvents: isDisabled ? "none" : undefined,
 		transition: "border-color 0.2s, background-color 0.2s",
 		...style,
 		...(isDragging
@@ -95,14 +123,16 @@ export function DropZone({
 
 	return (
 		<div
+			aria-disabled={isDisabled}
 			className={resolvedClassName}
 			onClick={openPicker}
 			onDragLeave={handleDragLeave}
 			onDragOver={handleDragOver}
 			onDrop={handleDrop}
+			onKeyDown={handleKeyDown}
 			role="button"
 			style={resolvedStyle}
-			tabIndex={0}
+			tabIndex={isDisabled ? -1 : 0}
 		>
 			<input
 				accept={accept}

@@ -45,4 +45,20 @@ describe("createHyperserveConfig", () => {
 			resolutions: "1080p",
 		});
 	});
+
+	it("passes through maxFiles, onFileReady, onUploadFailed", () => {
+		const onFileReady = vi.fn();
+		const onUploadFailed = vi.fn();
+		const config = createHyperserveConfig({
+			apiKey: "key",
+			maxFiles: 5,
+			onFileReady,
+			onUploadFailed,
+			uploadOptions: { isPublic: true, resolutions: "480p" },
+		});
+
+		expect(config.maxFiles).toBe(5);
+		expect(config.onFileReady).toBe(onFileReady);
+		expect(config.onUploadFailed).toBe(onUploadFailed);
+	});
 });
