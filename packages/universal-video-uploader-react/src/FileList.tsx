@@ -8,7 +8,16 @@ export type FileListProps = {
 	className?: string;
 	columns?: string;
 	emptyMessage?: React.ReactNode;
+	emptyClassName?: string;
+	emptyStyle?: React.CSSProperties;
+	renderEmpty?: () => React.ReactNode;
 	children: (file: FileState, index: number) => React.ReactNode;
+};
+
+const defaultEmptyStyle: React.CSSProperties = {
+	color: "#94a3b8",
+	padding: "2rem 0",
+	textAlign: "center",
 };
 
 export function FileList({
@@ -17,17 +26,28 @@ export function FileList({
 	className,
 	columns = "repeat(auto-fill, minmax(180px, 1fr))",
 	emptyMessage,
+	emptyClassName,
+	emptyStyle,
+	renderEmpty,
 	children,
 }: FileListProps) {
 	const { files, viewMode } = useUpload();
 	const resolvedMode = mode ?? viewMode;
 
-	if (files.length === 0 && emptyMessage) {
-		return (
-			<div style={{ color: "#94a3b8", padding: "2rem 0", textAlign: "center" }}>
-				{emptyMessage}
-			</div>
-		);
+	if (files.length === 0) {
+		if (renderEmpty) {
+			return <>{renderEmpty()}</>;
+		}
+		if (emptyMessage) {
+			return (
+				<div
+					className={emptyClassName}
+					style={{ ...defaultEmptyStyle, ...emptyStyle }}
+				>
+					{emptyMessage}
+				</div>
+			);
+		}
 	}
 
 	const listStyle: React.CSSProperties =

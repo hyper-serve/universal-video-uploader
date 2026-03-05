@@ -14,7 +14,7 @@ import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
 
 const validate = composeValidators(
 	maxFileSize(500 * 1024 * 1024),
-	allowedTypes(["video/mp4", "video/quicktime", "video/webm"]),
+	allowedTypes(["video/*"]),
 	maxDuration(120),
 );
 
@@ -161,11 +161,11 @@ function UploadUI() {
 				style={
 					viewMode === "grid"
 						? {
-								display: "grid",
-								gap: "1rem",
-								gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-								marginTop: "1rem",
-							}
+							display: "grid",
+							gap: "1rem",
+							gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+							marginTop: "1rem",
+						}
 						: { display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "1rem" }
 				}
 			>

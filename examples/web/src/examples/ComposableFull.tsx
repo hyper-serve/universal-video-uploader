@@ -21,7 +21,7 @@ import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
 
 const validate = composeValidators(
 	maxFileSize(500 * 1024 * 1024),
-	allowedTypes(["video/mp4", "video/quicktime", "video/webm"]),
+	allowedTypes(["video/*"]),
 	maxDuration(120),
 );
 

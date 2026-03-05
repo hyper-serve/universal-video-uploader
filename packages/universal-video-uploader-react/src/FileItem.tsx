@@ -1,6 +1,7 @@
 import React, { createContext, useContext } from "react";
 import type { FileState } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
+import { formatFileSize } from "./fileFormatters";
 
 type FileItemContextValue = {
 	file: FileState;
@@ -23,8 +24,8 @@ export type FileItemProps = {
 	style?: React.CSSProperties;
 	className?: string;
 	children?:
-		| React.ReactNode
-		| ((file: FileState) => React.ReactNode);
+	| React.ReactNode
+	| ((file: FileState) => React.ReactNode);
 };
 
 export function FileItem({ file, style, className, children }: FileItemProps) {
@@ -79,13 +80,12 @@ export type FileSizeProps = {
 
 function FileSize({ style, className }: FileSizeProps) {
 	const { file } = useFileItemContext();
-	const mb = file.ref.size / (1024 * 1024);
 	return (
 		<span
 			className={className}
 			style={{ color: "#94a3b8", fontSize: "0.8rem", ...style }}
 		>
-			{mb < 1 ? `${(file.ref.size / 1024).toFixed(0)} KB` : `${mb.toFixed(1)} MB`}
+			{formatFileSize(file.ref.size)}
 		</span>
 	);
 }
@@ -112,13 +112,20 @@ export type RemoveButtonProps = {
 	style?: React.CSSProperties;
 	className?: string;
 	children?: React.ReactNode;
+	ariaLabel?: string;
 };
 
-function RemoveButton({ style, className, children }: RemoveButtonProps) {
+function RemoveButton({
+	style,
+	className,
+	children,
+	ariaLabel,
+}: RemoveButtonProps) {
 	const { file } = useFileItemContext();
 	const { removeFile } = useUpload();
 	return (
 		<button
+			aria-label={ariaLabel}
 			className={className}
 			onClick={() => removeFile(file.id)}
 			style={{
@@ -141,14 +148,21 @@ export type RetryButtonProps = {
 	style?: React.CSSProperties;
 	className?: string;
 	children?: React.ReactNode;
+	ariaLabel?: string;
 };
 
-function RetryButton({ style, className, children }: RetryButtonProps) {
+function RetryButton({
+	style,
+	className,
+	children,
+	ariaLabel,
+}: RetryButtonProps) {
 	const { file } = useFileItemContext();
 	const { retryFile } = useUpload();
 	if (file.status !== "failed") return null;
 	return (
 		<button
+			aria-label={ariaLabel}
 			className={className}
 			onClick={() => retryFile(file.id)}
 			style={{
