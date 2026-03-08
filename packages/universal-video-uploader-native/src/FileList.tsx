@@ -60,10 +60,11 @@ const styles = StyleSheet.create({
 	},
 	empty: {
 		alignItems: "center",
-		paddingVertical: 32,
+		paddingVertical: 40,
 	},
 	emptyText: {
-		color: "#94a3b8",
+		color: "#6b7280",
+		fontSize: 14,
 		textAlign: "center",
 	},
 	gridItem: {

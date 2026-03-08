@@ -26,7 +26,7 @@ export function StatusBadge({
 	return (
 		<View style={[styles.badge, { backgroundColor: config.bg }, style]}>
 			<Text style={[styles.text, { color: config.text }, textStyle]}>
-				{config.label.toLowerCase()}
+				{config.label}
 			</Text>
 		</View>
 	);
@@ -34,12 +34,14 @@ export function StatusBadge({
 
 const styles = StyleSheet.create({
 	badge: {
-		borderRadius: 12,
+		borderRadius: 9999,
 		paddingHorizontal: 8,
-		paddingVertical: 2,
+		paddingVertical: 4,
 	},
 	text: {
-		fontSize: 12,
+		fontSize: 11,
 		fontWeight: "600",
+		letterSpacing: 0.3,
+		textTransform: "uppercase",
 	},
 });

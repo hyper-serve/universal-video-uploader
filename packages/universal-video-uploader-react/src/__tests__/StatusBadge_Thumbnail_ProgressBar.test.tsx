@@ -7,9 +7,9 @@ import { ProgressBar } from "../ProgressBar.js";
 import type { FileState } from "@hyperserve/universal-video-uploader";
 
 describe("StatusBadge", () => {
-	it("uses default config for status and lowercases label", () => {
+	it("uses default config for status and renders label", () => {
 		render(<StatusBadge status="uploading" />);
-		expect(screen.getByText("uploading")).toBeTruthy();
+		expect(screen.getByText("Uploading")).toBeTruthy();
 	});
 
 	it("allows overriding label and colors via statusConfig and getLabel", () => {
@@ -23,7 +23,7 @@ describe("StatusBadge", () => {
 			/>,
 		);
 
-		const badge = screen.getByText("done");
+		const badge = screen.getByText("Done");
 		expect(badge).toBeTruthy();
 		expect((badge as HTMLElement).style.backgroundColor).toBe("rgb(0, 0, 0)");
 	});

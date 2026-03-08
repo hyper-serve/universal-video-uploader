@@ -54,14 +54,16 @@ export function StatusBadge({
 				borderRadius: 9999,
 				color: config.text,
 				display: "inline-block",
-				fontSize: "0.75rem",
+				fontSize: "0.6875rem",
 				fontWeight: 600,
+				letterSpacing: "0.02em",
 				lineHeight: 1,
-				padding: "0.25rem 0.6rem",
+				padding: "0.2rem 0.5rem",
+				textTransform: "uppercase",
 				...style,
 			}}
 		>
-			{config.label.toLowerCase()}
+			{config.label}
 		</span>
 	);
 }

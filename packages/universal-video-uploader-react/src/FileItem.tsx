@@ -21,6 +21,7 @@ function useFileItemContext(): FileItemContextValue {
 
 export type FileItemProps = {
 	file: FileState;
+	layout?: "row" | "column";
 	style?: React.CSSProperties;
 	className?: string;
 	children?:
@@ -28,19 +29,21 @@ export type FileItemProps = {
 	| ((file: FileState) => React.ReactNode);
 };
 
-export function FileItem({ file, style, className, children }: FileItemProps) {
+export function FileItem({ file, layout = "column", style, className, children }: FileItemProps) {
+	const isRow = layout === "row";
 	return (
 		<FileItemContext.Provider value={{ file }}>
 			<div
 				className={className}
 				style={{
-					backgroundColor: "#f8fafc",
-					border: "1px solid #e2e8f0",
-					borderRadius: 8,
+					alignItems: isRow ? "center" : undefined,
+					backgroundColor: "#f9fafb",
+					border: "1px solid #e5e7eb",
+					borderRadius: 10,
 					display: "flex",
-					flexDirection: "column",
-					gap: "0.5rem",
-					padding: "1rem",
+					flexDirection: isRow ? "row" : "column",
+					gap: isRow ? 12 : "0.5rem",
+					padding: isRow ? "0.75rem 1rem" : "0.875rem 1rem",
 					...style,
 				}}
 			>
@@ -61,7 +64,8 @@ function FileName({ style, className }: FileNameProps) {
 		<span
 			className={className}
 			style={{
-				fontWeight: 500,
+				fontSize: "0.875rem",
+				fontWeight: 600,
 				overflow: "hidden",
 				textOverflow: "ellipsis",
 				whiteSpace: "nowrap",
@@ -83,7 +87,7 @@ function FileSize({ style, className }: FileSizeProps) {
 	return (
 		<span
 			className={className}
-			style={{ color: "#94a3b8", fontSize: "0.8rem", ...style }}
+			style={{ color: "#6b7280", fontSize: "0.8125rem", ...style }}
 		>
 			{formatFileSize(file.ref.size)}
 		</span>
@@ -101,7 +105,7 @@ function ErrorMessage({ style, className }: ErrorMessageProps) {
 	return (
 		<div
 			className={className}
-			style={{ color: "#ef4444", fontSize: "0.85rem", ...style }}
+			style={{ color: "#dc2626", fontSize: "0.8125rem", ...style }}
 		>
 			{file.error}
 		</div>
@@ -128,21 +132,23 @@ function RemoveButton({
 	}
 	return (
 		<button
-			aria-label={ariaLabel}
+			aria-label={ariaLabel ?? "Remove"}
 			className={className}
 			onClick={() => removeFile(file.id)}
 			style={{
 				background: "none",
 				border: "none",
-				color: "#ef4444",
+				color: "#6b7280",
 				cursor: "pointer",
-				fontSize: "0.8rem",
+				fontSize: "1.125rem",
+				lineHeight: 1,
 				padding: "0.25rem",
+				transition: "color 0.15s ease",
 				...style,
 			}}
 			type="button"
 		>
-			{children ?? "Remove"}
+			{children ?? "×"}
 		</button>
 	);
 }
@@ -171,10 +177,11 @@ function RetryButton({
 			style={{
 				background: "none",
 				border: "none",
-				color: "#3b82f6",
+				color: "#5589F1",
 				cursor: "pointer",
-				fontSize: "0.8rem",
-				padding: "0.25rem",
+				fontSize: "0.8125rem",
+				padding: "0.25rem 0",
+				transition: "opacity 0.15s ease",
 				...style,
 			}}
 			type="button"

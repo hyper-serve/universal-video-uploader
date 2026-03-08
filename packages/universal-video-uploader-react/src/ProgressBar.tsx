@@ -29,7 +29,7 @@ export function ProgressBar({
 			className={trackClassName}
 			role="progressbar"
 			style={{
-				backgroundColor: "#e2e8f0",
+				backgroundColor: "#e5e7eb",
 				borderRadius: 4,
 				height: 6,
 				overflow: "hidden",
@@ -40,10 +40,10 @@ export function ProgressBar({
 			<div
 				className={fillClassName}
 				style={{
-					backgroundColor: "#3b82f6",
+					backgroundColor: "#5589F1",
 					borderRadius: 4,
 					height: "100%",
-					transition: "width 0.3s ease",
+					transition: "width 0.25s ease-out",
 					width: `${progress}%`,
 					...fillStyle,
 				}}

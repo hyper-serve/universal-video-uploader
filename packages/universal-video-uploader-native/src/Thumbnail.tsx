@@ -52,20 +52,20 @@ export function Thumbnail({
 
 const styles = StyleSheet.create({
 	image: {
-		borderRadius: 6,
+		borderRadius: 8,
 		height: 100,
 		width: "100%",
 	},
 	placeholder: {
 		alignItems: "center",
-		backgroundColor: "#f1f5f9",
-		borderRadius: 6,
+		backgroundColor: "#f3f4f6",
+		borderRadius: 8,
 		height: 100,
 		justifyContent: "center",
 	},
 	placeholderIcon: {
-		backgroundColor: "#cbd5e1",
-		borderRadius: 4,
+		backgroundColor: "#d1d5db",
+		borderRadius: 6,
 		height: 32,
 		width: 32,
 	},

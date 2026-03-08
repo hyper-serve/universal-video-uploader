@@ -4,10 +4,10 @@ export const statusConfig: Record<
 	FileStatus,
 	{ bg: string; label: string; text: string }
 > = {
-	failed: { bg: "#fef2f2", label: "Failed", text: "#ef4444" },
-	processing: { bg: "#fffbeb", label: "Processing", text: "#f59e0b" },
-	ready: { bg: "#f0fdf4", label: "Ready", text: "#22c55e" },
-	selected: { bg: "#f8fafc", label: "Selected", text: "#94a3b8" },
-	uploading: { bg: "#eff6ff", label: "Uploading", text: "#3b82f6" },
-	validating: { bg: "#f5f3ff", label: "Validating", text: "#8b5cf6" },
+	failed: { bg: "#fef2f2", label: "Failed", text: "#dc2626" },
+	processing: { bg: "#fffbeb", label: "Processing", text: "#d97706" },
+	ready: { bg: "#f0fdf4", label: "Ready", text: "#16a34a" },
+	selected: { bg: "#f3f4f6", label: "Selected", text: "#6b7280" },
+	uploading: { bg: "#eff6ff", label: "Uploading", text: "#5589F1" },
+	validating: { bg: "#f5f3ff", label: "Validating", text: "#7c3aed" },
 };

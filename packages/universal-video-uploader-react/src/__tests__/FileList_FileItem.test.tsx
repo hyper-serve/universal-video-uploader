@@ -142,7 +142,7 @@ describe("FileList and FileItem", () => {
 		fireEvent.click(screen.getByText("Retry"));
 		expect(retryFileMock).toHaveBeenCalledWith("1");
 
-		fireEvent.click(screen.getByText("Remove"));
+		fireEvent.click(screen.getByLabelText("Remove"));
 		expect(removeFileMock).toHaveBeenCalledWith("1");
 	});
 
@@ -168,7 +168,7 @@ it("hides RetryButton when status is not failed and hides RemoveButton for ready
 		);
 
 		expect(screen.queryByText("Retry")).toBeNull();
-		expect(screen.queryByText("Remove")).toBeNull();
+		expect(screen.queryByLabelText("Remove")).toBeNull();
 	});
 });
 

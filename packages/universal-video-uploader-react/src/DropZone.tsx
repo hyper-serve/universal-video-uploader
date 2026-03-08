@@ -5,6 +5,14 @@ import {
 } from "@hyperserve/universal-video-uploader";
 import { filterFilesByAccept } from "./acceptFilter.js";
 
+const UPLOAD_ICON = (
+	<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: "block" }}>
+		<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+		<polyline points="17 8 12 3 7 8" />
+		<line x1="12" y1="3" x2="12" y2="15" />
+	</svg>
+);
+
 export type DropZoneProps = {
 	accept?: string;
 	multiple?: boolean;
@@ -13,6 +21,7 @@ export type DropZoneProps = {
 	activeStyle?: React.CSSProperties;
 	className?: string;
 	activeClassName?: string;
+	supportingText?: React.ReactNode;
 	children?:
 		| React.ReactNode
 		| ((state: { isDragging: boolean; openPicker: () => void }) => React.ReactNode);
@@ -26,6 +35,7 @@ export function DropZone({
 	activeStyle,
 	className,
 	activeClassName,
+	supportingText,
 	children,
 }: DropZoneProps) {
 	const { addFiles, canAddMore } = useUpload();
@@ -104,20 +114,22 @@ export function DropZone({
 
 	const resolvedStyle: React.CSSProperties = {
 		alignItems: "center",
-		border: "2px dashed #cbd5e1",
+		backgroundColor: isDragging ? "#f0f4ff" : "#fafafa",
+		border: "1.5px dashed #d1d5db",
 		borderRadius: 12,
 		cursor: isDisabled ? "not-allowed" : "pointer",
 		display: "flex",
 		flexDirection: "column",
-		gap: "0.5rem",
+		gap: "0.375rem",
 		justifyContent: "center",
 		minHeight: 160,
 		opacity: isDisabled ? 0.6 : 1,
+		padding: "1.5rem",
 		pointerEvents: isDisabled ? "none" : undefined,
-		transition: "border-color 0.2s, background-color 0.2s",
+		transition: "border-color 0.2s ease, background-color 0.2s ease",
 		...style,
 		...(isDragging
-			? { backgroundColor: "#eff6ff", borderColor: "#3b82f6", ...activeStyle }
+			? { backgroundColor: "#f0f4ff", borderColor: "#5589F1", ...activeStyle }
 			: {}),
 	};
 
@@ -146,12 +158,18 @@ export function DropZone({
 				? children({ isDragging, openPicker })
 				: children ?? (
 						<>
-							<div style={{ fontSize: "2rem" }}>&#x1F3AC;</div>
-							<div style={{ color: "#64748b", fontSize: "0.9rem" }}>
-								{isDragging
-									? "Drop your videos here"
-									: "Drag & drop video files, or click to browse"}
+							<div style={{ color: "#5589F1", lineHeight: 1 }}>{UPLOAD_ICON}</div>
+							<div style={{ color: "#374151", fontSize: "0.9375rem", fontWeight: 600 }}>
+								{isDragging ? "Drop your videos here" : "Drop videos here or "}
+								{!isDragging && (
+									<span style={{ color: "#5589F1", fontWeight: 600 }}>browse</span>
+								)}
 							</div>
+							{supportingText != null && (
+								<div style={{ color: "#9ca3af", fontSize: "0.8125rem" }}>
+									{supportingText}
+								</div>
+							)}
 						</>
 					)}
 		</div>

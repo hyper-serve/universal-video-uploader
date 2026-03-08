@@ -44,14 +44,14 @@ export function FilePicker({
 const styles = StyleSheet.create({
 	button: {
 		alignItems: "center",
-		backgroundColor: "#3b82f6",
-		borderRadius: 8,
-		paddingHorizontal: 16,
+		backgroundColor: "#5589F1",
+		borderRadius: 10,
+		paddingHorizontal: 18,
 		paddingVertical: 12,
 	},
 	text: {
 		color: "#fff",
-		fontSize: 16,
+		fontSize: 15,
 		fontWeight: "600",
 	},
 });

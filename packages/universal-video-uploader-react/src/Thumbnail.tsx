@@ -46,6 +46,7 @@ export function Thumbnail({
 				src={file.playbackUrl}
 				style={{
 					borderRadius: 8,
+					boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
 					maxHeight: 300,
 					width: "100%",
 					...style,
@@ -63,7 +64,7 @@ export function Thumbnail({
 				muted
 				src={file.thumbnailUri}
 				style={{
-					borderRadius: 6,
+					borderRadius: 8,
 					height: 100,
 					objectFit: "cover",
 					width: "100%",
@@ -78,12 +79,13 @@ export function Thumbnail({
 			className={placeholderClassName}
 			style={{
 				alignItems: "center",
-				backgroundColor: "#f1f5f9",
-				borderRadius: 6,
+				backgroundColor: "#f3f4f6",
+				borderRadius: 8,
 				display: "flex",
-				fontSize: "2rem",
+				fontSize: "1.5rem",
 				height: 100,
 				justifyContent: "center",
+				minWidth: 80,
 				...placeholderStyle,
 			}}
 		>

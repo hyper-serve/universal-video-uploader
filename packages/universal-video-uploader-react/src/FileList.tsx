@@ -15,8 +15,9 @@ export type FileListProps = {
 };
 
 const defaultEmptyStyle: React.CSSProperties = {
-	color: "#94a3b8",
-	padding: "2rem 0",
+	color: "#6b7280",
+	fontSize: "0.875rem",
+	padding: "2.5rem 1rem",
 	textAlign: "center",
 };
 
@@ -54,7 +55,7 @@ export function FileList({
 		resolvedMode === "grid"
 			? {
 					display: "grid",
-					gap: "1rem",
+					gap: "0.875rem",
 					gridTemplateColumns: columns,
 					...style,
 				}

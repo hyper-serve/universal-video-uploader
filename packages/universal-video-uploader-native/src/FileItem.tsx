@@ -22,16 +22,18 @@ function useFileItemContext(): FileItemContextValue {
 
 export type FileItemProps = {
 	file: FileState;
+	layout?: "row" | "column";
 	style?: StyleProp<ViewStyle>;
 	children?:
 		| React.ReactNode
 		| ((file: FileState) => React.ReactNode);
 };
 
-export function FileItem({ file, style, children }: FileItemProps) {
+export function FileItem({ file, layout = "column", style, children }: FileItemProps) {
+	const isRow = layout === "row";
 	return (
 		<FileItemContext.Provider value={{ file }}>
-			<View style={[styles.container, style]}>
+			<View style={[styles.container, isRow && styles.containerRow, style]}>
 				{typeof children === "function" ? children(file) : children}
 			</View>
 		</FileItemContext.Provider>
@@ -86,9 +88,9 @@ function RemoveButton({ style, textStyle, children }: RemoveButtonProps) {
 	const { file } = useFileItemContext();
 	const { removeFile } = useUpload();
 	return (
-		<Pressable onPress={() => removeFile(file.id)} style={style}>
+		<Pressable onPress={() => removeFile(file.id)} style={style} accessibilityLabel="Remove">
 			{children ?? (
-				<Text style={[styles.removeText, textStyle]}>Remove</Text>
+				<Text style={[styles.removeText, textStyle]}>×</Text>
 			)}
 		</Pressable>
 	);
@@ -121,31 +123,39 @@ FileItem.RetryButton = RetryButton;
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#f8fafc",
-		borderColor: "#e2e8f0",
+		backgroundColor: "#f9fafb",
+		borderColor: "#e5e7eb",
 		borderRadius: 10,
 		borderWidth: 1,
 		gap: 6,
 		padding: 14,
 	},
+	containerRow: {
+		alignItems: "center",
+		flexDirection: "row",
+		gap: 12,
+		paddingHorizontal: 16,
+		paddingVertical: 12,
+	},
 	error: {
-		color: "#ef4444",
+		color: "#dc2626",
 		fontSize: 13,
 	},
 	fileName: {
 		flex: 1,
-		fontWeight: "500",
+		fontSize: 14,
+		fontWeight: "600",
 	},
 	fileSize: {
-		color: "#94a3b8",
+		color: "#6b7280",
 		fontSize: 13,
 	},
 	removeText: {
-		color: "#ef4444",
-		fontSize: 13,
+		color: "#6b7280",
+		fontSize: 18,
 	},
 	retryText: {
-		color: "#3b82f6",
+		color: "#5589F1",
 		fontSize: 13,
 	},
 });
