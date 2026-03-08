@@ -14,6 +14,13 @@ export type {
 export { FileList } from "./FileList.js";
 export type { FileListProps } from "./FileList.js";
 
+export { FileListToolbar } from "./FileListToolbar.js";
+export type {
+	FileCountProps,
+	FileListToolbarProps,
+	ViewToggleProps,
+} from "./FileListToolbar.js";
+
 export { ProgressBar } from "./ProgressBar.js";
 export type { ProgressBarProps } from "./ProgressBar.js";
 

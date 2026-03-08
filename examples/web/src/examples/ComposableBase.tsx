@@ -7,12 +7,12 @@ import {
 	maxDuration,
 	maxFileSize,
 	useUpload,
-	type ViewMode,
 } from "@hyperserve/universal-video-uploader";
 import {
 	DropZone,
 	FileItem,
 	FileList,
+	FileListToolbar,
 	ProgressBar,
 	StatusBadge,
 	Thumbnail,
@@ -35,64 +35,26 @@ const config = createHyperserveConfig({
 	validate,
 });
 
-function ListIcon() {
-	return (
-		<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-			<line x1="8" y1="6" x2="21" y2="6" />
-			<line x1="8" y1="12" x2="21" y2="12" />
-			<line x1="8" y1="18" x2="21" y2="18" />
-			<line x1="3" y1="6" x2="3.01" y2="6" />
-			<line x1="3" y1="12" x2="3.01" y2="12" />
-			<line x1="3" y1="18" x2="3.01" y2="18" />
-		</svg>
-	);
-}
-
-function GridIcon() {
-	return (
-		<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-			<rect x="3" y="3" width="7" height="7" rx="1" />
-			<rect x="14" y="3" width="7" height="7" rx="1" />
-			<rect x="3" y="14" width="7" height="7" rx="1" />
-			<rect x="14" y="14" width="7" height="7" rx="1" />
-		</svg>
-	);
-}
-
 function UploadUI() {
-	const { clearCompleted, files, setViewMode, viewMode } = useUpload();
+	const { clearCompleted, files, viewMode } = useUpload();
 	const hasCompleted = files.some((f) => f.status === "ready");
 
 	return (
 		<div style={wrap}>
 			<DropZone supportingText="MP4, WebM, MOV, AVI, MKV — up to 500 MB each" />
 
-			<div style={toolbar}>
-				<span style={fileCount}>{files.length} file{files.length !== 1 ? "s" : ""} added</span>
-				<div style={viewToggles}>
-					<button
-						aria-label="List view"
-						onClick={() => setViewMode("list" as ViewMode)}
-						style={{ ...viewToggleBtn, ...(viewMode === "list" ? viewToggleActive : {}) }}
-						type="button"
-					>
-						<ListIcon />
-					</button>
-					<button
-						aria-label="Grid view"
-						onClick={() => setViewMode("grid" as ViewMode)}
-						style={{ ...viewToggleBtn, ...(viewMode === "grid" ? viewToggleActive : {}) }}
-						type="button"
-					>
-						<GridIcon />
-					</button>
-				</div>
-				{hasCompleted && (
-					<button onClick={clearCompleted} style={clearBtn} type="button">
-						Clear completed
-					</button>
-				)}
-			</div>
+			<FileListToolbar
+				right={
+					<div style={toolbarRight}>
+						<FileListToolbar.ViewToggle />
+						{hasCompleted && (
+							<button onClick={clearCompleted} style={clearBtn} type="button">
+								Clear completed
+							</button>
+						)}
+					</div>
+				}
+			/>
 
 			<FileList emptyMessage="No files selected yet.">
 				{(file) => (
@@ -175,38 +137,10 @@ const wrap: React.CSSProperties = {
 	gap: "1rem",
 };
 
-const toolbar: React.CSSProperties = {
+const toolbarRight: React.CSSProperties = {
 	alignItems: "center",
 	display: "flex",
 	gap: "0.75rem",
-};
-
-const fileCount: React.CSSProperties = {
-	color: "#374151",
-	fontSize: "0.875rem",
-};
-
-const viewToggles: React.CSSProperties = {
-	display: "flex",
-	border: "1px solid #e5e7eb",
-	borderRadius: 8,
-	overflow: "hidden",
-};
-
-const viewToggleBtn: React.CSSProperties = {
-	background: "#fff",
-	border: "none",
-	color: "#9ca3af",
-	cursor: "pointer",
-	padding: "0.5rem 0.65rem",
-	display: "flex",
-	alignItems: "center",
-	justifyContent: "center",
-};
-
-const viewToggleActive: React.CSSProperties = {
-	background: "#f3f4f6",
-	color: "#374151",
 };
 
 const clearBtn: React.CSSProperties = {
@@ -215,7 +149,6 @@ const clearBtn: React.CSSProperties = {
 	color: "#5589F1",
 	cursor: "pointer",
 	fontSize: "0.875rem",
-	marginLeft: "auto",
 	padding: "0.25rem 0",
 };
 
