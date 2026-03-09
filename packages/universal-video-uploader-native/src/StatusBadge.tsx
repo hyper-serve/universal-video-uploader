@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import type { FileStatus } from "@hyperserve/universal-video-uploader";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
+import { radius } from "./theme.js";
 import { statusConfig } from "./utils.js";
 
 export type StatusBadgeProps = {
@@ -34,7 +35,7 @@ export function StatusBadge({
 
 const styles = StyleSheet.create({
 	badge: {
-		borderRadius: 9999,
+		borderRadius: radius.pill,
 		paddingHorizontal: 8,
 		paddingVertical: 4,
 	},

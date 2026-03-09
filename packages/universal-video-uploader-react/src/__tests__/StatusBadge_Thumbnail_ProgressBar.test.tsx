@@ -58,15 +58,26 @@ describe("Thumbnail", () => {
 	};
 
 	it("renders placeholder when no thumbnail or playbackUrl", () => {
-		render(<Thumbnail file={baseFile} />);
-		expect(screen.getByText("🎬")).toBeTruthy();
+		const { container } = render(<Thumbnail file={baseFile} />);
+		const placeholder = container.querySelector('svg');
+		expect(placeholder).toBeTruthy();
 	});
 
-	it("renders thumbnail video when thumbnailUri is present", () => {
+	it("renders custom placeholder when placeholder prop is provided", () => {
+		render(
+			<Thumbnail file={baseFile} placeholder={<span data-testid="custom-placeholder">No preview</span>} />,
+		);
+		expect(screen.getByTestId("custom-placeholder").textContent).toBe("No preview");
+		const { container } = render(<Thumbnail file={baseFile} placeholder={<span>Custom</span>} />);
+		expect(container.querySelector("svg")).toBeNull();
+	});
+
+	it("renders thumbnail image when thumbnailUri is present", () => {
 		const file = { ...baseFile, thumbnailUri: "blob:thumb" };
 		const { container } = render(<Thumbnail file={file} />);
-		const video = container.querySelector("video");
-		expect(video).not.toBeNull();
+		const img = container.querySelector("img");
+		expect(img).not.toBeNull();
+		expect(img?.getAttribute("src")).toBe("blob:thumb");
 	});
 
 	it("renders playback video when playback is true and file is ready", () => {

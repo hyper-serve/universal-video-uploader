@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useUpload } from "@hyperserve/universal-video-uploader";
 import type { FileRef } from "@hyperserve/universal-video-uploader";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
+import { colors, radius } from "./theme.js";
 
 export type FilePickerProps = {
 	pickFiles: () => Promise<FileRef[]>;
@@ -44,13 +45,13 @@ export function FilePicker({
 const styles = StyleSheet.create({
 	button: {
 		alignItems: "center",
-		backgroundColor: "#5589F1",
-		borderRadius: 10,
+		backgroundColor: colors.accent,
+		borderRadius: radius.lg,
 		paddingHorizontal: 18,
 		paddingVertical: 12,
 	},
 	text: {
-		color: "#fff",
+		color: colors.white,
 		fontSize: 15,
 		fontWeight: "600",
 	},

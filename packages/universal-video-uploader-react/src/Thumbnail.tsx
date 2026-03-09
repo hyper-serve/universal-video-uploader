@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { FileState } from "@hyperserve/universal-video-uploader";
+import { ThumbnailPlaceholderIcon } from "./icons.js";
+import { colors, radius, thumbnailShadow } from "./theme.js";
 
 export type ThumbnailProps = {
 	file: FileState;
@@ -8,6 +10,7 @@ export type ThumbnailProps = {
 	className?: string;
 	placeholderStyle?: React.CSSProperties;
 	placeholderClassName?: string;
+	placeholder?: React.ReactNode;
 	children?: (info: {
 		thumbnailUri: string | null;
 		playbackUrl: string | null;
@@ -22,9 +25,15 @@ export function Thumbnail({
 	className,
 	placeholderStyle,
 	placeholderClassName,
+	placeholder,
 	children,
 }: ThumbnailProps) {
 	const isReady = file.status === "ready";
+	const [thumbnailLoadFailed, setThumbnailLoadFailed] = useState(false);
+
+	useEffect(() => {
+		setThumbnailLoadFailed(false);
+	}, [file.thumbnailUri, file.id]);
 
 	if (children) {
 		return (
@@ -45,8 +54,8 @@ export function Thumbnail({
 				controls
 				src={file.playbackUrl}
 				style={{
-					borderRadius: 8,
-					boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+					borderRadius: radius.md,
+					boxShadow: thumbnailShadow,
 					maxHeight: 300,
 					width: "100%",
 					...style,
@@ -57,14 +66,15 @@ export function Thumbnail({
 		);
 	}
 
-	if (file.thumbnailUri) {
+	if (file.thumbnailUri && !thumbnailLoadFailed) {
 		return (
-			<video
+			<img
+				alt={file.ref.name}
 				className={className}
-				muted
+				onError={() => setThumbnailLoadFailed(true)}
 				src={file.thumbnailUri}
 				style={{
-					borderRadius: 8,
+					borderRadius: radius.md,
 					height: 100,
 					objectFit: "cover",
 					width: "100%",
@@ -79,17 +89,18 @@ export function Thumbnail({
 			className={placeholderClassName}
 			style={{
 				alignItems: "center",
-				backgroundColor: "#f3f4f6",
-				borderRadius: 8,
+				backgroundColor: colors.bgPlaceholder,
+				border: `1px solid ${colors.borderPlaceholder}`,
+				borderRadius: radius.md,
 				display: "flex",
-				fontSize: "1.5rem",
 				height: 100,
 				justifyContent: "center",
 				minWidth: 80,
 				...placeholderStyle,
+				...style,
 			}}
 		>
-			&#x1F3AC;
+			{placeholder !== undefined ? placeholder : <ThumbnailPlaceholderIcon />}
 		</div>
 	);
 }

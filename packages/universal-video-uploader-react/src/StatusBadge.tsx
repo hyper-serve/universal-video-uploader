@@ -1,5 +1,6 @@
 import React from "react";
 import type { FileStatus } from "@hyperserve/universal-video-uploader";
+import { radius } from "./theme.js";
 import { statusConfig } from "./utils.js";
 
 export type StatusConfigEntry = {
@@ -51,7 +52,7 @@ export function StatusBadge({
 			className={className}
 			style={{
 				backgroundColor: config.bg,
-				borderRadius: 9999,
+				borderRadius: radius.pill,
 				color: config.text,
 				display: "inline-block",
 				fontSize: "0.6875rem",

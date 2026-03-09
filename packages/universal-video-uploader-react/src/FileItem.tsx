@@ -2,6 +2,7 @@ import React, { createContext, useContext } from "react";
 import type { FileState } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
 import { formatFileSize } from "./fileFormatters.js";
+import { colors, radius } from "./theme.js";
 
 type FileItemContextValue = {
 	file: FileState;
@@ -37,9 +38,9 @@ export function FileItem({ file, layout = "column", style, className, children }
 				className={className}
 				style={{
 					alignItems: isRow ? "center" : undefined,
-					backgroundColor: "#f9fafb",
-					border: "1px solid #e5e7eb",
-					borderRadius: 10,
+					backgroundColor: colors.bgCard,
+					border: `1px solid ${colors.border}`,
+					borderRadius: radius.lg,
 					display: "flex",
 					flexDirection: isRow ? "row" : "column",
 					gap: isRow ? 12 : "0.5rem",
@@ -87,7 +88,7 @@ function FileSize({ style, className }: FileSizeProps) {
 	return (
 		<span
 			className={className}
-			style={{ color: "#6b7280", fontSize: "0.8125rem", ...style }}
+			style={{ color: colors.textSecondary, fontSize: "0.8125rem", ...style }}
 		>
 			{formatFileSize(file.ref.size)}
 		</span>
@@ -105,7 +106,7 @@ function ErrorMessage({ style, className }: ErrorMessageProps) {
 	return (
 		<div
 			className={className}
-			style={{ color: "#dc2626", fontSize: "0.8125rem", ...style }}
+			style={{ color: colors.error, fontSize: "0.8125rem", ...style }}
 		>
 			{file.error}
 		</div>
@@ -138,7 +139,7 @@ function RemoveButton({
 			style={{
 				background: "none",
 				border: "none",
-				color: "#6b7280",
+				color: colors.textSecondary,
 				cursor: "pointer",
 				fontSize: "1.125rem",
 				lineHeight: 1,
@@ -177,7 +178,7 @@ function RetryButton({
 			style={{
 				background: "none",
 				border: "none",
-				color: "#5589F1",
+				color: colors.accent,
 				cursor: "pointer",
 				fontSize: "0.8125rem",
 				padding: "0.25rem 0",

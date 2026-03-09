@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import type { FileState, ViewMode } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
 import type { StyleProp, ViewStyle } from "react-native";
+import { colors } from "./theme.js";
 
 export type FileListProps = {
 	mode?: ViewMode;
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 40,
 	},
 	emptyText: {
-		color: "#6b7280",
+		color: colors.textSecondary,
 		fontSize: 14,
 		textAlign: "center",
 	},

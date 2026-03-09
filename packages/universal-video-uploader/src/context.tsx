@@ -275,15 +275,17 @@ export function UploadProvider<TOptions>({
 		dispatch({ files: newFiles, type: "ADD_FILES" });
 
 		for (const file of newFiles) {
-			createThumbnail(file.ref).then((uri) => {
-				if (uri) {
-					dispatch({
-						id: file.id,
-						type: "UPDATE_FILE",
-						updates: { thumbnailUri: uri },
-					});
-				}
-			});
+			createThumbnail(file.ref)
+				.then((uri) => {
+					if (uri) {
+						dispatch({
+							id: file.id,
+							type: "UPDATE_FILE",
+							updates: { thumbnailUri: uri },
+						});
+					}
+				})
+				.catch(() => {});
 		}
 	}, []);
 

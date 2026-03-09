@@ -2,6 +2,7 @@ import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useUpload, type ViewMode } from "@hyperserve/universal-video-uploader";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
+import { colors, radius } from "./theme.js";
 
 export type FileListToolbarProps = {
 	left?: React.ReactNode | null;
@@ -86,16 +87,16 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 	},
-	fileCount: { color: "#374151", fontSize: 14 },
+	fileCount: { color: colors.textPrimary, fontSize: 14 },
 	toggleGroup: {
-		borderColor: "#e5e7eb",
-		borderRadius: 8,
+		borderColor: colors.border,
+		borderRadius: radius.md,
 		borderWidth: 1,
 		flexDirection: "row",
 		overflow: "hidden",
 	},
 	toggleButton: { paddingHorizontal: 10, paddingVertical: 8 },
-	toggleActive: { backgroundColor: "#f3f4f6" },
-	toggleText: { color: "#9ca3af", fontSize: 13, fontWeight: "500" },
-	toggleTextActive: { color: "#374151" },
+	toggleActive: { backgroundColor: colors.bgSubtle },
+	toggleText: { color: colors.textMuted, fontSize: 13, fontWeight: "500" },
+	toggleTextActive: { color: colors.textPrimary },
 });

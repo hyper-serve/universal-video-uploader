@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import type { FileState } from "@hyperserve/universal-video-uploader";
 import type { StyleProp, ViewStyle, ImageStyle } from "react-native";
+import { colors, radius } from "./theme.js";
 
 export type ThumbnailProps = {
 	file: FileState;
 	style?: StyleProp<ImageStyle>;
 	placeholderStyle?: StyleProp<ViewStyle>;
+	placeholder?: React.ReactNode;
 	children?: (info: {
 		thumbnailUri: string | null;
 		playbackUrl: string | null;
@@ -18,9 +20,15 @@ export function Thumbnail({
 	file,
 	style,
 	placeholderStyle,
+	placeholder,
 	children,
 }: ThumbnailProps) {
 	const isReady = file.status === "ready";
+	const [thumbnailLoadFailed, setThumbnailLoadFailed] = useState(false);
+
+	useEffect(() => {
+		setThumbnailLoadFailed(false);
+	}, [file.thumbnailUri, file.id]);
 
 	if (children) {
 		return (
@@ -34,9 +42,10 @@ export function Thumbnail({
 		);
 	}
 
-	if (file.thumbnailUri) {
+	if (file.thumbnailUri && !thumbnailLoadFailed) {
 		return (
 			<Image
+				onError={() => setThumbnailLoadFailed(true)}
 				source={{ uri: file.thumbnailUri }}
 				style={[styles.image, style]}
 			/>
@@ -44,29 +53,44 @@ export function Thumbnail({
 	}
 
 	return (
-		<View style={[styles.placeholder, placeholderStyle]}>
-			<View style={styles.placeholderIcon} />
+		<View style={[styles.placeholder, placeholderStyle, style as StyleProp<ViewStyle>]}>
+			{placeholder !== undefined ? (
+				placeholder
+			) : (
+				<View style={styles.placeholderIcon}>
+					<View style={styles.filmSegment} />
+					<View style={styles.filmSegment} />
+				</View>
+			)}
 		</View>
 	);
 }
 
 const styles = StyleSheet.create({
 	image: {
-		borderRadius: 8,
+		borderRadius: radius.md,
 		height: 100,
 		width: "100%",
 	},
 	placeholder: {
 		alignItems: "center",
-		backgroundColor: "#f3f4f6",
-		borderRadius: 8,
+		backgroundColor: colors.bgPlaceholder,
+		borderRadius: radius.md,
+		borderWidth: 1,
+		borderColor: colors.borderPlaceholder,
 		height: 100,
 		justifyContent: "center",
 	},
 	placeholderIcon: {
-		backgroundColor: "#d1d5db",
-		borderRadius: 6,
+		alignItems: "center",
+		flexDirection: "row",
+		gap: 6,
+		justifyContent: "center",
+	},
+	filmSegment: {
+		backgroundColor: colors.iconMuted,
+		borderRadius: 2,
 		height: 32,
-		width: 32,
+		width: 10,
 	},
 });

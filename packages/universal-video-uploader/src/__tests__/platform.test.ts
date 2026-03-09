@@ -11,7 +11,52 @@ import {
 import type { FileRef } from "../types.js";
 
 describe("thumbnail (web)", () => {
+	let listeners: Record<string, (() => void)[]>;
+	let mockVideo: {
+		muted: boolean;
+		preload: string;
+		src: string;
+		currentTime: number;
+		videoWidth: number;
+		videoHeight: number;
+		addEventListener: (event: string, cb: () => void) => void;
+	};
+	let mockCanvas: {
+		width: number;
+		height: number;
+		getContext: ReturnType<typeof vi.fn>;
+		toBlob: ReturnType<typeof vi.fn>;
+	};
+	let mockCtx: { drawImage: ReturnType<typeof vi.fn> };
+
 	beforeEach(() => {
+		listeners = {};
+		mockCtx = { drawImage: vi.fn() };
+		mockCanvas = {
+			width: 0,
+			height: 0,
+			getContext: vi.fn().mockReturnValue(mockCtx),
+			toBlob: vi.fn().mockImplementation((cb: (blob: Blob | null) => void) => {
+				cb(new Blob(["img"], { type: "image/jpeg" }));
+			}),
+		};
+		mockVideo = {
+			muted: false,
+			preload: "",
+			src: "",
+			currentTime: 0,
+			videoWidth: 320,
+			videoHeight: 240,
+			addEventListener: (event: string, cb: () => void) => {
+				(listeners[event] ??= []).push(cb);
+			},
+		};
+
+		vi.spyOn(document, "createElement").mockImplementation((tag: string) => {
+			if (tag === "video") return mockVideo as unknown as HTMLElement;
+			if (tag === "canvas") return mockCanvas as unknown as HTMLElement;
+			return document.createElement(tag);
+		});
 		vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:mock-thumb");
 		vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
 	});
@@ -20,7 +65,7 @@ describe("thumbnail (web)", () => {
 		vi.restoreAllMocks();
 	});
 
-	it("createThumbnail returns object URL when file.raw exists", async () => {
+	it("extracts a frame and returns an image blob URL", async () => {
 		const blob = new Blob(["x"], { type: "video/mp4" });
 		const ref: FileRef = {
 			name: "test.mp4",
@@ -30,13 +75,21 @@ describe("thumbnail (web)", () => {
 			uri: "blob:test",
 		};
 
-		const result = await createThumbnail(ref);
+		const promise = createThumbnail(ref);
+
+		for (const cb of listeners.loadeddata ?? []) cb();
+		expect(mockVideo.currentTime).toBe(1);
+
+		for (const cb of listeners.seeked ?? []) cb();
+
+		const result = await promise;
 
 		expect(result).toBe("blob:mock-thumb");
-		expect(URL.createObjectURL).toHaveBeenCalledWith(ref.raw);
+		expect(mockCtx.drawImage).toHaveBeenCalled();
+		expect(URL.revokeObjectURL).toHaveBeenCalled();
 	});
 
-	it("createThumbnail returns null when file.raw is missing", async () => {
+	it("returns null when file.raw is missing", async () => {
 		const ref: FileRef = {
 			name: "test.mp4",
 			size: 1024,
@@ -48,6 +101,24 @@ describe("thumbnail (web)", () => {
 
 		expect(result).toBeNull();
 		expect(URL.createObjectURL).not.toHaveBeenCalled();
+	});
+
+	it("returns null on video error", async () => {
+		const blob = new Blob(["x"], { type: "video/mp4" });
+		const ref: FileRef = {
+			name: "bad.mp4",
+			raw: new File([blob], "bad.mp4", { type: "video/mp4" }),
+			size: 1,
+			type: "video/mp4",
+			uri: "blob:test",
+		};
+
+		const promise = createThumbnail(ref);
+		for (const cb of listeners.error ?? []) cb();
+		const result = await promise;
+
+		expect(result).toBeNull();
+		expect(URL.revokeObjectURL).toHaveBeenCalled();
 	});
 
 	it("revokeThumbnail calls URL.revokeObjectURL", () => {

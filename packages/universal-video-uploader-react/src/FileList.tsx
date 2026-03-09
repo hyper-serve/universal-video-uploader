@@ -1,6 +1,7 @@
 import React from "react";
 import type { FileState, ViewMode } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
+import { colors } from "./theme.js";
 
 export type FileListProps = {
 	mode?: ViewMode;
@@ -15,7 +16,7 @@ export type FileListProps = {
 };
 
 const defaultEmptyStyle: React.CSSProperties = {
-	color: "#6b7280",
+	color: colors.textSecondary,
 	fontSize: "0.875rem",
 	padding: "2.5rem 1rem",
 	textAlign: "center",

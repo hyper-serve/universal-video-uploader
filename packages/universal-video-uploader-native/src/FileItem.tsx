@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import type { FileState } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
+import { colors, radius } from "./theme.js";
 
 type FileItemContextValue = {
 	file: FileState;
@@ -123,9 +124,9 @@ FileItem.RetryButton = RetryButton;
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#f9fafb",
-		borderColor: "#e5e7eb",
-		borderRadius: 10,
+		backgroundColor: colors.bgCard,
+		borderColor: colors.border,
+		borderRadius: radius.lg,
 		borderWidth: 1,
 		gap: 6,
 		padding: 14,
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
 		paddingVertical: 12,
 	},
 	error: {
-		color: "#dc2626",
+		color: colors.error,
 		fontSize: 13,
 	},
 	fileName: {
@@ -147,15 +148,15 @@ const styles = StyleSheet.create({
 		fontWeight: "600",
 	},
 	fileSize: {
-		color: "#6b7280",
+		color: colors.textSecondary,
 		fontSize: 13,
 	},
 	removeText: {
-		color: "#6b7280",
+		color: colors.textSecondary,
 		fontSize: 18,
 	},
 	retryText: {
-		color: "#5589F1",
+		color: colors.accent,
 		fontSize: 13,
 	},
 });

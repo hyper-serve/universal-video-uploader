@@ -19,6 +19,12 @@ export {
 	maxDuration,
 	maxFileSize,
 } from "./validation/index.js";
+export {
+	colors as themeColors,
+	radius as themeRadius,
+	fontScale as themeFontScale,
+	spacingScale as themeSpacingScale,
+} from "./theme.js";
 export type {
 	FileRef,
 	FileState,

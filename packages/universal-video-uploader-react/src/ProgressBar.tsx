@@ -1,4 +1,5 @@
 import React from "react";
+import { colors, radius } from "./theme.js";
 
 export type ProgressBarProps = {
 	progress: number;
@@ -29,8 +30,8 @@ export function ProgressBar({
 			className={trackClassName}
 			role="progressbar"
 			style={{
-				backgroundColor: "#e5e7eb",
-				borderRadius: 4,
+				backgroundColor: colors.border,
+				borderRadius: radius.sm,
 				height: 6,
 				overflow: "hidden",
 				width: "100%",
@@ -40,8 +41,8 @@ export function ProgressBar({
 			<div
 				className={fillClassName}
 				style={{
-					backgroundColor: "#5589F1",
-					borderRadius: 4,
+					backgroundColor: colors.accent,
+					borderRadius: radius.sm,
 					height: "100%",
 					transition: "width 0.25s ease-out",
 					width: `${progress}%`,
