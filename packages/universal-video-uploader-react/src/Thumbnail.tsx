@@ -6,6 +6,7 @@ import { colors, radius, thumbnailShadow } from "./theme.js";
 export type ThumbnailProps = {
 	file: FileState;
 	playback?: boolean;
+	controls?: boolean;
 	style?: React.CSSProperties;
 	className?: string;
 	placeholderStyle?: React.CSSProperties;
@@ -21,6 +22,7 @@ export type ThumbnailProps = {
 export function Thumbnail({
 	file,
 	playback = false,
+	controls = true,
 	style,
 	className,
 	placeholderStyle,
@@ -51,7 +53,7 @@ export function Thumbnail({
 		return (
 			<video
 				className={className}
-				controls
+				controls={controls}
 				src={file.playbackUrl}
 				style={{
 					borderRadius: radius.md,

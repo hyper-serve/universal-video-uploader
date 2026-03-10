@@ -12,7 +12,6 @@ import {
 	FileItem,
 	FileList,
 	FileListToolbar,
-	StatusBadge,
 	Thumbnail,
 	ViewModeProvider,
 	useViewMode,
@@ -45,14 +44,13 @@ function UploadUI() {
 			<FileList emptyMessage="No files selected yet." mode={viewMode}>
 				{(file) => (
 					<FileItem key={file.id} file={file} layout="column">
-						<Thumbnail file={file} />
+						<Thumbnail file={file} playback />
 						<FileItem.FileName />
 						<FileItem.Meta>
 							<FileItem.FileSize />
-							<StatusBadge status={file.status} />
+							<FileItem.StatusIcon />
 						</FileItem.Meta>
 						<FileItem.UploadProgress />
-						<FileItem.PlaybackPreview />
 						<FileItem.ErrorMessage />
 						<FileItem.Actions>
 							<FileItem.RemoveButton />

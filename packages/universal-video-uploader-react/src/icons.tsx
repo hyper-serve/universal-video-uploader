@@ -54,13 +54,23 @@ export function SpinnerIcon({ size = 14 }: { size?: number }) {
 	return (
 		<svg aria-hidden="true" height={size} role="status" viewBox="0 0 24 24" width={size}>
 			<circle cx="12" cy="12" fill="none" r="10" stroke="#E5E7EB" strokeWidth="2" />
-			<path
-				d="M22 12a10 10 0 0 0-10-10"
-				fill="none"
-				stroke="#4B5563"
-				strokeLinecap="round"
-				strokeWidth="2.5"
-			/>
+			<g>
+				<path
+					d="M22 12a10 10 0 0 0-10-10"
+					fill="none"
+					stroke="#4B5563"
+					strokeLinecap="round"
+					strokeWidth="2.5"
+				/>
+				<animateTransform
+					attributeName="transform"
+					dur="0.75s"
+					from="0 12 12"
+					repeatCount="indefinite"
+					to="360 12 12"
+					type="rotate"
+				/>
+			</g>
 		</svg>
 	);
 }

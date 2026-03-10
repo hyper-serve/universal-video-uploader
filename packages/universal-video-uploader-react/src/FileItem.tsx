@@ -303,7 +303,7 @@ function Content({ style, className }: FileItemContentProps) {
 	if (isRow) {
 		return (
 			<>
-				<Thumbnail file={file} style={{ flexShrink: 0, height: 56, width: 80 }} />
+				<Thumbnail file={file} playback style={{ flexShrink: 0, height: 72, width: 128 }} />
 				<div style={{ display: "flex", flex: 1, flexDirection: "column", gap: 2, minWidth: 0, ...style }} className={className}>
 					<FileName />
 					<Meta>
@@ -311,7 +311,6 @@ function Content({ style, className }: FileItemContentProps) {
 						<StatusIcon />
 					</Meta>
 					<UploadProgress trackStyle={{ marginTop: 2 }} />
-					<PlaybackPreview />
 					<ErrorMessage />
 				</div>
 				<Actions>
@@ -324,7 +323,7 @@ function Content({ style, className }: FileItemContentProps) {
 
 	return (
 		<div style={style} className={className}>
-			<Thumbnail file={file} />
+			<Thumbnail file={file} playback />
 			<div style={{ alignItems: "center", display: "flex", justifyContent: "space-between", marginTop: "0.5rem" }}>
 				<FileName />
 				<Actions>
@@ -337,7 +336,6 @@ function Content({ style, className }: FileItemContentProps) {
 				<StatusIcon />
 			</Meta>
 			<UploadProgress />
-			<PlaybackPreview />
 			<ErrorMessage />
 		</div>
 	);

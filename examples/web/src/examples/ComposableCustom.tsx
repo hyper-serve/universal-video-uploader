@@ -133,7 +133,8 @@ function UploadUI() {
 						{viewMode === "grid" && (
 							<Thumbnail
 								file={file}
-								style={thumbStyle}
+								playback
+								style={{ ...thumbStyle, maxHeight: 220 }}
 								placeholderStyle={thumbPlaceholder}
 							/>
 						)}
@@ -166,11 +167,11 @@ function UploadUI() {
 						{file.status === "processing" && (
 							<div style={processing}>Processing…</div>
 						)}
-						{file.status === "ready" && file.playbackUrl && (
+						{viewMode !== "grid" && file.status === "ready" && file.playbackUrl && (
 							<Thumbnail
 								file={file}
 								playback
-								style={{ ...thumbStyle, maxHeight: 220 }}
+								style={thumbStyle}
 							/>
 						)}
 						<FileItem.ErrorMessage style={errorStyle} />
