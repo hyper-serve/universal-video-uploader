@@ -210,8 +210,9 @@ function StatusIcon({ style, className }: StatusIconProps) {
 	const { file } = useFileItemContext();
 	if (file.status === "processing") {
 		return (
-			<span className={className} style={{ color: "#9CA3AF", display: "inline-flex", ...style }}>
+			<span className={className} style={{ alignItems: "center", color: "#9CA3AF", display: "inline-flex", gap: 4, ...style }}>
 				<SpinnerIcon />
+				<span style={{ fontSize: "0.8125rem" }}>Processing...</span>
 			</span>
 		);
 	}
