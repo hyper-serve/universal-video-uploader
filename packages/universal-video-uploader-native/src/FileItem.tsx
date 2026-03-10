@@ -1,12 +1,15 @@
 import React, { createContext, useContext } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import type { FileState } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
+import { ProgressBar } from "./ProgressBar.js";
+import { Thumbnail } from "./Thumbnail.js";
 import { colors, radius } from "./theme.js";
 
 type FileItemContextValue = {
 	file: FileState;
+	layout: "row" | "column";
 };
 
 const FileItemContext = createContext<FileItemContextValue | null>(null);
@@ -33,7 +36,7 @@ export type FileItemProps = {
 export function FileItem({ file, layout = "column", style, children }: FileItemProps) {
 	const isRow = layout === "row";
 	return (
-		<FileItemContext.Provider value={{ file }}>
+		<FileItemContext.Provider value={{ file, layout }}>
 			<View style={[styles.container, isRow && styles.containerRow, style]}>
 				{typeof children === "function" ? children(file) : children}
 			</View>
@@ -88,6 +91,9 @@ export type RemoveButtonProps = {
 function RemoveButton({ style, textStyle, children }: RemoveButtonProps) {
 	const { file } = useFileItemContext();
 	const { removeFile } = useUpload();
+	if (file.status === "processing" || file.status === "ready") {
+		return null;
+	}
 	return (
 		<Pressable onPress={() => removeFile(file.id)} style={style} accessibilityLabel="Remove">
 			{children ?? (
@@ -108,11 +114,125 @@ function RetryButton({ style, textStyle, children }: RetryButtonProps) {
 	const { retryFile } = useUpload();
 	if (file.status !== "failed") return null;
 	return (
-		<Pressable onPress={() => retryFile(file.id)} style={style}>
+		<Pressable onPress={() => retryFile(file.id)} style={style} accessibilityLabel="Retry">
 			{children ?? (
 				<Text style={[styles.retryText, textStyle]}>Retry</Text>
 			)}
 		</Pressable>
+	);
+}
+
+export type StatusIconProps = {
+	style?: StyleProp<ViewStyle>;
+	textStyle?: StyleProp<TextStyle>;
+};
+
+function StatusIcon({ style, textStyle }: StatusIconProps) {
+	const { file } = useFileItemContext();
+	if (file.status === "processing") {
+		return <ActivityIndicator color={colors.textSecondary} size="small" style={style} />;
+	}
+	if (file.status === "ready") {
+		return (
+			<View style={style}>
+				<Text style={[styles.checkText, textStyle]}>✓</Text>
+			</View>
+		);
+	}
+	return null;
+}
+
+export type FileItemMetaProps = {
+	style?: StyleProp<ViewStyle>;
+	children?: React.ReactNode;
+};
+
+function Meta({ style, children }: FileItemMetaProps) {
+	return (
+		<View style={[styles.meta, style]}>
+			{children}
+		</View>
+	);
+}
+
+export type FileItemActionsProps = {
+	style?: StyleProp<ViewStyle>;
+	children?: React.ReactNode;
+};
+
+function Actions({ style, children }: FileItemActionsProps) {
+	return (
+		<View style={[styles.actions, style]}>
+			{children}
+		</View>
+	);
+}
+
+export type UploadProgressProps = {
+	trackStyle?: StyleProp<ViewStyle>;
+	fillStyle?: StyleProp<ViewStyle>;
+};
+
+function UploadProgress({ trackStyle, fillStyle }: UploadProgressProps) {
+	const { file } = useFileItemContext();
+	if (file.status !== "uploading") return null;
+	return <ProgressBar fillStyle={fillStyle} progress={file.progress} trackStyle={trackStyle} />;
+}
+
+export type PlaybackPreviewProps = {
+	style?: StyleProp<ViewStyle>;
+};
+
+function PlaybackPreview(_props: PlaybackPreviewProps) {
+	return null;
+}
+
+export type FileItemContentProps = {
+	style?: StyleProp<ViewStyle>;
+};
+
+function Content({ style }: FileItemContentProps) {
+	const { file, layout } = useFileItemContext();
+	const isRow = layout === "row";
+
+	if (isRow) {
+		return (
+			<>
+				<Thumbnail file={file} style={styles.thumbnailRow} />
+				<View style={[styles.middle, style]}>
+					<FileName style={styles.fileNameFlex} />
+					<Meta>
+						<FileSize />
+						<StatusIcon />
+					</Meta>
+					<UploadProgress />
+					<ErrorMessage />
+				</View>
+				<Actions>
+					<RemoveButton />
+					<RetryButton />
+				</Actions>
+			</>
+		);
+	}
+
+	return (
+		<View style={style}>
+			<Thumbnail file={file} />
+			<View style={styles.nameRow}>
+				<FileName style={styles.fileNameFlex} />
+				<Actions>
+					<RemoveButton />
+					<RetryButton />
+				</Actions>
+			</View>
+			<Meta>
+				<FileSize />
+				<StatusIcon />
+			</Meta>
+			<UploadProgress />
+			<ErrorMessage />
+		</View>
 	);
 }
 
@@ -121,8 +241,23 @@ FileItem.FileSize = FileSize;
 FileItem.ErrorMessage = ErrorMessage;
 FileItem.RemoveButton = RemoveButton;
 FileItem.RetryButton = RetryButton;
+FileItem.StatusIcon = StatusIcon;
+FileItem.Meta = Meta;
+FileItem.Actions = Actions;
+FileItem.UploadProgress = UploadProgress;
+FileItem.PlaybackPreview = PlaybackPreview;
+FileItem.Content = Content;
 
 const styles = StyleSheet.create({
+	actions: {
+		alignItems: "flex-end",
+		gap: 4,
+	},
+	checkText: {
+		color: "#059669",
+		fontSize: 13,
+		fontWeight: "600",
+	},
 	container: {
 		backgroundColor: colors.bgCard,
 		borderColor: colors.border,
@@ -143,13 +278,31 @@ const styles = StyleSheet.create({
 		fontSize: 13,
 	},
 	fileName: {
-		flex: 1,
 		fontSize: 14,
 		fontWeight: "600",
+	},
+	fileNameFlex: {
+		flex: 1,
 	},
 	fileSize: {
 		color: colors.textSecondary,
 		fontSize: 13,
+	},
+	meta: {
+		alignItems: "center",
+		flexDirection: "row",
+		gap: 6,
+	},
+	middle: {
+		flex: 1,
+		gap: 2,
+		minWidth: 0,
+	},
+	nameRow: {
+		alignItems: "center",
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginTop: 6,
 	},
 	removeText: {
 		color: colors.textSecondary,
@@ -158,5 +311,11 @@ const styles = StyleSheet.create({
 	retryText: {
 		color: colors.accent,
 		fontSize: 13,
+	},
+	thumbnailRow: {
+		borderRadius: radius.md,
+		flexShrink: 0,
+		height: 56,
+		width: 80,
 	},
 });

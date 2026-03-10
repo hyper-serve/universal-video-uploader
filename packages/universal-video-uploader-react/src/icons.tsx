@@ -1,3 +1,4 @@
+import React from "react";
 import { colors } from "./theme.js";
 
 export function ListIcon() {
@@ -46,6 +47,60 @@ export function ThumbnailPlaceholderIcon() {
 			<path d="M17 16.5h4" />
 		</svg>
 
+	);
+}
+
+export function SpinnerIcon({ size = 14 }: { size?: number }) {
+	return (
+		<svg aria-hidden="true" height={size} role="status" viewBox="0 0 24 24" width={size}>
+			<circle cx="12" cy="12" fill="none" r="10" stroke="#E5E7EB" strokeWidth="2" />
+			<path
+				d="M22 12a10 10 0 0 0-10-10"
+				fill="none"
+				stroke="#4B5563"
+				strokeLinecap="round"
+				strokeWidth="2.5"
+			/>
+		</svg>
+	);
+}
+
+export function CheckCircleIcon({ size = 14 }: { size?: number }) {
+	return (
+		<svg aria-hidden="true" height={size} viewBox="0 0 24 24" width={size}>
+			<circle cx="12" cy="12" fill="none" r="10" stroke="currentColor" strokeWidth="2" />
+			<path
+				d="M8 12.5 11 15l5-6"
+				fill="none"
+				stroke="currentColor"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				strokeWidth="2"
+			/>
+		</svg>
+	);
+}
+
+export function RetryIcon({ size = 16 }: { size?: number }) {
+	return (
+		<svg aria-hidden="true" height={size} viewBox="0 0 24 24" width={size}>
+			<path
+				d="M3 4v6h6"
+				fill="none"
+				stroke="currentColor"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				strokeWidth="2"
+			/>
+			<path
+				d="M5 13a7 7 0 1 0 2-8.7"
+				fill="none"
+				stroke="currentColor"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				strokeWidth="2"
+			/>
+		</svg>
 	);
 }
 

@@ -1,11 +1,15 @@
 import React, { createContext, useContext } from "react";
 import type { FileState } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
+import { CheckCircleIcon, RetryIcon, SpinnerIcon } from "./icons.js";
+import { ProgressBar } from "./ProgressBar.js";
+import { Thumbnail } from "./Thumbnail.js";
 import { formatFileSize } from "./fileFormatters.js";
 import { colors, radius } from "./theme.js";
 
 type FileItemContextValue = {
 	file: FileState;
+	layout: "row" | "column";
 };
 
 const FileItemContext = createContext<FileItemContextValue | null>(null);
@@ -33,7 +37,7 @@ export type FileItemProps = {
 export function FileItem({ file, layout = "column", style, className, children }: FileItemProps) {
 	const isRow = layout === "row";
 	return (
-		<FileItemContext.Provider value={{ file }}>
+		<FileItemContext.Provider value={{ file, layout }}>
 			<div
 				className={className}
 				style={{
@@ -172,7 +176,7 @@ function RetryButton({
 	if (file.status !== "failed") return null;
 	return (
 		<button
-			aria-label={ariaLabel}
+			aria-label={ariaLabel ?? "Retry"}
 			className={className}
 			onClick={() => retryFile(file.id)}
 			style={{
@@ -187,8 +191,150 @@ function RetryButton({
 			}}
 			type="button"
 		>
-			{children ?? "Retry"}
+			{children ?? <RetryIcon />}
 		</button>
+	);
+}
+
+export type StatusIconProps = {
+	style?: React.CSSProperties;
+	className?: string;
+};
+
+function StatusIcon({ style, className }: StatusIconProps) {
+	const { file } = useFileItemContext();
+	if (file.status === "processing") {
+		return (
+			<span className={className} style={{ color: "#9CA3AF", display: "inline-flex", ...style }}>
+				<SpinnerIcon />
+			</span>
+		);
+	}
+	if (file.status === "ready") {
+		return (
+			<span className={className} style={{ color: "#059669", display: "inline-flex", ...style }}>
+				<CheckCircleIcon />
+			</span>
+		);
+	}
+	return null;
+}
+
+export type FileItemMetaProps = {
+	style?: React.CSSProperties;
+	className?: string;
+	children?: React.ReactNode;
+};
+
+function Meta({ style, className, children }: FileItemMetaProps) {
+	return (
+		<div
+			className={className}
+			style={{ alignItems: "center", display: "flex", gap: 6, ...style }}
+		>
+			{children}
+		</div>
+	);
+}
+
+export type FileItemActionsProps = {
+	style?: React.CSSProperties;
+	className?: string;
+	children?: React.ReactNode;
+};
+
+function Actions({ style, className, children }: FileItemActionsProps) {
+	return (
+		<div
+			className={className}
+			style={{ alignItems: "flex-end", display: "flex", flexDirection: "column", gap: 4, ...style }}
+		>
+			{children}
+		</div>
+	);
+}
+
+export type UploadProgressProps = {
+	trackStyle?: React.CSSProperties;
+	trackClassName?: string;
+	fillStyle?: React.CSSProperties;
+	fillClassName?: string;
+};
+
+function UploadProgress({ trackStyle, trackClassName, fillStyle, fillClassName }: UploadProgressProps) {
+	const { file } = useFileItemContext();
+	if (file.status !== "uploading") return null;
+	return (
+		<ProgressBar
+			fillClassName={fillClassName}
+			fillStyle={fillStyle}
+			progress={file.progress}
+			trackClassName={trackClassName}
+			trackStyle={trackStyle}
+		/>
+	);
+}
+
+export type PlaybackPreviewProps = {
+	style?: React.CSSProperties;
+	className?: string;
+};
+
+function PlaybackPreview({ style, className }: PlaybackPreviewProps) {
+	const { file } = useFileItemContext();
+	if (file.status !== "ready" || !file.playbackUrl) return null;
+	return <Thumbnail className={className} file={file} playback style={style} />;
+}
+
+export type FileItemContentProps = {
+	style?: React.CSSProperties;
+	className?: string;
+};
+
+function Content({ style, className }: FileItemContentProps) {
+	const { file, layout } = useFileItemContext();
+	const isRow = layout === "row";
+
+	if (isRow) {
+		return (
+			<>
+				<Thumbnail file={file} style={{ flexShrink: 0, height: 56, width: 80 }} />
+				<div style={{ display: "flex", flex: 1, flexDirection: "column", gap: 2, minWidth: 0, ...style }} className={className}>
+					<FileName />
+					<Meta>
+						<FileSize />
+						<StatusIcon />
+					</Meta>
+					<UploadProgress trackStyle={{ marginTop: 2 }} />
+					<PlaybackPreview />
+					<ErrorMessage />
+				</div>
+				<Actions>
+					<RemoveButton />
+					<RetryButton />
+				</Actions>
+			</>
+		);
+	}
+
+	return (
+		<div style={style} className={className}>
+			<Thumbnail file={file} />
+			<div style={{ alignItems: "center", display: "flex", justifyContent: "space-between", marginTop: "0.5rem" }}>
+				<FileName />
+				<Actions>
+					<RemoveButton />
+					<RetryButton />
+				</Actions>
+			</div>
+			<Meta>
+				<FileSize />
+				<StatusIcon />
+			</Meta>
+			<UploadProgress />
+			<PlaybackPreview />
+			<ErrorMessage />
+		</div>
 	);
 }
 
@@ -197,3 +343,9 @@ FileItem.FileSize = FileSize;
 FileItem.ErrorMessage = ErrorMessage;
 FileItem.RemoveButton = RemoveButton;
 FileItem.RetryButton = RetryButton;
+FileItem.StatusIcon = StatusIcon;
+FileItem.Meta = Meta;
+FileItem.Actions = Actions;
+FileItem.UploadProgress = UploadProgress;
+FileItem.PlaybackPreview = PlaybackPreview;
+FileItem.Content = Content;

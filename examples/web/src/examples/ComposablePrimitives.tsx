@@ -10,8 +10,11 @@ import {
 } from "@hyperserve/universal-video-uploader";
 import {
 	DropZone,
+	FileItem,
 	FileList,
 	FileListToolbar,
+	StatusBadge,
+	Thumbnail,
 } from "@hyperserve/universal-video-uploader-react";
 import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
 
@@ -40,22 +43,38 @@ function UploadUI() {
 			<DropZone supportingText="MP4, WebM, MOV, AVI, MKV — up to 500 MB each" />
 			<FileListToolbar
 				right={
-					<div style={toolbarRight}>
-						<FileListToolbar.ViewToggle />
-						{hasCompleted && (
-							<button onClick={clearCompleted} style={clearBtn} type="button">
-								Clear completed
-							</button>
-						)}
-					</div>
+					hasCompleted ? (
+						<button onClick={clearCompleted} style={clearBtn} type="button">
+							Clear completed
+						</button>
+					) : null
 				}
+				showViewToggle={false}
 			/>
-			<FileList emptyMessage="No files selected yet." />
+			<FileList emptyMessage="No files selected yet." mode="grid">
+				{(file) => (
+					<FileItem key={file.id} file={file} layout="column">
+						<Thumbnail file={file} />
+						<FileItem.FileName />
+						<FileItem.Meta>
+							<FileItem.FileSize />
+							<StatusBadge status={file.status} />
+						</FileItem.Meta>
+						<FileItem.UploadProgress />
+						<FileItem.PlaybackPreview />
+						<FileItem.ErrorMessage />
+						<FileItem.Actions>
+							<FileItem.RemoveButton />
+							<FileItem.RetryButton />
+						</FileItem.Actions>
+					</FileItem>
+				)}
+			</FileList>
 		</div>
 	);
 }
 
-export function ComposableBase() {
+export function ComposablePrimitives() {
 	return (
 		<UploadProvider config={config}>
 			<UploadUI />
@@ -67,12 +86,6 @@ const wrap: React.CSSProperties = {
 	display: "flex",
 	flexDirection: "column",
 	gap: "1rem",
-};
-
-const toolbarRight: React.CSSProperties = {
-	alignItems: "center",
-	display: "flex",
-	gap: "0.75rem",
 };
 
 const clearBtn: React.CSSProperties = {

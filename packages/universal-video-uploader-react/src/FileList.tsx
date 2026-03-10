@@ -1,6 +1,7 @@
 import React from "react";
 import type { FileState, ViewMode } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
+import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";
 
 export type FileListProps = {
@@ -12,7 +13,7 @@ export type FileListProps = {
 	emptyClassName?: string;
 	emptyStyle?: React.CSSProperties;
 	renderEmpty?: () => React.ReactNode;
-	children: (file: FileState, index: number) => React.ReactNode;
+	children?: (file: FileState, index: number) => React.ReactNode;
 };
 
 const defaultEmptyStyle: React.CSSProperties = {
@@ -67,9 +68,27 @@ export function FileList({
 					...style,
 				};
 
+	const renderItem = children ?? makeDefaultRenderItem(resolvedMode);
+
 	return (
 		<div className={className} style={listStyle}>
-			{files.map((file, i) => children(file, i))}
+			{files.map((file, i) => renderItem(file, i))}
 		</div>
 	);
+}
+
+function makeDefaultRenderItem(resolvedMode: ViewMode) {
+	const isGrid = resolvedMode === "grid";
+	return function renderItem(file: FileState) {
+		return (
+			<FileItem
+				key={file.id}
+				file={file}
+				layout={isGrid ? "column" : "row"}
+				style={isGrid ? { height: "100%", position: "relative" } : undefined}
+			>
+				<FileItem.Content />
+			</FileItem>
+		);
+	};
 }

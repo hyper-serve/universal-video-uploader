@@ -5,17 +5,15 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { UploadProvider } from "@hyperserve/universal-video-uploader";
 import { ComposableBase } from "./examples/ComposableFull";
 import { ComposableCustom } from "./examples/ComposableCustom";
+import { ComposablePrimitives } from "./examples/ComposablePrimitives";
 import { HeadlessFull } from "./examples/HeadlessFull";
 import { demoConfig } from "./examples/shared";
 
 const tabs = [
 	{ id: "headless", label: "1. Headless", component: HeadlessFull },
-	{ id: "composable-base", label: "2. Composable (Base)", component: ComposableBase },
-	{
-		id: "composable-custom",
-		label: "3. Composable (Custom)",
-		component: ComposableCustom,
-	},
+	{ id: "composable-base", label: "2. Zero Config", component: ComposableBase },
+	{ id: "composable-primitives", label: "3. Composable (Primitives)", component: ComposablePrimitives },
+	{ id: "composable-custom", label: "4. Composable (Custom)", component: ComposableCustom },
 ] as const;
 
 export default function App() {

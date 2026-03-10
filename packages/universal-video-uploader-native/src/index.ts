@@ -4,11 +4,17 @@ export type { FilePickerProps } from "./FilePicker.js";
 export { FileItem } from "./FileItem.js";
 export type {
 	ErrorMessageProps,
+	FileItemActionsProps,
+	FileItemContentProps,
+	FileItemMetaProps,
 	FileItemProps,
 	FileNameProps,
 	FileSizeProps,
+	PlaybackPreviewProps,
 	RemoveButtonProps,
 	RetryButtonProps,
+	StatusIconProps,
+	UploadProgressProps,
 } from "./FileItem.js";
 
 export { FileList } from "./FileList.js";

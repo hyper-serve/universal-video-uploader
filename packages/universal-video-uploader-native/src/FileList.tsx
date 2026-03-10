@@ -3,6 +3,7 @@ import { FlatList, StyleSheet, Text, View } from "react-native";
 import type { FileState, ViewMode } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
 import type { StyleProp, ViewStyle } from "react-native";
+import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";
 
 export type FileListProps = {
@@ -10,7 +11,7 @@ export type FileListProps = {
 	style?: StyleProp<ViewStyle>;
 	columns?: number;
 	emptyMessage?: React.ReactNode;
-	children: (file: FileState, index: number) => React.ReactElement;
+	children?: (file: FileState, index: number) => React.ReactElement;
 };
 
 export function FileList({
@@ -35,6 +36,8 @@ export function FileList({
 		);
 	}
 
+	const renderItem = children ?? makeDefaultRenderItem(resolvedMode);
+
 	return (
 		<FlatList
 			contentContainerStyle={[styles.content, style]}
@@ -43,16 +46,26 @@ export function FileList({
 			keyExtractor={(item) => item.id}
 			numColumns={resolvedMode === "grid" ? columns : 1}
 			renderItem={({ item, index }) => (
-				<View
-					style={
-						resolvedMode === "grid" ? styles.gridItem : undefined
-					}
-				>
-					{children(item, index)}
+				<View style={resolvedMode === "grid" ? styles.gridItem : undefined}>
+					{renderItem(item, index)}
 				</View>
 			)}
 		/>
 	);
+}
+
+function makeDefaultRenderItem(resolvedMode: ViewMode) {
+	return function renderItem(file: FileState): React.ReactElement {
+		return (
+			<FileItem
+				key={file.id}
+				file={file}
+				layout={resolvedMode === "list" ? "row" : "column"}
+			>
+				<FileItem.Content />
+			</FileItem>
+		);
+	};
 }
 
 const styles = StyleSheet.create({

@@ -1,16 +1,32 @@
 export { DropZone } from "./DropZone.js";
 export type { DropZoneProps } from "./DropZone.js";
 
+export {
+	CheckCircleIcon,
+	GridIcon,
+	ListIcon,
+	RetryIcon,
+	SpinnerIcon,
+	ThumbnailPlaceholderIcon,
+	UploadIcon,
+} from "./icons.js";
+
 export { formatFileSize, getFileDisplayName } from "./fileFormatters.js";
 
 export { FileItem } from "./FileItem.js";
 export type {
 	ErrorMessageProps,
+	FileItemActionsProps,
+	FileItemContentProps,
+	FileItemMetaProps,
 	FileItemProps,
 	FileNameProps,
 	FileSizeProps,
+	PlaybackPreviewProps,
 	RemoveButtonProps,
 	RetryButtonProps,
+	StatusIconProps,
+	UploadProgressProps,
 } from "./FileItem.js";
 
 export { FileList } from "./FileList.js";
