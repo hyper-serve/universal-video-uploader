@@ -293,18 +293,29 @@ describe("UploadProvider + useUpload", () => {
 		expect(adapter.upload).not.toHaveBeenCalled();
 	});
 
-	it("manages viewMode", () => {
+	it("exposes derived state helpers", async () => {
+		const adapter: UploadAdapter = {
+			upload: vi.fn(() => new Promise<UploadResult>(() => {})),
+		};
 		const { result } = renderHook(() => useUpload(), {
-			wrapper: makeWrapper(makeConfig()),
+			wrapper: makeWrapper(makeConfig({ adapter })),
 		});
 
-		expect(result.current.viewMode).toBe("list");
+		expect(result.current.isUploading).toBe(false);
+		expect(result.current.hasErrors).toBe(false);
+		expect(result.current.allReady).toBe(false);
 
 		act(() => {
-			result.current.setViewMode("grid");
+			result.current.addFiles([makeFileRef()]);
 		});
 
-		expect(result.current.viewMode).toBe("grid");
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.isUploading).toBe(true);
+		expect(result.current.hasErrors).toBe(false);
+		expect(result.current.allReady).toBe(false);
 	});
 
 	it("supports render props pattern", () => {
@@ -371,8 +382,12 @@ describe("UploadProvider + useUpload", () => {
 		expect(maxActive).toBeLessThanOrEqual(2);
 	});
 
-	it("clears completed files", async () => {
-		const adapter = createMockAdapter();
+	it("sets allReady true when all files complete", async () => {
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			playbackUrl: "https://cdn.example.com/done.mp4",
+			videoId: "v1",
+		});
 		const { result } = renderHook(() => useUpload(), {
 			wrapper: makeWrapper(makeConfig({ adapter })),
 		});
@@ -385,19 +400,8 @@ describe("UploadProvider + useUpload", () => {
 			await vi.advanceTimersByTimeAsync(5000);
 		});
 
-		const readyFiles = result.current.files.filter(
-			(f) => f.status === "ready",
-		);
-
-		if (readyFiles.length > 0) {
-			act(() => {
-				result.current.clearCompleted();
-			});
-
-			expect(
-				result.current.files.filter((f) => f.status === "ready"),
-			).toHaveLength(0);
-		}
+		expect(result.current.allReady).toBe(true);
+		expect(result.current.isUploading).toBe(false);
 	});
 
 	it("transitions to ready when adapter returns playbackUrl directly", async () => {
@@ -573,7 +577,7 @@ describe("UploadProvider + useUpload", () => {
 		const adapter: UploadAdapter = {
 			upload: vi.fn((_file, _opts, _cb, signal) => {
 				capturedSignal = signal;
-				return new Promise(() => {});
+				return new Promise<UploadResult>(() => {});
 			}),
 		};
 		const config = makeConfig({ adapter });
@@ -636,11 +640,7 @@ describe("UploadProvider + useUpload", () => {
 		});
 
 		expect(result.current.files.every((f) => f.status === "ready")).toBe(true);
-		act(() => {
-			result.current.clearCompleted();
-		});
-		expect(result.current.files).toHaveLength(0);
-		expect(result.current.canAddMore).toBe(true);
+		expect(result.current.canAddMore).toBe(false);
 	});
 
 	it("calls onFileReady when file transitions to ready", async () => {
@@ -707,7 +707,7 @@ describe("UploadProvider + useUpload", () => {
 		);
 	});
 
-	it("does not call onFileReady for files already ready before callback existed", async () => {
+	it("does not call onFileReady again for files already at ready status", async () => {
 		const adapter = createMockAdapter({
 			metadata: { isPublic: true },
 			playbackUrl: "https://cdn.example.com/done.mp4",
@@ -731,9 +731,6 @@ describe("UploadProvider + useUpload", () => {
 		expect(onFileReady).toHaveBeenCalledTimes(1);
 
 		onFileReady.mockClear();
-		act(() => {
-			result.current.clearCompleted();
-		});
 		expect(onFileReady).not.toHaveBeenCalled();
 	});
 });

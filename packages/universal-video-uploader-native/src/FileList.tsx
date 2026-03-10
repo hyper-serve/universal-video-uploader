@@ -1,10 +1,11 @@
 import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import type { FileState, ViewMode } from "@hyperserve/universal-video-uploader";
+import type { FileState } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
 import type { StyleProp, ViewStyle } from "react-native";
 import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";
+import { type ViewMode, useViewMode } from "./ViewModeContext.js";
 
 export type FileListProps = {
 	mode?: ViewMode;
@@ -21,7 +22,8 @@ export function FileList({
 	emptyMessage,
 	children,
 }: FileListProps) {
-	const { files, viewMode } = useUpload();
+	const { files } = useUpload();
+	const { viewMode } = useViewMode();
 	const resolvedMode = mode ?? viewMode;
 
 	if (files.length === 0 && emptyMessage) {

@@ -1,3 +1,6 @@
+export { ViewModeProvider, useViewMode } from "./ViewModeContext.js";
+export type { ViewMode, ViewModeProviderProps } from "./ViewModeContext.js";
+
 export { FilePicker } from "./FilePicker.js";
 export type { FilePickerProps } from "./FilePicker.js";
 

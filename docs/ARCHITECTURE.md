@@ -95,8 +95,13 @@ type UploadConfig<TOptions = Record<string, unknown>> = {
   statusChecker?: StatusChecker;
   validate?: (file: FileRef) => ValidationResult | Promise<ValidationResult>;
   maxConcurrentUploads?: number;
+  maxFiles?: number;
+  onFileReady?: (file: FileState) => void;
+  onUploadFailed?: (file: FileState) => void;
 };
 ```
+
+`onFileReady` and `onUploadFailed` fire exactly once per file per status transition. Use them to connect upload outcomes to app state (e.g. persist a `videoId` to your database after `onFileReady`).
 
 The generic parameter ensures type safety between the adapter and its options at config construction time.
 
@@ -108,6 +113,22 @@ React context provider that manages the upload state machine. Generic over `TOpt
 <UploadProvider config={config}>
   {/* children can use useUpload() and useFile() */}
 </UploadProvider>
+```
+
+`useUpload()` returns:
+
+```typescript
+type UploadContextValue = {
+  files: FileState[];
+  addFiles: (files: FileRef[]) => void;
+  removeFile: (id: string) => void;    // no-op for processing/ready (server-committed)
+  retryFile: (id: string) => void;
+  canAddMore: boolean;                 // false when files.length >= maxFiles
+  maxFiles?: number;
+  isUploading: boolean;                // true if any file is validating or uploading
+  hasErrors: boolean;                  // true if any file is failed
+  allReady: boolean;                   // true when all files are ready (and list non-empty)
+};
 ```
 
 ## File State Machine
@@ -131,6 +152,10 @@ retry (from failed) ──► selected (re-enters the flow)
 | `processing` | Upload complete, backend is processing (transcoding, etc.) |
 | `ready` | Playback URL available |
 | `failed` | Validation, upload, or processing failed. `error` contains the reason |
+
+Files in `processing` or `ready` cannot be removed — they are committed to the server. `removeFile` on these statuses is a no-op. The file list is an append-only record of uploads in the current session.
+
+`statusDetail` is populated during `processing` when the `StatusChecker` provides sub-status updates (e.g. `"Transcoding 480p"`). It is available on `FileState` for custom UI — render it yourself when `file.status === "processing" && file.statusDetail`.
 
 ### Concurrency
 
@@ -209,9 +234,27 @@ const config: UploadConfig<MuxOptions> = {
 
 Both UI packages follow the same compound component pattern. They consume context from `UploadProvider` and provide composable building blocks.
 
+### View Mode
+
+List/grid view state lives in the UI packages, not in the core. Both UI packages export `ViewModeProvider` and `useViewMode()`. Wrap the UI in `ViewModeProvider` when using `FileListToolbar.ViewToggle` or reading `viewMode` in a custom component:
+
+```tsx
+<UploadProvider config={config}>
+  <ViewModeProvider>
+    <DropZone />
+    <FileListToolbar right={<FileListToolbar.ViewToggle />} />
+    <FileList />
+  </ViewModeProvider>
+</UploadProvider>
+```
+
+`FileList` defaults to `"list"` mode when rendered outside a `ViewModeProvider`. The `mode` prop always takes precedence over context.
+
 ### React (Web)
 
 `DropZone` handles drag-and-drop and file input. `FileList` renders files with a render prop. `FileItem` is a compound component with sub-components (`.FileName`, `.FileSize`, `.ErrorMessage`, `.RemoveButton`, `.RetryButton`). `Thumbnail` supports a `playback` mode that renders a `<video>` element.
+
+`FileItem.RemoveButton` shows `"×"` by default. During `uploading` or `validating`, the `aria-label` switches to `cancelLabel` (default `"Cancel"`) to reflect that clicking will abort an in-progress upload.
 
 ### React Native
 

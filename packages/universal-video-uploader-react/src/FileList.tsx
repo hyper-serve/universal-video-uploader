@@ -1,8 +1,9 @@
 import React from "react";
-import type { FileState, ViewMode } from "@hyperserve/universal-video-uploader";
+import type { FileState } from "@hyperserve/universal-video-uploader";
 import { useUpload } from "@hyperserve/universal-video-uploader";
 import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";
+import { type ViewMode, useViewMode } from "./ViewModeContext.js";
 
 export type FileListProps = {
 	mode?: ViewMode;
@@ -34,7 +35,8 @@ export function FileList({
 	renderEmpty,
 	children,
 }: FileListProps) {
-	const { files, viewMode } = useUpload();
+	const { files } = useUpload();
+	const { viewMode } = useViewMode();
 	const resolvedMode = mode ?? viewMode;
 
 	if (files.length === 0) {

@@ -122,6 +122,7 @@ export type RemoveButtonProps = {
 	className?: string;
 	children?: React.ReactNode;
 	ariaLabel?: string;
+	cancelLabel?: string;
 };
 
 function RemoveButton({
@@ -129,15 +130,19 @@ function RemoveButton({
 	className,
 	children,
 	ariaLabel,
+	cancelLabel = "Cancel",
 }: RemoveButtonProps) {
 	const { file } = useFileItemContext();
 	const { removeFile } = useUpload();
 	if (file.status === "processing" || file.status === "ready") {
 		return null;
 	}
+	const isActive =
+		file.status === "uploading" || file.status === "validating";
+	const label = isActive ? cancelLabel : "Remove";
 	return (
 		<button
-			aria-label={ariaLabel ?? "Remove"}
+			aria-label={ariaLabel ?? label}
 			className={className}
 			onClick={() => removeFile(file.id)}
 			style={{

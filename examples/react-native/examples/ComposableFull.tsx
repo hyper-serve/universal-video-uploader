@@ -1,44 +1,30 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useUpload } from "@hyperserve/universal-video-uploader";
+import { StyleSheet, View } from "react-native";
 import {
 	FileList,
 	FileListToolbar,
 	FilePicker,
+	ViewModeProvider,
 } from "@hyperserve/universal-video-uploader-native";
 import { pickVideos } from "./shared";
 
-const ACCENT = "#5589F1";
-
-export function ComposableBase() {
-	const { clearCompleted, files } = useUpload();
-	const hasCompleted = files.some((f) => f.status === "ready");
-
+export function Default() {
 	return (
-		<View style={styles.wrap}>
-			<View style={styles.controls}>
-				<FilePicker pickFiles={pickVideos} />
-				<FileListToolbar
-					right={
-						<View style={styles.toolbarRight}>
-							<FileListToolbar.ViewToggle />
-							{hasCompleted && (
-								<Pressable onPress={clearCompleted}>
-									<Text style={styles.clearBtnText}>Clear completed</Text>
-								</Pressable>
-							)}
-						</View>
-					}
-				/>
+		<ViewModeProvider>
+			<View style={styles.wrap}>
+				<View style={styles.controls}>
+					<FilePicker pickFiles={pickVideos} />
+					<FileListToolbar
+						right={<FileListToolbar.ViewToggle />}
+					/>
+				</View>
+				<FileList emptyMessage="No files selected yet." />
 			</View>
-			<FileList emptyMessage="No files selected yet." />
-		</View>
+		</ViewModeProvider>
 	);
 }
 
 const styles = StyleSheet.create({
-	clearBtnText: { color: ACCENT, fontSize: 14 },
 	controls: { flexDirection: "column", gap: 10 },
-	toolbarRight: { alignItems: "center", flexDirection: "row", gap: 10 },
 	wrap: { gap: 12 },
 });

@@ -6,7 +6,6 @@ import {
 	createHyperserveConfig,
 	maxDuration,
 	maxFileSize,
-	useUpload,
 } from "@hyperserve/universal-video-uploader";
 import {
 	DropZone,
@@ -15,6 +14,8 @@ import {
 	FileListToolbar,
 	StatusBadge,
 	Thumbnail,
+	ViewModeProvider,
+	useViewMode,
 } from "@hyperserve/universal-video-uploader-react";
 import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
 
@@ -35,23 +36,13 @@ const config = createHyperserveConfig({
 });
 
 function UploadUI() {
-	const { clearCompleted, files } = useUpload();
-	const hasCompleted = files.some((f) => f.status === "ready");
+	const { viewMode } = useViewMode();
 
 	return (
 		<div style={wrap}>
 			<DropZone supportingText="MP4, WebM, MOV, AVI, MKV — up to 500 MB each" />
-			<FileListToolbar
-				right={
-					hasCompleted ? (
-						<button onClick={clearCompleted} style={clearBtn} type="button">
-							Clear completed
-						</button>
-					) : null
-				}
-				showViewToggle={false}
-			/>
-			<FileList emptyMessage="No files selected yet." mode="grid">
+			<FileListToolbar showViewToggle={false} />
+			<FileList emptyMessage="No files selected yet." mode={viewMode}>
 				{(file) => (
 					<FileItem key={file.id} file={file} layout="column">
 						<Thumbnail file={file} />
@@ -74,10 +65,12 @@ function UploadUI() {
 	);
 }
 
-export function ComposablePrimitives() {
+export function Composable() {
 	return (
 		<UploadProvider config={config}>
-			<UploadUI />
+			<ViewModeProvider defaultMode="grid">
+				<UploadUI />
+			</ViewModeProvider>
 		</UploadProvider>
 	);
 }
@@ -86,13 +79,4 @@ const wrap: React.CSSProperties = {
 	display: "flex",
 	flexDirection: "column",
 	gap: "1rem",
-};
-
-const clearBtn: React.CSSProperties = {
-	background: "transparent",
-	border: "none",
-	color: "#5589F1",
-	cursor: "pointer",
-	fontSize: "0.875rem",
-	padding: "0.25rem 0",
 };

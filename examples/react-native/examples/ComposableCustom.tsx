@@ -1,6 +1,5 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useUpload, type ViewMode } from "@hyperserve/universal-video-uploader";
 import {
 	FileItem,
 	FileList,
@@ -8,6 +7,9 @@ import {
 	ProgressBar,
 	StatusBadge,
 	Thumbnail,
+	ViewModeProvider,
+	useViewMode,
+	type ViewMode,
 } from "@hyperserve/universal-video-uploader-native";
 import { Playback, pickVideos } from "./shared";
 
@@ -40,14 +42,13 @@ function ModeToggle({
 	);
 }
 
-export function ComposableCustom() {
-	const { clearCompleted, files, setViewMode, viewMode } = useUpload();
-	const hasCompleted = files.some((f) => f.status === "ready");
+function CustomUI() {
+	const { viewMode, setViewMode } = useViewMode();
 
 	return (
 		<View style={styles.theme}>
 			<Text style={styles.desc}>
-				Composable (Custom) — same components, full styling and slot overrides.
+				Custom — same components, full styling and slot overrides.
 			</Text>
 
 			<View style={styles.controls}>
@@ -59,11 +60,6 @@ export function ComposableCustom() {
 					)}
 				</FilePicker>
 				<ModeToggle mode={viewMode} setMode={setViewMode} />
-				{hasCompleted && (
-					<Pressable onPress={clearCompleted} style={styles.secondaryBtn}>
-						<Text style={styles.secondaryBtnText}>Clear completed</Text>
-					</Pressable>
-				)}
 			</View>
 
 			<FileList
@@ -125,11 +121,23 @@ export function ComposableCustom() {
 	);
 }
 
+export function Custom() {
+	return (
+		<ViewModeProvider>
+			<CustomUI />
+		</ViewModeProvider>
+	);
+}
+
 const styles = StyleSheet.create({
 	actions: {
 		flexDirection: "row",
 		gap: 12,
 		marginTop: 8,
+	},
+	error: {
+		color: "#fca5a5",
+		fontSize: 12,
 	},
 	badge: {
 		backgroundColor: "#1e293b",
@@ -225,20 +233,6 @@ const styles = StyleSheet.create({
 	retryText: {
 		color: "#38bdf8",
 		fontSize: 13,
-	},
-	secondaryBtn: {
-		alignItems: "center",
-		backgroundColor: "transparent",
-		borderColor: "#334155",
-		borderRadius: 999,
-		borderWidth: 1,
-		paddingHorizontal: 16,
-		paddingVertical: 10,
-	},
-	secondaryBtnText: {
-		color: "#e5e7eb",
-		fontSize: 13,
-		fontWeight: "500",
 	},
 	theme: {
 		backgroundColor: "#020617",

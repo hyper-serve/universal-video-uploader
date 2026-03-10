@@ -86,16 +86,29 @@ export type RemoveButtonProps = {
 	style?: StyleProp<ViewStyle>;
 	textStyle?: StyleProp<TextStyle>;
 	children?: React.ReactNode;
+	cancelLabel?: string;
 };
 
-function RemoveButton({ style, textStyle, children }: RemoveButtonProps) {
+function RemoveButton({
+	style,
+	textStyle,
+	children,
+	cancelLabel = "Cancel",
+}: RemoveButtonProps) {
 	const { file } = useFileItemContext();
 	const { removeFile } = useUpload();
 	if (file.status === "processing" || file.status === "ready") {
 		return null;
 	}
+	const isActive =
+		file.status === "uploading" || file.status === "validating";
+	const label = isActive ? cancelLabel : "Remove";
 	return (
-		<Pressable onPress={() => removeFile(file.id)} style={style} accessibilityLabel="Remove">
+		<Pressable
+			onPress={() => removeFile(file.id)}
+			style={style}
+			accessibilityLabel={label}
+		>
 			{children ?? (
 				<Text style={[styles.removeText, textStyle]}>×</Text>
 			)}

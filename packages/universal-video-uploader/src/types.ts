@@ -63,11 +63,11 @@ export type UploadContextValue = {
 	addFiles: (files: FileRef[]) => void;
 	removeFile: (id: string) => void;
 	retryFile: (id: string) => void;
-	clearCompleted: () => void;
-	viewMode: ViewMode;
-	setViewMode: (mode: ViewMode) => void;
 	maxFiles?: number;
 	canAddMore: boolean;
+	isUploading: boolean;
+	hasErrors: boolean;
+	allReady: boolean;
 };
 
 export interface UploadAdapter<TOptions = Record<string, unknown>> {

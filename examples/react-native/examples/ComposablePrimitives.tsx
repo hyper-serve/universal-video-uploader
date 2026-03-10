@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { useUpload } from "@hyperserve/universal-video-uploader";
 import {
 	FileItem,
 	FileList,
@@ -8,32 +7,21 @@ import {
 	FilePicker,
 	StatusBadge,
 	Thumbnail,
+	ViewModeProvider,
+	useViewMode,
 } from "@hyperserve/universal-video-uploader-native";
-import { Pressable, Text } from "react-native";
 import { pickVideos } from "./shared";
 
-const ACCENT = "#5589F1";
-
-export function ComposablePrimitives() {
-	const { clearCompleted, files } = useUpload();
-	const hasCompleted = files.some((f) => f.status === "ready");
+function UploadUI() {
+	const { viewMode } = useViewMode();
 
 	return (
 		<View style={styles.wrap}>
 			<View style={styles.controls}>
 				<FilePicker pickFiles={pickVideos} />
-				<FileListToolbar
-					showViewToggle={false}
-					right={
-						hasCompleted ? (
-							<Pressable onPress={clearCompleted}>
-								<Text style={styles.clearBtnText}>Clear completed</Text>
-							</Pressable>
-						) : null
-					}
-				/>
+				<FileListToolbar showViewToggle={false} />
 			</View>
-			<FileList emptyMessage="No files selected yet." mode="grid" columns={2}>
+			<FileList emptyMessage="No files selected yet." mode={viewMode} columns={2}>
 				{(file) => (
 					<FileItem key={file.id} file={file} layout="column">
 						<Thumbnail file={file} />
@@ -55,8 +43,15 @@ export function ComposablePrimitives() {
 	);
 }
 
+export function Composable() {
+	return (
+		<ViewModeProvider defaultMode="grid">
+			<UploadUI />
+		</ViewModeProvider>
+	);
+}
+
 const styles = StyleSheet.create({
-	clearBtnText: { color: ACCENT, fontSize: 14 },
 	controls: { flexDirection: "column", gap: 10 },
 	wrap: { gap: 12 },
 });

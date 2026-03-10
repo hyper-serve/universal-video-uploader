@@ -6,8 +6,6 @@ import {
 	createHyperserveConfig,
 	maxDuration,
 	maxFileSize,
-	useUpload,
-	type ViewMode,
 } from "@hyperserve/universal-video-uploader";
 import {
 	DropZone,
@@ -16,6 +14,8 @@ import {
 	ProgressBar,
 	StatusBadge,
 	Thumbnail,
+	ViewModeProvider,
+	useViewMode,
 } from "@hyperserve/universal-video-uploader-react";
 import type { FileStatus } from "@hyperserve/universal-video-uploader";
 import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
@@ -52,13 +52,12 @@ function getStatusLabel(status: FileStatus): string {
 }
 
 function UploadUI() {
-	const { clearCompleted, files, setViewMode, viewMode } = useUpload();
-	const hasCompleted = files.some((f) => f.status === "ready");
+	const { viewMode, setViewMode } = useViewMode();
 
 	return (
 		<div style={wrap}>
 			<p style={intro}>
-				Composable (Custom) — same components, full styling and slot overrides.
+				Custom — same components, full styling and slot overrides.
 			</p>
 
 			<DropZone
@@ -91,30 +90,19 @@ function UploadUI() {
 
 			<div style={toolbar}>
 				<button
-					onClick={() => setViewMode("list" as ViewMode)}
-					style={{
-						...tab,
-						...(viewMode === "list" ? tabActive : {}),
-					}}
+					onClick={() => setViewMode("list")}
+					style={{ ...tab, ...(viewMode === "list" ? tabActive : {}) }}
 					type="button"
 				>
 					List
 				</button>
 				<button
-					onClick={() => setViewMode("grid" as ViewMode)}
-					style={{
-						...tab,
-						...(viewMode === "grid" ? tabActive : {}),
-					}}
+					onClick={() => setViewMode("grid")}
+					style={{ ...tab, ...(viewMode === "grid" ? tabActive : {}) }}
 					type="button"
 				>
 					Grid
 				</button>
-				{hasCompleted && (
-					<button onClick={clearCompleted} style={clearBtn} type="button">
-						Clear completed
-					</button>
-				)}
 			</div>
 
 			<FileList
@@ -193,12 +181,14 @@ function UploadUI() {
 	);
 }
 
-export function ComposableCustom() {
+export function Custom() {
 	return (
 		<UploadProvider config={config}>
-			<div style={theme}>
-				<UploadUI />
-			</div>
+			<ViewModeProvider>
+				<div style={theme}>
+					<UploadUI />
+				</div>
+			</ViewModeProvider>
 		</UploadProvider>
 	);
 }
@@ -280,16 +270,6 @@ const tabActive: React.CSSProperties = {
 	color: "#0f172a",
 };
 
-const clearBtn: React.CSSProperties = {
-	background: "transparent",
-	border: "1px solid #475569",
-	borderRadius: 6,
-	color: "#94a3b8",
-	cursor: "pointer",
-	fontSize: "0.85rem",
-	marginLeft: "auto",
-	padding: "0.4rem 0.75rem",
-};
 
 const emptyBlock: React.CSSProperties = {
 	display: "flex",

@@ -36,6 +36,5 @@ export type {
 	UploadContextValue,
 	UploadResult,
 	ValidationResult,
-	ViewMode,
 } from "./types.js";
 export type { Validator } from "./validation/index.js";

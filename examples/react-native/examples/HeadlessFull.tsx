@@ -1,6 +1,7 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useUpload, type ViewMode } from "@hyperserve/universal-video-uploader";
+import { useUpload } from "@hyperserve/universal-video-uploader";
+import type { ViewMode } from "@hyperserve/universal-video-uploader-native";
 import { ProgressBar } from "@hyperserve/universal-video-uploader-native";
 import { Playback, pickVideos } from "./shared";
 
@@ -41,15 +42,11 @@ function formatSize(bytes: number): string {
 export function HeadlessFull() {
 	const {
 		addFiles,
-		clearCompleted,
 		files,
 		removeFile,
 		retryFile,
-		setViewMode,
-		viewMode,
 	} = useUpload();
-
-	const hasCompleted = files.some((f) => f.status === "ready");
+	const [viewMode, setViewMode] = React.useState<ViewMode>("list");
 
 	const onPick = async () => {
 		const refs = await pickVideos();
@@ -70,11 +67,6 @@ export function HeadlessFull() {
 					<Text style={styles.primaryBtnText}>Pick videos</Text>
 				</Pressable>
 				<ModeToggle mode={viewMode} setMode={setViewMode} />
-				{hasCompleted && (
-					<Pressable onPress={clearCompleted} style={styles.secondaryBtn}>
-						<Text style={styles.secondaryBtnText}>Clear completed</Text>
-					</Pressable>
-				)}
 			</View>
 
 			{files.length === 0 ? (
@@ -218,15 +210,6 @@ const styles = StyleSheet.create({
 	retry: {
 		color: "#0f766e",
 		fontSize: 13,
-	},
-	secondaryBtn: {
-		paddingHorizontal: 12,
-		paddingVertical: 6,
-	},
-	secondaryBtnText: {
-		color: "#64748b",
-		fontSize: 13,
-		fontWeight: "500",
 	},
 	header: {
 		borderBottomColor: "#e2e8f0",

@@ -3,22 +3,22 @@ import { StatusBar } from "expo-status-bar";
 import { ScrollView, StyleSheet, Text, Pressable, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { UploadProvider } from "@hyperserve/universal-video-uploader";
-import { ComposableBase } from "./examples/ComposableFull";
-import { ComposableCustom } from "./examples/ComposableCustom";
-import { ComposablePrimitives } from "./examples/ComposablePrimitives";
+import { Default } from "./examples/ComposableFull";
+import { Custom } from "./examples/ComposableCustom";
+import { Composable } from "./examples/ComposablePrimitives";
 import { HeadlessFull } from "./examples/HeadlessFull";
 import { demoConfig } from "./examples/shared";
 
 const tabs = [
 	{ id: "headless", label: "1. Headless", component: HeadlessFull },
-	{ id: "composable-base", label: "2. Zero Config", component: ComposableBase },
-	{ id: "composable-primitives", label: "3. Composable (Primitives)", component: ComposablePrimitives },
-	{ id: "composable-custom", label: "4. Composable (Custom)", component: ComposableCustom },
+	{ id: "default", label: "2. Default", component: Default },
+	{ id: "composable", label: "3. Composable", component: Composable },
+	{ id: "custom", label: "4. Custom", component: Custom },
 ] as const;
 
 export default function App() {
 	const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["id"]>("headless");
-	const Active = tabs.find((t) => t.id === activeTab)?.component ?? HeadlessFull;
+	const Active = tabs.find((t) => t.id === activeTab)?.component ?? Default;
 
 	return (
 		<SafeAreaProvider>

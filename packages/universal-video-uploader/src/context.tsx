@@ -5,7 +5,6 @@ import React, {
 	useMemo,
 	useReducer,
 	useRef,
-	useState,
 } from "react";
 import { createThumbnail, revokeThumbnail } from "./platform/thumbnail.js";
 import type {
@@ -14,7 +13,6 @@ import type {
 	FileStatus,
 	UploadConfig,
 	UploadContextValue,
-	ViewMode,
 } from "./types.js";
 
 function generateId(): string {
@@ -33,7 +31,6 @@ function generateId(): string {
 
 type FileAction =
 	| { files: FileState[]; type: "ADD_FILES" }
-	| { type: "CLEAR_COMPLETED" }
 	| { id: string; type: "REMOVE_FILE" }
 	| { id: string; type: "RETRY_FILE" }
 	| { id: string; type: "UPDATE_FILE"; updates: Partial<FileState> };
@@ -60,8 +57,6 @@ function fileReducer(state: FileState[], action: FileAction): FileState[] {
 						}
 					: f,
 			);
-		case "CLEAR_COMPLETED":
-			return state.filter((f) => f.status !== "ready");
 		default:
 			return state;
 	}
@@ -81,7 +76,6 @@ export function UploadProvider<TOptions>({
 	children,
 }: UploadProviderProps<TOptions>) {
 	const [files, dispatch] = useReducer(fileReducer, []);
-	const [viewMode, setViewMode] = useState<ViewMode>("list");
 
 	const configRef = useRef(config);
 	configRef.current = config;
@@ -322,40 +316,37 @@ export function UploadProvider<TOptions>({
 		dispatch({ id, type: "RETRY_FILE" });
 	}, []);
 
-	const clearCompleted = useCallback(() => {
-		for (const file of files) {
-			if (file.status === "ready" && file.thumbnailUri) {
-				revokeThumbnail(file.thumbnailUri);
-			}
-		}
-		dispatch({ type: "CLEAR_COMPLETED" });
-	}, [files]);
-
 	const maxFiles = configRef.current.maxFiles;
 	const canAddMore = maxFiles == null || files.length < maxFiles;
+	const isUploading = files.some(
+		(f) => f.status === "uploading" || f.status === "validating",
+	);
+	const hasErrors = files.some((f) => f.status === "failed");
+	const allReady =
+		files.length > 0 && files.every((f) => f.status === "ready");
 
 	const value: UploadContextValue = useMemo(
 		() => ({
 			addFiles,
+			allReady,
 			canAddMore,
-			clearCompleted,
 			files,
+			hasErrors,
+			isUploading,
 			maxFiles,
 			removeFile,
 			retryFile,
-			setViewMode,
-			viewMode,
 		}),
 		[
 			files,
 			addFiles,
 			removeFile,
 			retryFile,
-			clearCompleted,
-			viewMode,
-			setViewMode,
 			maxFiles,
 			canAddMore,
+			isUploading,
+			hasErrors,
+			allReady,
 		],
 	);
 

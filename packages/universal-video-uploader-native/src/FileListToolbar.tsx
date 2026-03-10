@@ -1,8 +1,9 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useUpload, type ViewMode } from "@hyperserve/universal-video-uploader";
+import { useUpload } from "@hyperserve/universal-video-uploader";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
 import { colors, radius } from "./theme.js";
+import { type ViewMode, useViewMode } from "./ViewModeContext.js";
 
 export type FileListToolbarProps = {
 	left?: React.ReactNode | null;
@@ -31,7 +32,7 @@ export type ViewToggleProps = {
 };
 
 function ViewToggle({ style, children }: ViewToggleProps) {
-	const { viewMode, setViewMode } = useUpload();
+	const { viewMode, setViewMode } = useViewMode();
 	if (children) {
 		return <>{children({ viewMode, setViewMode })}</>;
 	}

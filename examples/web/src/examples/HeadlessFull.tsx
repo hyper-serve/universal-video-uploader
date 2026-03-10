@@ -33,7 +33,7 @@ function formatSize(bytes: number): string {
 }
 
 function UploadUI() {
-	const { addFiles, clearCompleted, files, removeFile, retryFile } = useUpload();
+	const { addFiles, files, removeFile, retryFile } = useUpload();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [drag, setDrag] = useState(false);
 
@@ -52,8 +52,6 @@ function UploadUI() {
 		);
 		if (list.length) addFiles(toFileRefs(list));
 	};
-
-	const hasDone = files.some((f) => f.status === "ready");
 
 	return (
 		<div style={layout}>
@@ -97,14 +95,6 @@ function UploadUI() {
 					browse
 				</button>
 			</section>
-
-			{hasDone && (
-				<div style={toolbar}>
-					<button onClick={clearCompleted} style={ghostBtn} type="button">
-						Clear completed
-					</button>
-				</div>
-			)}
 
 			{files.length === 0 ? (
 				<p style={empty}>No files. Add videos above.</p>
@@ -235,19 +225,6 @@ const primaryBtn: React.CSSProperties = {
 	padding: "0.35rem 0.75rem",
 };
 
-const ghostBtn: React.CSSProperties = {
-	background: "none",
-	border: "none",
-	color: "#64748b",
-	cursor: "pointer",
-	fontSize: "0.8125rem",
-	padding: "0.25rem 0",
-};
-
-const toolbar: React.CSSProperties = {
-	display: "flex",
-	justifyContent: "flex-start",
-};
 
 const empty: React.CSSProperties = {
 	color: "#94a3b8",

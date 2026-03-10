@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { ComposableBase } from "./examples/ComposableBase";
-import { ComposableCustom } from "./examples/ComposableCustom";
-import { ComposablePrimitives } from "./examples/ComposablePrimitives";
+import { Default } from "./examples/ComposableBase";
+import { Custom } from "./examples/ComposableCustom";
+import { Composable } from "./examples/ComposablePrimitives";
 import { HeadlessFull } from "./examples/HeadlessFull";
 
 const examples = [
 	{ component: HeadlessFull, label: "1. Headless" },
-	{ component: ComposableBase, label: "2. Zero Config" },
-	{ component: ComposablePrimitives, label: "3. Composable (Primitives)" },
-	{ component: ComposableCustom, label: "4. Composable (Custom)" },
+	{ component: Default, label: "2. Default" },
+	{ component: Composable, label: "3. Composable" },
+	{ component: Custom, label: "4. Custom" },
 ] as const;
 
 export function App() {

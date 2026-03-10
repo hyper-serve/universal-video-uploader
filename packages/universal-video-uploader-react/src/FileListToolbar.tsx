@@ -1,7 +1,8 @@
 import React from "react";
-import { useUpload, type ViewMode } from "@hyperserve/universal-video-uploader";
+import { useUpload } from "@hyperserve/universal-video-uploader";
 import { GridIcon, ListIcon } from "./icons.js";
 import { colors, radius } from "./theme.js";
+import { type ViewMode, useViewMode } from "./ViewModeContext.js";
 
 export type FileListToolbarProps = {
 	left?: React.ReactNode | null;
@@ -40,7 +41,7 @@ export type ViewToggleProps = {
 };
 
 function ViewToggle({ style, className, children }: ViewToggleProps) {
-	const { viewMode, setViewMode } = useUpload();
+	const { viewMode, setViewMode } = useViewMode();
 	if (children) {
 		return <>{children({ viewMode, setViewMode })}</>;
 	}

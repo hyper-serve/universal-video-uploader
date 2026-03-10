@@ -6,12 +6,12 @@ import {
 	createHyperserveConfig,
 	maxDuration,
 	maxFileSize,
-	useUpload,
 } from "@hyperserve/universal-video-uploader";
 import {
 	DropZone,
 	FileList,
 	FileListToolbar,
+	ViewModeProvider,
 } from "@hyperserve/universal-video-uploader-react";
 import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
 
@@ -32,33 +32,21 @@ const config = createHyperserveConfig({
 });
 
 function UploadUI() {
-	const { clearCompleted, files } = useUpload();
-	const hasCompleted = files.some((f) => f.status === "ready");
-
 	return (
 		<div style={wrap}>
 			<DropZone supportingText="MP4, WebM, MOV, AVI, MKV — up to 500 MB each" />
-			<FileListToolbar
-				right={
-					<div style={toolbarRight}>
-						<FileListToolbar.ViewToggle />
-						{hasCompleted && (
-							<button onClick={clearCompleted} style={clearBtn} type="button">
-								Clear completed
-							</button>
-						)}
-					</div>
-				}
-			/>
+			<FileListToolbar right={<FileListToolbar.ViewToggle />} />
 			<FileList emptyMessage="No files selected yet." />
 		</div>
 	);
 }
 
-export function ComposableBase() {
+export function Default() {
 	return (
 		<UploadProvider config={config}>
-			<UploadUI />
+			<ViewModeProvider>
+				<UploadUI />
+			</ViewModeProvider>
 		</UploadProvider>
 	);
 }
@@ -67,19 +55,4 @@ const wrap: React.CSSProperties = {
 	display: "flex",
 	flexDirection: "column",
 	gap: "1rem",
-};
-
-const toolbarRight: React.CSSProperties = {
-	alignItems: "center",
-	display: "flex",
-	gap: "0.75rem",
-};
-
-const clearBtn: React.CSSProperties = {
-	background: "transparent",
-	border: "none",
-	color: "#5589F1",
-	cursor: "pointer",
-	fontSize: "0.875rem",
-	padding: "0.25rem 0",
 };
