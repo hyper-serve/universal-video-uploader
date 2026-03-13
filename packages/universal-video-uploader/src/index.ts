@@ -7,6 +7,7 @@ export {
 	revokeThumbnail,
 } from "./platform/thumbnail.js";
 export { HyperserveAdapter } from "./adapter/hyperserve.js";
+export type { HyperserveUploadOptions } from "./adapter/hyperserve.js";
 export {
 	HyperserveStatusChecker,
 	pollVideoStatus,
@@ -30,9 +31,10 @@ export { ViewModeProvider, useViewMode } from "./viewMode.js";
 export type { ViewMode, ViewModeProviderProps } from "./viewMode.js";
 export type {
 	FileRef,
+	NativeFileRef,
+	WebFileRef,
 	FileState,
 	FileStatus,
-	HyperserveUploadOptions,
 	StatusChecker,
 	UploadAdapter,
 	UploadConfig,

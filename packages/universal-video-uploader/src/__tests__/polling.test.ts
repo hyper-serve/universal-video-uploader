@@ -226,7 +226,8 @@ describe("pollVideoStatus", () => {
 		expect(fetch).toHaveBeenCalledTimes(1);
 	});
 
-	it("retries on HTTP error", async () => {
+	it("retries on HTTP error with backoff delay", async () => {
+		vi.spyOn(Math, "random").mockReturnValue(0);
 		const onStatusChange = vi.fn();
 		const ac = new AbortController();
 
@@ -265,7 +266,11 @@ describe("pollVideoStatus", () => {
 		await vi.advanceTimersByTimeAsync(0);
 		expect(onStatusChange).not.toHaveBeenCalled();
 
-		await vi.advanceTimersByTimeAsync(1000);
+		// first error backs off to intervalMs * 2^1 = 2000ms
+		await vi.advanceTimersByTimeAsync(1999);
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+
+		await vi.advanceTimersByTimeAsync(1);
 		expect(onStatusChange).toHaveBeenCalledWith(
 			"ready",
 			"https://cdn.example.com/video.mp4",
@@ -273,7 +278,8 @@ describe("pollVideoStatus", () => {
 		expect(fetchMock).toHaveBeenCalledTimes(2);
 	});
 
-	it("retries on JSON parse error", async () => {
+	it("retries on JSON parse error with backoff delay", async () => {
+		vi.spyOn(Math, "random").mockReturnValue(0);
 		const onStatusChange = vi.fn();
 		const ac = new AbortController();
 
@@ -309,9 +315,133 @@ describe("pollVideoStatus", () => {
 		await vi.advanceTimersByTimeAsync(0);
 		expect(onStatusChange).not.toHaveBeenCalled();
 
-		await vi.advanceTimersByTimeAsync(1000);
+		// first error backs off to intervalMs * 2^1 = 2000ms
+		await vi.advanceTimersByTimeAsync(2000);
 		expect(onStatusChange).toHaveBeenCalledWith("failed");
 		expect(fetchMock).toHaveBeenCalledTimes(2);
+	});
+
+	it("backs off exponentially on consecutive errors", async () => {
+		vi.spyOn(Math, "random").mockReturnValue(0);
+		const onStatusChange = vi.fn();
+		const ac = new AbortController();
+
+		const readyResponse = {
+			json: () =>
+				Promise.resolve({
+					id: "video-1",
+					isPublic: true,
+					resolutions: {
+						"480p": {
+							id: "res-1",
+							status: "ready",
+							video_url: "https://cdn.example.com/video.mp4",
+						},
+					},
+					status: "ready",
+				}),
+			ok: true,
+		};
+
+		const fetchMock = vi
+			.fn()
+			.mockResolvedValueOnce({ ok: false, status: 500 }) // error 1 → backoff 2000ms
+			.mockResolvedValueOnce({ ok: false, status: 500 }) // error 2 → backoff 4000ms
+			.mockResolvedValueOnce({ ok: false, status: 500 }) // error 3 → backoff 8000ms
+			.mockResolvedValueOnce(readyResponse);
+
+		vi.stubGlobal("fetch", fetchMock);
+
+		pollVideoStatus({
+			apiKey: "test-key",
+			baseUrl: "https://api.example.com",
+			intervalMs: 1000,
+			isPublic: true,
+			onStatusChange,
+			signal: ac.signal,
+			videoId: "video-1",
+		});
+
+		await vi.advanceTimersByTimeAsync(0);
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+
+		await vi.advanceTimersByTimeAsync(2000);
+		expect(fetchMock).toHaveBeenCalledTimes(2);
+
+		await vi.advanceTimersByTimeAsync(4000);
+		expect(fetchMock).toHaveBeenCalledTimes(3);
+
+		await vi.advanceTimersByTimeAsync(8000);
+		expect(fetchMock).toHaveBeenCalledTimes(4);
+		expect(onStatusChange).toHaveBeenCalledWith(
+			"ready",
+			"https://cdn.example.com/video.mp4",
+		);
+	});
+
+	it("resets backoff after a successful response", async () => {
+		vi.spyOn(Math, "random").mockReturnValue(0);
+		const onStatusChange = vi.fn();
+		const ac = new AbortController();
+
+		const processingResponse = {
+			json: () =>
+				Promise.resolve({
+					id: "video-1",
+					isPublic: true,
+					resolutions: {},
+					status: "processing",
+				}),
+			ok: true,
+		};
+		const readyResponse = {
+			json: () =>
+				Promise.resolve({
+					id: "video-1",
+					isPublic: true,
+					resolutions: {
+						"480p": {
+							id: "res-1",
+							status: "ready",
+							video_url: "https://cdn.example.com/video.mp4",
+						},
+					},
+					status: "ready",
+				}),
+			ok: true,
+		};
+
+		const fetchMock = vi
+			.fn()
+			.mockResolvedValueOnce({ ok: false, status: 500 }) // error → backoff 2000ms
+			.mockResolvedValueOnce(processingResponse)          // success → resets to intervalMs 1000ms
+			.mockResolvedValueOnce(readyResponse);
+
+		vi.stubGlobal("fetch", fetchMock);
+
+		pollVideoStatus({
+			apiKey: "test-key",
+			baseUrl: "https://api.example.com",
+			intervalMs: 1000,
+			isPublic: true,
+			onStatusChange,
+			signal: ac.signal,
+			videoId: "video-1",
+		});
+
+		await vi.advanceTimersByTimeAsync(0);
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+
+		await vi.advanceTimersByTimeAsync(2000);
+		expect(fetchMock).toHaveBeenCalledTimes(2);
+
+		// backoff reset — next poll uses intervalMs (1000ms), not 4000ms
+		await vi.advanceTimersByTimeAsync(1000);
+		expect(fetchMock).toHaveBeenCalledTimes(3);
+		expect(onStatusChange).toHaveBeenCalledWith(
+			"ready",
+			"https://cdn.example.com/video.mp4",
+		);
 	});
 
 	it("calls onStatusChange with ready and undefined playbackUrl when no video_url", async () => {

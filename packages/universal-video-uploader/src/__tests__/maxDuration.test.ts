@@ -2,15 +2,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { maxDuration } from "../validation/maxDuration.js";
 import type { FileRef } from "../types.js";
 
-function makeFileRef(overrides: Partial<FileRef> = {}): FileRef {
+function makeFileRef(): FileRef {
 	const blob = new Blob(["x"], { type: "video/mp4" });
 	return {
+		platform: "web",
 		name: "test.mp4",
 		size: 1024,
 		type: "video/mp4",
 		uri: "blob:test",
 		raw: new File([blob], "test.mp4", { type: "video/mp4" }),
-		...overrides,
 	};
 }
 
@@ -53,11 +53,15 @@ describe("maxDuration (web)", () => {
 		vi.restoreAllMocks();
 	});
 
-	it("returns valid when file.raw is absent", () => {
+	it("returns valid for native file ref", () => {
 		const validator = maxDuration(60);
-		const ref = makeFileRef({ raw: undefined });
-		// @ts-expect-error - raw is intentionally omitted
-		delete ref.raw;
+		const ref: FileRef = {
+			platform: "native",
+			name: "test.mp4",
+			size: 1024,
+			type: "video/mp4",
+			uri: "file:///tmp/test.mp4",
+		};
 
 		const result = validator(ref);
 

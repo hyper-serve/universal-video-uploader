@@ -1,10 +1,21 @@
-export type FileRef = {
+export type NativeFileRef = {
+	platform: "native";
 	uri: string;
 	name: string;
 	size: number;
 	type: string;
-	raw?: File;
 };
+
+export type WebFileRef = {
+	platform: "web";
+	uri: string;
+	name: string;
+	size: number;
+	type: string;
+	raw: File;
+};
+
+export type FileRef = NativeFileRef | WebFileRef;
 
 export type FileStatus =
 	| "selected"
@@ -29,13 +40,6 @@ export type FileState = {
 export type ValidationResult =
 	| { valid: true }
 	| { valid: false; reason: string };
-
-export type HyperserveUploadOptions = {
-	resolutions: string;
-	isPublic: boolean;
-	thumbnailTimestamps?: string;
-	customUserMetadata?: Record<string, unknown>;
-};
 
 export type UploadResult = {
 	videoId: string;
@@ -66,6 +70,9 @@ export type UploadContextValue = {
 	isUploading: boolean;
 	hasErrors: boolean;
 	allReady: boolean;
+	allSettled: boolean;
+	readyCount: number;
+	failedCount: number;
 };
 
 export interface UploadAdapter<TOptions = Record<string, unknown>> {

@@ -5,6 +5,7 @@ import { HyperserveAdapter } from "../adapter/hyperserve.native.js";
 
 function makeFileRef(name = "test.mp4"): FileRef {
 	return {
+		platform: "native",
 		name,
 		size: 1024,
 		type: "video/mp4",

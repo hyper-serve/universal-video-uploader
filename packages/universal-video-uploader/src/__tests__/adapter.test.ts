@@ -6,6 +6,7 @@ function makeFileRef(): FileRef {
 	const blob = new Blob(["fake video content"], { type: "video/mp4" });
 	const file = new File([blob], "test.mp4", { type: "video/mp4" });
 	return {
+		platform: "web",
 		name: "test.mp4",
 		raw: file,
 		size: file.size,
@@ -185,14 +186,15 @@ describe("HyperserveAdapter (web)", () => {
 		await expect(uploadPromise).rejects.toThrow("Network error");
 	});
 
-	it("rejects when file.raw is missing", async () => {
+	it("rejects for native file ref", async () => {
 		const adapter = createAdapter();
 		const ac = new AbortController();
 		const ref: FileRef = {
+			platform: "native",
 			name: "test.mp4",
 			size: 1024,
 			type: "video/mp4",
-			uri: "blob:test",
+			uri: "file:///tmp/test.mp4",
 		};
 
 		await expect(

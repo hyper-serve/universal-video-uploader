@@ -12,17 +12,24 @@ import type {
 } from "../types.js";
 
 function makeFileRef(name = "test.mp4", withRaw = false): FileRef {
-	const ref: FileRef = {
+	if (withRaw) {
+		const blob = new Blob(["x"], { type: "video/mp4" });
+		return {
+			platform: "web",
+			name,
+			size: 1024,
+			type: "video/mp4",
+			uri: `blob:${name}`,
+			raw: new File([blob], name, { type: "video/mp4" }),
+		};
+	}
+	return {
+		platform: "native",
 		name,
 		size: 1024,
 		type: "video/mp4",
 		uri: `blob:${name}`,
 	};
-	if (withRaw) {
-		const blob = new Blob(["x"], { type: "video/mp4" });
-		ref.raw = new File([blob], name, { type: "video/mp4" });
-	}
-	return ref;
 }
 
 function createMockAdapter(
@@ -378,6 +385,41 @@ describe("UploadProvider + useUpload", () => {
 
 		expect(result.current.allReady).toBe(true);
 		expect(result.current.isUploading).toBe(false);
+	});
+
+	it("exposes allSettled, readyCount, failedCount for mixed-batch results", async () => {
+		let callCount = 0;
+		const adapter: UploadAdapter = {
+			upload: vi.fn((_file, _options, callbacks) => {
+				callCount++;
+				if (callCount % 2 === 0) {
+					return Promise.reject(new Error("Upload failed"));
+				}
+				callbacks.onProgress(100);
+				return Promise.resolve({
+					metadata: { isPublic: true },
+					playbackUrl: "https://cdn.example.com/done.mp4",
+					videoId: `v${callCount}`,
+				});
+			}),
+		};
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter })),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef("a.mp4"), makeFileRef("b.mp4")]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.allSettled).toBe(true);
+		expect(result.current.allReady).toBe(false);
+		expect(result.current.readyCount).toBe(1);
+		expect(result.current.failedCount).toBe(1);
 	});
 
 	it("transitions to ready when adapter returns playbackUrl directly", async () => {

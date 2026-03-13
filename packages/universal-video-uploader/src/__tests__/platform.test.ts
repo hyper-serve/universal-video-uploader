@@ -68,6 +68,7 @@ describe("thumbnail (web)", () => {
 	it("extracts a frame and returns an image blob URL", async () => {
 		const blob = new Blob(["x"], { type: "video/mp4" });
 		const ref: FileRef = {
+			platform: "web",
 			name: "test.mp4",
 			raw: new File([blob], "test.mp4", { type: "video/mp4" }),
 			size: 1,
@@ -89,8 +90,9 @@ describe("thumbnail (web)", () => {
 		expect(URL.revokeObjectURL).toHaveBeenCalled();
 	});
 
-	it("returns null when file.raw is missing", async () => {
+	it("returns null for native file ref", async () => {
 		const ref: FileRef = {
+			platform: "native",
 			name: "test.mp4",
 			size: 1024,
 			type: "video/mp4",
@@ -106,6 +108,7 @@ describe("thumbnail (web)", () => {
 	it("returns null on video error", async () => {
 		const blob = new Blob(["x"], { type: "video/mp4" });
 		const ref: FileRef = {
+			platform: "web",
 			name: "bad.mp4",
 			raw: new File([blob], "bad.mp4", { type: "video/mp4" }),
 			size: 1,
@@ -145,6 +148,7 @@ describe("fileRef (web)", () => {
 		const ref = toFileRef(file);
 
 		expect(ref).toEqual({
+			platform: "web",
 			name: "video.mp4",
 			raw: file,
 			size: file.size,
@@ -170,6 +174,7 @@ describe("fileRef (web)", () => {
 
 	it("revokeFileRef calls URL.revokeObjectURL with ref.uri", () => {
 		const ref: FileRef = {
+			platform: "native",
 			name: "test.mp4",
 			size: 1024,
 			type: "video/mp4",

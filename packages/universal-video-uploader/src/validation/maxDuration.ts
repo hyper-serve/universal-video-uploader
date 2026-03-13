@@ -4,7 +4,7 @@ export function maxDuration(
 	seconds: number,
 ): (file: FileRef) => ValidationResult | Promise<ValidationResult> {
 	return (file) => {
-		if (!file.raw) {
+		if (file.platform === "native") {
 			return { valid: true };
 		}
 
@@ -12,7 +12,7 @@ export function maxDuration(
 			const video = document.createElement("video");
 			video.preload = "metadata";
 
-			const objectUrl = URL.createObjectURL(file.raw!);
+			const objectUrl = URL.createObjectURL(file.raw);
 
 			video.onloadedmetadata = () => {
 				URL.revokeObjectURL(objectUrl);

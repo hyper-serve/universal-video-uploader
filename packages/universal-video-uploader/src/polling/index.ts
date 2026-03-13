@@ -28,6 +28,20 @@ type VideoResponse = {
 	status: string;
 };
 
+const MAX_BACKOFF_MS = 60_000;
+
+function withJitter(ms: number): number {
+	return ms + Math.random() * 0.3 * ms;
+}
+
+function backoffDelay(intervalMs: number, consecutiveErrors: number): number {
+	const delay = Math.min(
+		intervalMs * Math.pow(2, consecutiveErrors),
+		MAX_BACKOFF_MS,
+	);
+	return withJitter(delay);
+}
+
 export function pollVideoStatus(options: PollOptions): void {
 	const {
 		apiKey,
@@ -38,6 +52,8 @@ export function pollVideoStatus(options: PollOptions): void {
 		signal,
 		videoId,
 	} = options;
+
+	let consecutiveErrors = 0;
 
 	const poll = async () => {
 		if (signal.aborted) return;
@@ -55,6 +71,8 @@ export function pollVideoStatus(options: PollOptions): void {
 			if (!response.ok) {
 				throw new Error(`Poll failed with status ${response.status}`);
 			}
+
+			consecutiveErrors = 0;
 
 			const data: VideoResponse = await response.json();
 
@@ -91,7 +109,8 @@ export function pollVideoStatus(options: PollOptions): void {
 			setTimeout(poll, intervalMs);
 		} catch (error) {
 			if (signal.aborted) return;
-			setTimeout(poll, intervalMs);
+			consecutiveErrors += 1;
+			setTimeout(poll, backoffDelay(intervalMs, consecutiveErrors));
 		}
 	};
 

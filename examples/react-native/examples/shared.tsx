@@ -38,6 +38,7 @@ export async function pickVideos(): Promise<FileRef[]> {
 	return result.assets
 		.filter((a) => a.mimeType?.startsWith("video/"))
 		.map((asset) => ({
+			platform: "native" as const,
 			name: asset.name,
 			size: asset.size ?? 0,
 			type: asset.mimeType ?? "video/mp4",

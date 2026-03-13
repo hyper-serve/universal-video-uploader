@@ -5,6 +5,7 @@ import React, {
 	useMemo,
 	useReducer,
 	useRef,
+	useState,
 } from "react";
 import { createThumbnail, revokeThumbnail } from "./platform/thumbnail.js";
 import type {
@@ -77,8 +78,13 @@ export function UploadProvider<TOptions>({
 
 	const configRef = useRef(config);
 	configRef.current = config;
+	const filesRef = useRef(files);
+	filesRef.current = files;
 	const filesCountRef = useRef(0);
 	filesCountRef.current = files.length;
+
+	const [schedulerTick, setSchedulerTick] = useState(0);
+	const bumpScheduler = useCallback(() => setSchedulerTick((t) => t + 1), []);
 
 	const abortControllers = useRef(new Map<string, AbortController>());
 	const processingIds = useRef(new Set<string>());
@@ -104,6 +110,7 @@ export function UploadProvider<TOptions>({
 							updates: { error: result.reason, status: "failed" },
 						});
 						processingIds.current.delete(file.id);
+						bumpScheduler();
 						return;
 					}
 				} catch {
@@ -113,6 +120,7 @@ export function UploadProvider<TOptions>({
 						updates: { error: "Validation error", status: "failed" },
 					});
 					processingIds.current.delete(file.id);
+					bumpScheduler();
 					return;
 				}
 			}
@@ -150,6 +158,7 @@ export function UploadProvider<TOptions>({
 						},
 					});
 					processingIds.current.delete(file.id);
+					bumpScheduler();
 					return;
 				}
 
@@ -199,6 +208,8 @@ export function UploadProvider<TOptions>({
 				} else {
 					processingIds.current.delete(file.id);
 				}
+				// Slot freed: file left validating/uploading (now processing or no statusChecker)
+				bumpScheduler();
 			} catch (err) {
 				if (!ac.signal.aborted) {
 					dispatch({
@@ -212,30 +223,32 @@ export function UploadProvider<TOptions>({
 					});
 				}
 				processingIds.current.delete(file.id);
+				bumpScheduler();
 			}
 		},
-		[],
+		[bumpScheduler],
 	);
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
+		const currentFiles = filesRef.current;
 		const maxConcurrent = configRef.current.maxConcurrentUploads ?? 3;
-		const activeCount = files.filter(
+		const activeCount = currentFiles.filter(
 			(f) => f.status === "validating" || f.status === "uploading",
 		).length;
 		const slotsAvailable = maxConcurrent - activeCount;
 
 		if (slotsAvailable <= 0) return;
 
-		const pending = files.filter(
-			(f) =>
-				f.status === "selected" && !processingIds.current.has(f.id),
+		const pending = currentFiles.filter(
+			(f) => f.status === "selected" && !processingIds.current.has(f.id),
 		);
 
 		for (let i = 0; i < Math.min(slotsAvailable, pending.length); i++) {
 			processingIds.current.add(pending[i].id);
 			processFile(pending[i]);
 		}
-	}, [files, processFile]);
+	}, [schedulerTick]);
 
 	useEffect(() => {
 		return () => {
@@ -265,6 +278,7 @@ export function UploadProvider<TOptions>({
 			videoId: null,
 		}));
 		dispatch({ files: newFiles, type: "ADD_FILES" });
+		bumpScheduler();
 
 		for (const file of newFiles) {
 			createThumbnail(file.ref)
@@ -279,30 +293,27 @@ export function UploadProvider<TOptions>({
 				})
 				.catch(() => {});
 		}
-	}, []);
+	}, [bumpScheduler]);
 
-	const removeFile = useCallback(
-		(id: string) => {
-			const file = files.find((f) => f.id === id);
-			if (
-				file?.status === "processing" ||
-				file?.status === "ready"
-			) {
-				return;
-			}
-			if (file?.thumbnailUri) {
-				revokeThumbnail(file.thumbnailUri);
-			}
-			const ac = abortControllers.current.get(id);
-			if (ac) {
-				ac.abort();
-				abortControllers.current.delete(id);
-			}
-			processingIds.current.delete(id);
-			dispatch({ id, type: "REMOVE_FILE" });
-		},
-		[files],
-	);
+	const removeFile = useCallback((id: string) => {
+		const file = filesRef.current.find((f) => f.id === id);
+		if (
+			file?.status === "processing" ||
+			file?.status === "ready"
+		) {
+			return;
+		}
+		if (file?.thumbnailUri) {
+			revokeThumbnail(file.thumbnailUri);
+		}
+		const ac = abortControllers.current.get(id);
+		if (ac) {
+			ac.abort();
+			abortControllers.current.delete(id);
+		}
+		processingIds.current.delete(id);
+		dispatch({ id, type: "REMOVE_FILE" });
+	}, []);
 
 	const retryFile = useCallback((id: string) => {
 		const ac = abortControllers.current.get(id);
@@ -312,7 +323,8 @@ export function UploadProvider<TOptions>({
 		}
 		processingIds.current.delete(id);
 		dispatch({ id, type: "RETRY_FILE" });
-	}, []);
+		bumpScheduler();
+	}, [bumpScheduler]);
 
 	const maxFiles = configRef.current.maxFiles;
 	const canAddMore = maxFiles == null || files.length < maxFiles;
@@ -322,16 +334,24 @@ export function UploadProvider<TOptions>({
 	const hasErrors = files.some((f) => f.status === "failed");
 	const allReady =
 		files.length > 0 && files.every((f) => f.status === "ready");
+	const readyCount = files.filter((f) => f.status === "ready").length;
+	const failedCount = files.filter((f) => f.status === "failed").length;
+	const allSettled =
+		files.length > 0 &&
+		files.every((f) => f.status === "ready" || f.status === "failed");
 
 	const value: UploadContextValue = useMemo(
 		() => ({
 			addFiles,
 			allReady,
+			allSettled,
 			canAddMore,
+			failedCount,
 			files,
 			hasErrors,
 			isUploading,
 			maxFiles,
+			readyCount,
 			removeFile,
 			retryFile,
 		}),
@@ -345,6 +365,9 @@ export function UploadProvider<TOptions>({
 			isUploading,
 			hasErrors,
 			allReady,
+			allSettled,
+			readyCount,
+			failedCount,
 		],
 	);
 

@@ -1,9 +1,11 @@
-import type {
-	FileRef,
-	HyperserveUploadOptions,
-	UploadAdapter,
-	UploadResult,
-} from "../types.js";
+import type { FileRef, UploadAdapter, UploadResult } from "../types.js";
+
+export type HyperserveUploadOptions = {
+	resolutions: string;
+	isPublic: boolean;
+	thumbnailTimestamps?: string;
+	customUserMetadata?: Record<string, unknown>;
+};
 
 export class HyperserveAdapter implements UploadAdapter<HyperserveUploadOptions> {
 	private apiKey: string;
@@ -21,7 +23,7 @@ export class HyperserveAdapter implements UploadAdapter<HyperserveUploadOptions>
 		signal: AbortSignal,
 	): Promise<UploadResult> {
 		return new Promise((resolve, reject) => {
-			if (!file.raw) {
+			if (file.platform === "native") {
 				reject(new Error("File.raw is required for web uploads"));
 				return;
 			}

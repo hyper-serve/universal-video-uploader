@@ -1,7 +1,8 @@
-import type { FileRef } from "../types.js";
+import type { FileRef, WebFileRef } from "../types.js";
 
-export function toFileRef(file: File): FileRef {
+export function toFileRef(file: File): WebFileRef {
 	return {
+		platform: "web",
 		name: file.name,
 		raw: file,
 		size: file.size,
@@ -10,7 +11,7 @@ export function toFileRef(file: File): FileRef {
 	};
 }
 
-export function toFileRefs(files: FileList | File[]): FileRef[] {
+export function toFileRefs(files: FileList | File[]): WebFileRef[] {
 	return Array.from(files).map(toFileRef);
 }
 

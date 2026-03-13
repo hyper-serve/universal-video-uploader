@@ -1,4 +1,4 @@
-import type { FileRef } from "../types.js";
+import type { FileRef, NativeFileRef } from "../types.js";
 
 export type DocumentPickerResult = {
 	name: string;
@@ -7,8 +7,9 @@ export type DocumentPickerResult = {
 	uri: string;
 };
 
-export function toFileRef(result: DocumentPickerResult): FileRef {
+export function toFileRef(result: DocumentPickerResult): NativeFileRef {
 	return {
+		platform: "native",
 		name: result.name,
 		size: result.size,
 		type: result.type,
@@ -16,7 +17,7 @@ export function toFileRef(result: DocumentPickerResult): FileRef {
 	};
 }
 
-export function toFileRefs(results: DocumentPickerResult[]): FileRef[] {
+export function toFileRefs(results: DocumentPickerResult[]): NativeFileRef[] {
 	return results.map(toFileRef);
 }
 

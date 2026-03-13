@@ -13,6 +13,7 @@ import type { FileRef } from "../types.js";
 describe("thumbnail.native", () => {
 	it("createThumbnail returns null without expo-video-thumbnails", async () => {
 		const ref: FileRef = {
+			platform: "native",
 			name: "test.mp4",
 			size: 1024,
 			type: "video/mp4",
@@ -38,6 +39,7 @@ describe("fileRef.native", () => {
 		const ref = toFileRef(result);
 
 		expect(ref).toEqual({
+			platform: "native",
 			name: "video.mp4",
 			size: 5000,
 			type: "video/mp4",
@@ -75,6 +77,7 @@ describe("fileRef.native", () => {
 
 	it("revokeFileRef is a safe no-op", () => {
 		const ref: FileRef = {
+			platform: "native",
 			name: "test.mp4",
 			size: 1024,
 			type: "video/mp4",

@@ -11,3 +11,5 @@ android/
 
 .env
 .env.local
+
+plans/

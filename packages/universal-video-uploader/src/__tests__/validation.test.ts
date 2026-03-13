@@ -6,8 +6,9 @@ import {
 	maxFileSize,
 } from "../validation/index.js";
 
-function makeFileRef(overrides: Partial<FileRef> = {}): FileRef {
+function makeFileRef(overrides: { size?: number; type?: string; name?: string } = {}): FileRef {
 	return {
+		platform: "native",
 		name: "test.mp4",
 		size: 1024 * 1024,
 		type: "video/mp4",
