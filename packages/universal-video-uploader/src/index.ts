@@ -25,6 +25,9 @@ export {
 	fontScale as themeFontScale,
 	spacingScale as themeSpacingScale,
 } from "./theme.js";
+export { statusConfig } from "./statusConfig.js";
+export { ViewModeProvider, useViewMode } from "./viewMode.js";
+export type { ViewMode, ViewModeProviderProps } from "./viewMode.js";
 export type {
 	FileRef,
 	FileState,

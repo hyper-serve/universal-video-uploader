@@ -318,30 +318,6 @@ describe("UploadProvider + useUpload", () => {
 		expect(result.current.allReady).toBe(false);
 	});
 
-	it("supports render props pattern", () => {
-		let capturedValue: { files: unknown[] } | null = null;
-
-		const config = makeConfig({ adapter: createMockAdapter() });
-
-		const TestComponent = () => (
-			<UploadProvider config={config}>
-				{(value) => {
-					capturedValue = value;
-					return null;
-				}}
-			</UploadProvider>
-		);
-
-		const { unmount } = require("@testing-library/react").render(
-			<TestComponent />,
-		);
-
-		expect(capturedValue).not.toBeNull();
-		expect(capturedValue!.files).toEqual([]);
-
-		unmount();
-	});
-
 	it("respects maxConcurrentUploads", async () => {
 		let activeCount = 0;
 		let maxActive = 0;

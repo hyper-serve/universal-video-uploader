@@ -1,13 +1,12 @@
 import React from "react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import type { FileState, ViewMode } from "@hyperserve/universal-video-uploader";
+import type { FileState } from "@hyperserve/universal-video-uploader";
 import { FileList } from "../FileList.js";
 import { FileItem } from "../FileItem.js";
 
 type MockUploadContext = {
 	files: FileState[];
-	viewMode: ViewMode;
 	removeFile: (id: string) => void;
 	retryFile: (id: string) => void;
 };
@@ -17,13 +16,14 @@ const retryFileMock = vi.fn();
 
 let mockContext: MockUploadContext = {
 	files: [],
-	viewMode: "list",
 	removeFile: removeFileMock,
 	retryFile: retryFileMock,
 };
 
-vi.mock("@hyperserve/universal-video-uploader", () => {
+vi.mock("@hyperserve/universal-video-uploader", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@hyperserve/universal-video-uploader")>();
 	return {
+		...actual,
 		useUpload: () => mockContext,
 	};
 });
@@ -34,7 +34,6 @@ describe("FileList and FileItem", () => {
 		retryFileMock.mockReset();
 		mockContext = {
 			files: [],
-			viewMode: "list",
 			removeFile: removeFileMock,
 			retryFile: retryFileMock,
 		};
@@ -101,10 +100,9 @@ describe("FileList and FileItem", () => {
 			statusDetail: null,
 		};
 		mockContext.files = [file];
-		mockContext.viewMode = "grid";
 
 		const { container } = render(
-			<FileList>{(f) => <div>{f.ref.name}</div>}</FileList>,
+			<FileList mode="grid">{(f) => <div>{f.ref.name}</div>}</FileList>,
 		);
 
 		const wrapper = container.firstElementChild as HTMLElement;
@@ -139,7 +137,7 @@ describe("FileList and FileItem", () => {
 		expect(screen.getByText(/MB|KB/)).toBeTruthy();
 		expect(screen.getByText("Oops")).toBeTruthy();
 
-		fireEvent.click(screen.getByText("Retry"));
+		fireEvent.click(screen.getByLabelText("Retry"));
 		expect(retryFileMock).toHaveBeenCalledWith("1");
 
 		fireEvent.click(screen.getByLabelText("Remove"));

@@ -5,20 +5,44 @@ import type { StyleProp, ViewStyle, TextStyle } from "react-native";
 import { radius } from "./theme.js";
 import { statusConfig } from "./utils.js";
 
+export type StatusConfigEntry = {
+	label: string;
+	bg?: string;
+	text?: string;
+};
+
 export type StatusBadgeProps = {
 	status: FileStatus;
 	style?: StyleProp<ViewStyle>;
 	textStyle?: StyleProp<TextStyle>;
+	statusConfig?: Partial<Record<FileStatus, StatusConfigEntry>>;
+	getLabel?: (status: FileStatus) => string;
 	children?: (info: { label: string; color: string }) => React.ReactNode;
 };
+
+function mergeConfig(
+	status: FileStatus,
+	overrides?: Partial<Record<FileStatus, StatusConfigEntry>>,
+	getLabel?: (status: FileStatus) => string,
+): { bg: string; text: string; label: string } {
+	const base = statusConfig[status];
+	const override = overrides?.[status];
+	return {
+		bg: override?.bg ?? base.bg,
+		label: getLabel ? getLabel(status) : (override?.label ?? base.label),
+		text: override?.text ?? base.text,
+	};
+}
 
 export function StatusBadge({
 	status,
 	style,
 	textStyle,
+	statusConfig: statusConfigOverride,
+	getLabel,
 	children,
 }: StatusBadgeProps) {
-	const config = statusConfig[status];
+	const config = mergeConfig(status, statusConfigOverride, getLabel);
 
 	if (children) {
 		return <>{children({ color: config.text, label: config.label })}</>;

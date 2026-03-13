@@ -56,8 +56,6 @@ export type UploadConfig<
 	onUploadFailed?: (file: FileState) => void;
 };
 
-export type ViewMode = "list" | "grid";
-
 export type UploadContextValue = {
 	files: FileState[];
 	addFiles: (files: FileRef[]) => void;

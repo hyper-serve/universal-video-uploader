@@ -65,9 +65,7 @@ function fileReducer(state: FileState[], action: FileAction): FileState[] {
 export const UploadContext = createContext<UploadContextValue | null>(null);
 
 type UploadProviderProps<TOptions> = {
-	children:
-		| React.ReactNode
-		| ((value: UploadContextValue) => React.ReactNode);
+	children: React.ReactNode;
 	config: UploadConfig<TOptions>;
 };
 
@@ -373,7 +371,7 @@ export function UploadProvider<TOptions>({
 
 	return (
 		<UploadContext.Provider value={value}>
-			{typeof children === "function" ? children(value) : children}
+			{children}
 		</UploadContext.Provider>
 	);
 }
