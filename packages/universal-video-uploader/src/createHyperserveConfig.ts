@@ -1,9 +1,10 @@
 import { HyperserveAdapter } from "./adapter/hyperserve.js";
+import type { HyperserveUploadOptions } from "./adapter/hyperserve.js";
 import { HyperserveStatusChecker } from "./polling/index.js";
 import type {
+	ErrorMessages,
 	FileRef,
 	FileState,
-	HyperserveUploadOptions,
 	UploadConfig,
 	ValidationResult,
 } from "./types.js";
@@ -17,6 +18,7 @@ export type HyperserveConfig = {
 	maxFiles?: number;
 	pollingIntervalMs?: number;
 	uploadOptions: HyperserveUploadOptions;
+	errorMessages?: ErrorMessages;
 	validate?: (file: FileRef) => ValidationResult | Promise<ValidationResult>;
 	onFileReady?: (file: FileState) => void;
 	onUploadFailed?: (file: FileState) => void;
@@ -30,6 +32,7 @@ export function createHyperserveConfig(
 
 	return {
 		adapter: new HyperserveAdapter(adapterConfig),
+		errorMessages: options.errorMessages,
 		maxConcurrentUploads: options.maxConcurrentUploads,
 		maxFiles: options.maxFiles,
 		onFileReady: options.onFileReady,

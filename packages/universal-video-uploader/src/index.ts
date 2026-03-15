@@ -30,6 +30,7 @@ export { statusConfig } from "./statusConfig.js";
 export { ViewModeProvider, useViewMode } from "./viewMode.js";
 export type { ViewMode, ViewModeProviderProps } from "./viewMode.js";
 export type {
+	ErrorMessages,
 	FileRef,
 	NativeFileRef,
 	WebFileRef,

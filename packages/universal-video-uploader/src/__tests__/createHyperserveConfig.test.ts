@@ -61,4 +61,18 @@ describe("createHyperserveConfig", () => {
 		expect(config.onFileReady).toBe(onFileReady);
 		expect(config.onUploadFailed).toBe(onUploadFailed);
 	});
+
+	it("passes through errorMessages", () => {
+		const errorMessages = {
+			processingFailed: "Processing error",
+			validationError: "Validation error",
+		};
+		const config = createHyperserveConfig({
+			apiKey: "key",
+			errorMessages,
+			uploadOptions: { isPublic: true, resolutions: "480p" },
+		});
+
+		expect(config.errorMessages).toBe(errorMessages);
+	});
 });

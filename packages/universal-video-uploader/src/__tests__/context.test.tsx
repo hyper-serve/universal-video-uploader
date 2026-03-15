@@ -3,6 +3,7 @@ import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { UploadProvider } from "../context.js";
 import { useUpload } from "../hooks/useUpload.js";
+import { createThumbnail, revokeThumbnail } from "../platform/thumbnail.js";
 import type {
 	FileRef,
 	StatusChecker,
@@ -10,6 +11,11 @@ import type {
 	UploadConfig,
 	UploadResult,
 } from "../types.js";
+
+vi.mock("../platform/thumbnail.js", () => ({
+	createThumbnail: vi.fn().mockResolvedValue(null),
+	revokeThumbnail: vi.fn(),
+}));
 
 function makeFileRef(name = "test.mp4", withRaw = false): FileRef {
 	if (withRaw) {
@@ -108,6 +114,7 @@ describe("UploadProvider + useUpload", () => {
 
 	afterEach(() => {
 		vi.useRealTimers();
+		vi.clearAllMocks();
 		vi.restoreAllMocks();
 	});
 
@@ -750,5 +757,144 @@ describe("UploadProvider + useUpload", () => {
 
 		onFileReady.mockClear();
 		expect(onFileReady).not.toHaveBeenCalled();
+	});
+
+	it("uses custom errorMessages.validationError when validation throws", async () => {
+		const adapter = createMockAdapter();
+		const validate = vi.fn().mockRejectedValue(new Error("crash"));
+		const config = makeConfig({
+			adapter,
+			validate,
+			errorMessages: { validationError: "Custom validation error" },
+		});
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].status).toBe("failed");
+		expect(result.current.files[0].error).toBe("Custom validation error");
+	});
+
+	it("uses custom errorMessages.processingFailed when statusChecker reports failed", async () => {
+		let invokeStatusChange: (status: "processing" | "ready" | "failed") => void;
+		const statusChecker = createMockStatusChecker((invoke) => {
+			invokeStatusChange = invoke;
+		});
+		const adapter = createMockAdapter({ metadata: { isPublic: true }, videoId: "v1" });
+		const config = makeConfig({
+			adapter,
+			statusChecker,
+			errorMessages: { processingFailed: "Custom processing error" },
+		});
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		act(() => {
+			invokeStatusChange!("failed");
+		});
+
+		expect(result.current.files[0].status).toBe("failed");
+		expect(result.current.files[0].error).toBe("Custom processing error");
+	});
+
+	it("revokes thumbnail when file transitions to ready", async () => {
+		vi.mocked(createThumbnail).mockResolvedValue("blob:thumb-123");
+
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			playbackUrl: "https://cdn.example.com/done.mp4",
+			videoId: "v1",
+		});
+		const config = makeConfig({ adapter });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef("a.mp4", true)]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(50);
+		});
+
+		expect(result.current.files[0].status).toBe("ready");
+		expect(revokeThumbnail).toHaveBeenCalledWith("blob:thumb-123");
+	});
+
+	it("revokes remaining thumbnails on unmount", async () => {
+		vi.mocked(createThumbnail).mockResolvedValue("blob:thumb-unmount");
+
+		const uploadPromise = new Promise<UploadResult>(() => {});
+		const adapter = createMockAdapter();
+		vi.mocked(adapter.upload).mockReturnValue(uploadPromise);
+		const config = makeConfig({ adapter });
+
+		const { result, unmount } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef("a.mp4", true)]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(50);
+		});
+
+		expect(result.current.files[0].thumbnailUri).toBe("blob:thumb-unmount");
+
+		unmount();
+
+		expect(revokeThumbnail).toHaveBeenCalledWith("blob:thumb-unmount");
+	});
+
+	it("does not upload the same file twice under React Strict Mode double-invocation", async () => {
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			playbackUrl: "https://cdn.example.com/done.mp4",
+			videoId: "v1",
+		});
+		const config = makeConfig({ adapter });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: ({ children }: { children: React.ReactNode }) => (
+				<React.StrictMode>
+					<UploadProvider config={config}>{children}</UploadProvider>
+				</React.StrictMode>
+			),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(adapter.upload).toHaveBeenCalledTimes(1);
+		expect(result.current.files).toHaveLength(1);
+		expect(result.current.files[0].status).toBe("ready");
 	});
 });

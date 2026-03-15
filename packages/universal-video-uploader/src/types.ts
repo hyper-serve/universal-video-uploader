@@ -47,6 +47,12 @@ export type UploadResult = {
 	metadata?: Record<string, unknown>;
 };
 
+export type ErrorMessages = {
+	validationError?: string;
+	uploadFailed?: string;
+	processingFailed?: string;
+};
+
 export type UploadConfig<
 	TOptions = Record<string, unknown>,
 > = {
@@ -56,6 +62,7 @@ export type UploadConfig<
 	uploadOptions: TOptions;
 	maxConcurrentUploads?: number;
 	maxFiles?: number;
+	errorMessages?: ErrorMessages;
 	onFileReady?: (file: FileState) => void;
 	onUploadFailed?: (file: FileState) => void;
 };

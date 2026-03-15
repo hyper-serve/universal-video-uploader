@@ -86,8 +86,19 @@ export function UploadProvider<TOptions>({
 	const [schedulerTick, setSchedulerTick] = useState(0);
 	const bumpScheduler = useCallback(() => setSchedulerTick((t) => t + 1), []);
 
+	const [statusChangeTick, setStatusChangeTick] = useState(0);
+	const bumpStatusChange = useCallback(() => setStatusChangeTick((t) => t + 1), []);
+
 	const abortControllers = useRef(new Map<string, AbortController>());
 	const processingIds = useRef(new Set<string>());
+	const thumbnailUrisRef = useRef(new Map<string, string>());
+
+	const dispatchWithStatusTracking = useCallback((action: FileAction) => {
+		dispatch(action);
+		if (action.type !== "UPDATE_FILE" || action.updates.status !== undefined) {
+			bumpStatusChange();
+		}
+	}, [bumpStatusChange]);
 
 	const processFile = useCallback(
 		async (file: FileState) => {
@@ -95,41 +106,43 @@ export function UploadProvider<TOptions>({
 			abortControllers.current.set(file.id, ac);
 			const cfg = configRef.current;
 
-			if (cfg.validate) {
-				dispatch({
-					id: file.id,
-					type: "UPDATE_FILE",
-					updates: { status: "validating" },
-				});
-				try {
-					const result = await cfg.validate(file.ref);
-					if (!result.valid) {
-						dispatch({
-							id: file.id,
-							type: "UPDATE_FILE",
-							updates: { error: result.reason, status: "failed" },
-						});
-						processingIds.current.delete(file.id);
-						bumpScheduler();
-						return;
-					}
-				} catch {
-					dispatch({
-						id: file.id,
-						type: "UPDATE_FILE",
-						updates: { error: "Validation error", status: "failed" },
-					});
-					processingIds.current.delete(file.id);
-					bumpScheduler();
-					return;
-				}
-			}
-
-			dispatch({
+		if (cfg.validate) {
+			dispatchWithStatusTracking({
 				id: file.id,
 				type: "UPDATE_FILE",
-				updates: { status: "uploading" },
+				updates: { status: "validating" },
 			});
+			try {
+				const result = await cfg.validate(file.ref);
+			if (!result.valid) {
+				dispatchWithStatusTracking({
+					id: file.id,
+					type: "UPDATE_FILE",
+					updates: { error: result.reason, status: "failed" },
+				});
+				abortControllers.current.delete(file.id);
+				processingIds.current.delete(file.id);
+				bumpScheduler();
+				return;
+			}
+	} catch {
+		dispatchWithStatusTracking({
+			id: file.id,
+			type: "UPDATE_FILE",
+			updates: { error: cfg.errorMessages?.validationError ?? "Validation error", status: "failed" },
+		});
+			abortControllers.current.delete(file.id);
+			processingIds.current.delete(file.id);
+			bumpScheduler();
+			return;
+		}
+		}
+
+		dispatchWithStatusTracking({
+			id: file.id,
+			type: "UPDATE_FILE",
+			updates: { status: "uploading" },
+		});
 
 			try {
 				const uploadResult = await cfg.adapter.upload(
@@ -146,31 +159,38 @@ export function UploadProvider<TOptions>({
 					ac.signal,
 				);
 
-				if (uploadResult.playbackUrl) {
-					dispatch({
-						id: file.id,
-						type: "UPDATE_FILE",
-						updates: {
-							playbackUrl: uploadResult.playbackUrl,
-							progress: 100,
-							status: "ready",
-							videoId: uploadResult.videoId,
-						},
-					});
-					processingIds.current.delete(file.id);
-					bumpScheduler();
-					return;
-				}
+	if (uploadResult.playbackUrl) {
+		const thumbnailUri = thumbnailUrisRef.current.get(file.id);
+		if (thumbnailUri) {
+			revokeThumbnail(thumbnailUri);
+			thumbnailUrisRef.current.delete(file.id);
+		}
+		dispatchWithStatusTracking({
+			id: file.id,
+			type: "UPDATE_FILE",
+			updates: {
+				playbackUrl: uploadResult.playbackUrl,
+				progress: 100,
+				status: "ready",
+				thumbnailUri: null,
+				videoId: uploadResult.videoId,
+			},
+		});
+		abortControllers.current.delete(file.id);
+		processingIds.current.delete(file.id);
+		bumpScheduler();
+		return;
+	}
 
-				dispatch({
-					id: file.id,
-					type: "UPDATE_FILE",
-					updates: {
-						progress: 100,
-						status: "processing",
-						videoId: uploadResult.videoId,
-					},
-				});
+			dispatchWithStatusTracking({
+				id: file.id,
+				type: "UPDATE_FILE",
+				updates: {
+					progress: 100,
+					status: "processing",
+					videoId: uploadResult.videoId,
+				},
+			});
 
 				if (cfg.statusChecker) {
 					cfg.statusChecker.checkStatus({
@@ -186,47 +206,58 @@ export function UploadProvider<TOptions>({
 								return;
 							}
 
-							dispatch({
+					if (status === "ready") {
+						const thumbnailUri = thumbnailUrisRef.current.get(file.id);
+						if (thumbnailUri) {
+							revokeThumbnail(thumbnailUri);
+							thumbnailUrisRef.current.delete(file.id);
+						}
+					}
+					dispatchWithStatusTracking({
 								id: file.id,
 								type: "UPDATE_FILE",
 								updates: {
 									error:
 										status === "failed"
-											? "Processing failed"
+											? (cfg.errorMessages?.processingFailed ?? "Processing failed")
 											: null,
 									playbackUrl: playbackUrl ?? null,
 									status:
 										status === "ready" ? "ready" : "failed",
 									statusDetail: null,
+									...(status === "ready" && { thumbnailUri: null }),
 								},
 							});
-							processingIds.current.delete(file.id);
+					abortControllers.current.delete(file.id);
+					processingIds.current.delete(file.id);
 						},
 						signal: ac.signal,
 						uploadResult,
 					});
-				} else {
-					processingIds.current.delete(file.id);
-				}
-				// Slot freed: file left validating/uploading (now processing or no statusChecker)
-				bumpScheduler();
-			} catch (err) {
-				if (!ac.signal.aborted) {
-					dispatch({
-						id: file.id,
-						type: "UPDATE_FILE",
-						updates: {
-							error:
-								err instanceof Error ? err.message : "Upload failed",
-							status: "failed",
-						},
-					});
-				}
+			} else {
+				abortControllers.current.delete(file.id);
 				processingIds.current.delete(file.id);
-				bumpScheduler();
 			}
+			// Slot freed: file left validating/uploading (now processing or no statusChecker)
+				bumpScheduler();
+		} catch (err) {
+			if (!ac.signal.aborted) {
+				dispatchWithStatusTracking({
+					id: file.id,
+					type: "UPDATE_FILE",
+					updates: {
+					error:
+						err instanceof Error ? err.message : (cfg.errorMessages?.uploadFailed ?? "Upload failed"),
+						status: "failed",
+					},
+				});
+			}
+			abortControllers.current.delete(file.id);
+			processingIds.current.delete(file.id);
+			bumpScheduler();
+		}
 		},
-		[bumpScheduler],
+		[bumpScheduler, dispatchWithStatusTracking],
 	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -255,6 +286,9 @@ export function UploadProvider<TOptions>({
 			for (const ac of abortControllers.current.values()) {
 				ac.abort();
 			}
+			for (const uri of thumbnailUrisRef.current.values()) {
+				revokeThumbnail(uri);
+			}
 		};
 	}, []);
 
@@ -277,23 +311,24 @@ export function UploadProvider<TOptions>({
 			thumbnailUri: null,
 			videoId: null,
 		}));
-		dispatch({ files: newFiles, type: "ADD_FILES" });
-		bumpScheduler();
+	dispatchWithStatusTracking({ files: newFiles, type: "ADD_FILES" });
+	bumpScheduler();
 
-		for (const file of newFiles) {
-			createThumbnail(file.ref)
-				.then((uri) => {
-					if (uri) {
-						dispatch({
-							id: file.id,
-							type: "UPDATE_FILE",
-							updates: { thumbnailUri: uri },
-						});
-					}
-				})
-				.catch(() => {});
-		}
-	}, [bumpScheduler]);
+	for (const file of newFiles) {
+		createThumbnail(file.ref)
+			.then((uri) => {
+				if (uri) {
+					thumbnailUrisRef.current.set(file.id, uri);
+					dispatch({
+						id: file.id,
+						type: "UPDATE_FILE",
+						updates: { thumbnailUri: uri },
+					});
+				}
+			})
+			.catch(() => {});
+	}
+}, [bumpScheduler, dispatchWithStatusTracking]);
 
 	const removeFile = useCallback((id: string) => {
 		const file = filesRef.current.find((f) => f.id === id);
@@ -303,17 +338,19 @@ export function UploadProvider<TOptions>({
 		) {
 			return;
 		}
-		if (file?.thumbnailUri) {
-			revokeThumbnail(file.thumbnailUri);
-		}
+	const thumbnailUri = thumbnailUrisRef.current.get(id);
+	if (thumbnailUri) {
+		revokeThumbnail(thumbnailUri);
+		thumbnailUrisRef.current.delete(id);
+	}
 		const ac = abortControllers.current.get(id);
 		if (ac) {
 			ac.abort();
 			abortControllers.current.delete(id);
 		}
-		processingIds.current.delete(id);
-		dispatch({ id, type: "REMOVE_FILE" });
-	}, []);
+	processingIds.current.delete(id);
+	dispatchWithStatusTracking({ id, type: "REMOVE_FILE" });
+}, [dispatchWithStatusTracking]);
 
 	const retryFile = useCallback((id: string) => {
 		const ac = abortControllers.current.get(id);
@@ -321,10 +358,10 @@ export function UploadProvider<TOptions>({
 			ac.abort();
 			abortControllers.current.delete(id);
 		}
-		processingIds.current.delete(id);
-		dispatch({ id, type: "RETRY_FILE" });
-		bumpScheduler();
-	}, [bumpScheduler]);
+	processingIds.current.delete(id);
+	dispatchWithStatusTracking({ id, type: "RETRY_FILE" });
+	bumpScheduler();
+}, [bumpScheduler, dispatchWithStatusTracking]);
 
 	const maxFiles = configRef.current.maxFiles;
 	const canAddMore = maxFiles == null || files.length < maxFiles;
@@ -372,13 +409,15 @@ export function UploadProvider<TOptions>({
 	);
 
 	const prevStatusById = useRef<Map<string, FileStatus>>(new Map());
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		const cfg = configRef.current;
 		const onReady = cfg.onFileReady;
 		const onFailed = cfg.onUploadFailed;
 		if (!onReady && !onFailed) return;
+		const currentFiles = filesRef.current;
 		const prev = prevStatusById.current;
-		for (const file of files) {
+		for (const file of currentFiles) {
 			const p = prev.get(file.id);
 			if (file.status === "ready" && p !== undefined && p !== "ready") {
 				onReady?.(file);
@@ -388,9 +427,9 @@ export function UploadProvider<TOptions>({
 			prev.set(file.id, file.status);
 		}
 		for (const id of prev.keys()) {
-			if (!files.some((f) => f.id === id)) prev.delete(id);
+			if (!currentFiles.some((f) => f.id === id)) prev.delete(id);
 		}
-	}, [files]);
+	}, [statusChangeTick]);
 
 	return (
 		<UploadContext.Provider value={value}>
