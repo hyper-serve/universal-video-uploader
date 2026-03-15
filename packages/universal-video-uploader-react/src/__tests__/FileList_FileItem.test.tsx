@@ -144,7 +144,177 @@ describe("FileList and FileItem", () => {
 		expect(removeFileMock).toHaveBeenCalledWith("1");
 	});
 
-it("hides RetryButton when status is not failed and hides RemoveButton for ready files", () => {
+	it("FileItem children render-prop receives file state", () => {
+		const file: FileState = {
+			id: "1",
+			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
+			status: "uploading",
+			progress: 42,
+			thumbnailUri: null,
+			playbackUrl: null,
+			videoId: null,
+			error: null,
+			statusDetail: null,
+		};
+
+		render(
+			<FileItem file={file}>
+				{(f) => <span data-testid="status">{f.status}:{f.progress}</span>}
+			</FileItem>,
+		);
+
+		expect(screen.getByTestId("status").textContent).toBe("uploading:42");
+	});
+
+	it("StatusIcon renders spinner text for processing status", () => {
+		const file: FileState = {
+			id: "1",
+			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
+			status: "processing",
+			progress: 100,
+			thumbnailUri: null,
+			playbackUrl: null,
+			videoId: "v1",
+			error: null,
+			statusDetail: null,
+		};
+
+		render(
+			<FileItem file={file}>
+				<FileItem.StatusIcon />
+			</FileItem>,
+		);
+
+		expect(screen.getByText("Processing...")).toBeTruthy();
+	});
+
+	it("StatusIcon renders check icon for ready status", () => {
+		const file: FileState = {
+			id: "1",
+			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
+			status: "ready",
+			progress: 100,
+			thumbnailUri: null,
+			playbackUrl: "https://example.com",
+			videoId: "v1",
+			error: null,
+			statusDetail: null,
+		};
+
+		const { container } = render(
+			<FileItem file={file}>
+				<FileItem.StatusIcon />
+			</FileItem>,
+		);
+
+		expect(container.querySelector("svg")).toBeTruthy();
+	});
+
+	it("StatusIcon renders nothing for selected status", () => {
+		const file: FileState = {
+			id: "1",
+			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
+			status: "selected",
+			progress: 0,
+			thumbnailUri: null,
+			playbackUrl: null,
+			videoId: null,
+			error: null,
+			statusDetail: null,
+		};
+
+		const { container } = render(
+			<FileItem file={file}>
+				<FileItem.StatusIcon />
+			</FileItem>,
+		);
+
+		expect(container.querySelector("svg")).toBeNull();
+		expect(container.textContent).toBe("");
+	});
+
+	it("UploadProgress only renders when status is uploading", () => {
+		const uploading: FileState = {
+			id: "1",
+			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
+			status: "uploading",
+			progress: 65,
+			thumbnailUri: null,
+			playbackUrl: null,
+			videoId: null,
+			error: null,
+			statusDetail: null,
+		};
+
+		const { container, rerender } = render(
+			<FileItem file={uploading}>
+				<FileItem.UploadProgress />
+			</FileItem>,
+		);
+
+		expect(container.querySelector("[role='progressbar']")).toBeTruthy();
+
+		const selected: FileState = { ...uploading, status: "selected", progress: 0 };
+		rerender(
+			<FileItem file={selected}>
+				<FileItem.UploadProgress />
+			</FileItem>,
+		);
+
+		expect(container.querySelector("[role='progressbar']")).toBeNull();
+	});
+
+	it("RemoveButton shows Cancel label when file is uploading", () => {
+		const file: FileState = {
+			id: "1",
+			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
+			status: "uploading",
+			progress: 50,
+			thumbnailUri: null,
+			playbackUrl: null,
+			videoId: null,
+			error: null,
+			statusDetail: null,
+		};
+
+		render(
+			<FileItem file={file}>
+				<FileItem.RemoveButton />
+			</FileItem>,
+		);
+
+		expect(screen.getByLabelText("Cancel")).toBeTruthy();
+	});
+
+	it("RemoveButton shows Remove label for selected/failed files", () => {
+		const file: FileState = {
+			id: "1",
+			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
+			status: "failed",
+			progress: 0,
+			thumbnailUri: null,
+			playbackUrl: null,
+			videoId: null,
+			error: "Error",
+			statusDetail: null,
+		};
+
+		render(
+			<FileItem file={file}>
+				<FileItem.RemoveButton />
+			</FileItem>,
+		);
+
+		expect(screen.getByLabelText("Remove")).toBeTruthy();
+	});
+
+	it("throws when compound component is used outside FileItem", () => {
+		expect(() => {
+			render(<FileItem.FileName />);
+		}).toThrow("FileItem compound components must be used within <FileItem>");
+	});
+
+	it("hides RetryButton when status is not failed and hides RemoveButton for ready files", () => {
 		const ready: FileState = {
 			id: "2",
 			ref: { name: "ready.mp4", size: 1000, type: "video/mp4", uri: "x" },

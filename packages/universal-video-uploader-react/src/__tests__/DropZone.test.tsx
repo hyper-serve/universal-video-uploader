@@ -1,6 +1,6 @@
 import React from "react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import { DropZone } from "../DropZone.js";
 
 const addFilesMock = vi.fn();
@@ -75,6 +75,65 @@ describe("DropZone", () => {
 		const passed = addFilesMock.mock.calls[0][0] as File[];
 		expect(passed).toHaveLength(1);
 		expect(passed[0].name).toBe("video.mp4");
+	});
+
+	it("adds files via file input change event", () => {
+		const { container } = render(<DropZone />);
+		const input = container.querySelector("input[type='file']") as HTMLInputElement;
+		const videoFile = createFile("video.mp4", "video/mp4");
+
+		Object.defineProperty(input, "files", {
+			value: [videoFile],
+			writable: false,
+		});
+
+		fireEvent.change(input);
+
+		expect(addFilesMock).toHaveBeenCalledTimes(1);
+	});
+
+	it("passes multiple prop to file input", () => {
+		const { container: c1 } = render(<DropZone multiple={false} />);
+		const input1 = c1.querySelector("input[type='file']") as HTMLInputElement;
+		expect(input1.hasAttribute("multiple")).toBe(false);
+
+		const { container: c2 } = render(<DropZone multiple />);
+		const input2 = c2.querySelector("input[type='file']") as HTMLInputElement;
+		expect(input2.hasAttribute("multiple")).toBe(true);
+	});
+
+	it("renders supportingText when provided", () => {
+		render(<DropZone supportingText="MP4 files up to 100MB" />);
+		expect(screen.getByText("MP4 files up to 100MB")).toBeTruthy();
+	});
+
+	it("renders children render-prop with isDragging and openPicker", () => {
+		const childFn = vi.fn(({ isDragging, openPicker }) => (
+			<div>
+				<span data-testid="dragging">{isDragging.toString()}</span>
+				<button onClick={openPicker} data-testid="pick-btn">Pick</button>
+			</div>
+		));
+
+		render(<DropZone>{childFn}</DropZone>);
+
+		expect(childFn).toHaveBeenCalled();
+		expect(screen.getByTestId("dragging").textContent).toBe("false");
+	});
+
+	it("sets isDragging to true on dragOver and false on dragLeave", () => {
+		const childFn = vi.fn(({ isDragging }: { isDragging: boolean }) => (
+			<span data-testid="dragging">{isDragging.toString()}</span>
+		));
+
+		const { getByRole } = render(<DropZone>{childFn}</DropZone>);
+		const zone = getByRole("button");
+
+		fireEvent.dragOver(zone, { dataTransfer: { files: [] } });
+		expect(screen.getByTestId("dragging").textContent).toBe("true");
+
+		fireEvent.dragLeave(zone, { relatedTarget: null });
+		expect(screen.getByTestId("dragging").textContent).toBe("false");
 	});
 
 	it("does nothing on drop when disabled via canAddMore === false", () => {

@@ -869,6 +869,264 @@ describe("UploadProvider + useUpload", () => {
 		expect(revokeThumbnail).toHaveBeenCalledWith("blob:thumb-unmount");
 	});
 
+	it("uses custom errorMessages.uploadFailed when adapter rejects with non-Error", async () => {
+		const adapter: UploadAdapter = {
+			upload: vi.fn(() => Promise.reject("string rejection")),
+		};
+		const config = makeConfig({
+			adapter,
+			errorMessages: { uploadFailed: "Custom upload error" },
+		});
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].status).toBe("failed");
+		expect(result.current.files[0].error).toBe("Custom upload error");
+	});
+
+	it("uses default uploadFailed message when adapter rejects with non-Error and no custom message", async () => {
+		const adapter: UploadAdapter = {
+			upload: vi.fn(() => Promise.reject("string rejection")),
+		};
+		const config = makeConfig({ adapter });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].status).toBe("failed");
+		expect(result.current.files[0].error).toBe("Upload failed");
+	});
+
+	it("addFiles with empty array does not change state", async () => {
+		const adapter = createMockAdapter();
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter })),
+		});
+
+		act(() => {
+			result.current.addFiles([]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files).toHaveLength(0);
+		expect(adapter.upload).not.toHaveBeenCalled();
+	});
+
+	it("calls onFileReady when statusChecker transitions file to ready", async () => {
+		let invokeStatusChange: (status: "processing" | "ready" | "failed", playbackUrl?: string) => void;
+		const statusChecker = createMockStatusChecker((invoke) => {
+			invokeStatusChange = invoke;
+		});
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			videoId: "video-1",
+		});
+		const onFileReady = vi.fn();
+		const config = makeConfig({ adapter, statusChecker, onFileReady });
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(config),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].status).toBe("processing");
+		expect(onFileReady).not.toHaveBeenCalled();
+
+		act(() => {
+			invokeStatusChange!("ready", "https://cdn.example.com/video.mp4");
+		});
+
+		expect(result.current.files[0].status).toBe("ready");
+		expect(onFileReady).toHaveBeenCalledTimes(1);
+		expect(onFileReady).toHaveBeenCalledWith(
+			expect.objectContaining({
+				status: "ready",
+				playbackUrl: "https://cdn.example.com/video.mp4",
+			}),
+		);
+	});
+
+	it("clears statusDetail when file transitions to ready via statusChecker", async () => {
+		let invokeStatusChange: (status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void;
+		const statusChecker = createMockStatusChecker((invoke) => {
+			invokeStatusChange = invoke;
+		});
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			videoId: "video-1",
+		});
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter, statusChecker })),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		act(() => {
+			invokeStatusChange!("processing", undefined, "480p: transcoding");
+		});
+		expect(result.current.files[0].statusDetail).toBe("480p: transcoding");
+
+		act(() => {
+			invokeStatusChange!("ready", "https://cdn.example.com/video.mp4");
+		});
+		expect(result.current.files[0].statusDetail).toBeNull();
+	});
+
+	it("clears statusDetail when file transitions to failed via statusChecker", async () => {
+		let invokeStatusChange: (status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void;
+		const statusChecker = createMockStatusChecker((invoke) => {
+			invokeStatusChange = invoke;
+		});
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			videoId: "video-1",
+		});
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter, statusChecker })),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		act(() => {
+			invokeStatusChange!("processing", undefined, "480p: transcoding");
+		});
+		expect(result.current.files[0].statusDetail).toBe("480p: transcoding");
+
+		act(() => {
+			invokeStatusChange!("failed");
+		});
+		expect(result.current.files[0].statusDetail).toBeNull();
+	});
+
+	it("reports progress updates during upload", async () => {
+		const progressValues: number[] = [];
+		const adapter: UploadAdapter = {
+			upload: vi.fn(async (_file, _options, callbacks) => {
+				callbacks.onProgress(25);
+				callbacks.onProgress(50);
+				callbacks.onProgress(75);
+				callbacks.onProgress(100);
+				return {
+					metadata: { isPublic: true },
+					playbackUrl: "https://cdn.example.com/done.mp4",
+					videoId: "v1",
+				};
+			}),
+		};
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter })),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		expect(result.current.files[0].progress).toBe(100);
+	});
+
+	it("revokes thumbnail when file is removed", async () => {
+		vi.mocked(createThumbnail).mockResolvedValue("blob:thumb-remove");
+
+		const uploadPromise = new Promise<UploadResult>(() => {});
+		const adapter = createMockAdapter();
+		vi.mocked(adapter.upload).mockReturnValue(uploadPromise);
+
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter })),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef("a.mp4", true)]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(50);
+		});
+
+		expect(result.current.files[0].thumbnailUri).toBe("blob:thumb-remove");
+
+		const fileId = result.current.files[0].id;
+		act(() => {
+			result.current.removeFile(fileId);
+		});
+
+		expect(result.current.files).toHaveLength(0);
+		expect(revokeThumbnail).toHaveBeenCalledWith("blob:thumb-remove");
+	});
+
+	it("removeFile with nonexistent id is a no-op", async () => {
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			playbackUrl: "https://cdn.example.com/done.mp4",
+			videoId: "v1",
+		});
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter })),
+		});
+
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+
+		const lengthBefore = result.current.files.length;
+		act(() => {
+			result.current.removeFile("nonexistent-id");
+		});
+		expect(result.current.files.length).toBe(lengthBefore);
+	});
+
 	it("does not upload the same file twice under React Strict Mode double-invocation", async () => {
 		const adapter = createMockAdapter({
 			metadata: { isPublic: true },

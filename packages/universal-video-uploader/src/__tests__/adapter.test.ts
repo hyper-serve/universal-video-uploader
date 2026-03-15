@@ -207,6 +207,74 @@ describe("HyperserveAdapter (web)", () => {
 		).rejects.toThrow("File.raw is required");
 	});
 
+	it("aborts xhr when abort signal fires", async () => {
+		const adapter = createAdapter();
+		const ac = new AbortController();
+
+		const uploadPromise = adapter.upload(
+			makeFileRef(),
+			defaultOptions,
+			{ onProgress: vi.fn() },
+			ac.signal,
+		);
+
+		const xhr = MockXHR.instances[0];
+
+		ac.abort();
+
+		const abortHandler = xhr.addEventListener.mock.calls.find(
+			(c: unknown[]) => c[0] === "abort",
+		)?.[1];
+		abortHandler?.();
+
+		await expect(uploadPromise).rejects.toThrow("Upload aborted");
+		expect(xhr.abort).toHaveBeenCalled();
+	});
+
+	it("rejects with invalid response on malformed JSON", async () => {
+		const adapter = createAdapter();
+		const ac = new AbortController();
+
+		const uploadPromise = adapter.upload(
+			makeFileRef(),
+			defaultOptions,
+			{ onProgress: vi.fn() },
+			ac.signal,
+		);
+
+		const xhr = MockXHR.instances[0];
+		xhr.simulateLoad(200, "not valid json{{{");
+
+		await expect(uploadPromise).rejects.toThrow("Invalid response from server");
+	});
+
+	it("does not call onProgress when lengthComputable is false", async () => {
+		const adapter = createAdapter();
+		const ac = new AbortController();
+		const onProgress = vi.fn();
+
+		const uploadPromise = adapter.upload(
+			makeFileRef(),
+			defaultOptions,
+			{ onProgress },
+			ac.signal,
+		);
+
+		const xhr = MockXHR.instances[0];
+		const progressHandler = xhr.upload.addEventListener.mock.calls.find(
+			(c: unknown[]) => c[0] === "progress",
+		)?.[1];
+		progressHandler?.({ lengthComputable: false, loaded: 50, total: 100 });
+		expect(onProgress).not.toHaveBeenCalled();
+
+		xhr.simulateLoad(
+			200,
+			JSON.stringify({ id: "video-123", isPublic: true }),
+		);
+
+		await uploadPromise;
+	});
+
 	it("includes optional fields in form data", async () => {
 		const adapter = createAdapter();
 		const ac = new AbortController();

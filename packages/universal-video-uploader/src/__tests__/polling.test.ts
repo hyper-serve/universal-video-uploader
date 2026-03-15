@@ -479,6 +479,103 @@ describe("pollVideoStatus", () => {
 		expect(onStatusChange).toHaveBeenCalledWith("ready", undefined);
 	});
 
+	it("caps backoff at MAX_BACKOFF_MS (60 seconds)", async () => {
+		vi.spyOn(Math, "random").mockReturnValue(0);
+		const onStatusChange = vi.fn();
+		const ac = new AbortController();
+
+		const readyResponse = {
+			json: () =>
+				Promise.resolve({
+					id: "video-1",
+					isPublic: true,
+					resolutions: {
+						"480p": {
+							id: "res-1",
+							status: "ready",
+							video_url: "https://cdn.example.com/video.mp4",
+						},
+					},
+					status: "ready",
+				}),
+			ok: true,
+		};
+
+		const fetchMock = vi
+			.fn()
+			.mockResolvedValueOnce({ ok: false, status: 500 }) // 1 → 2000
+			.mockResolvedValueOnce({ ok: false, status: 500 }) // 2 → 4000
+			.mockResolvedValueOnce({ ok: false, status: 500 }) // 3 → 8000
+			.mockResolvedValueOnce({ ok: false, status: 500 }) // 4 → 16000
+			.mockResolvedValueOnce({ ok: false, status: 500 }) // 5 → 32000
+			.mockResolvedValueOnce({ ok: false, status: 500 }) // 6 → 60000 (capped)
+			.mockResolvedValueOnce(readyResponse);
+
+		vi.stubGlobal("fetch", fetchMock);
+
+		pollVideoStatus({
+			apiKey: "test-key",
+			baseUrl: "https://api.example.com",
+			intervalMs: 1000,
+			isPublic: true,
+			onStatusChange,
+			signal: ac.signal,
+			videoId: "video-1",
+		});
+
+		await vi.advanceTimersByTimeAsync(0); // 1st fetch
+		await vi.advanceTimersByTimeAsync(2000); // 2nd
+		await vi.advanceTimersByTimeAsync(4000); // 3rd
+		await vi.advanceTimersByTimeAsync(8000); // 4th
+		await vi.advanceTimersByTimeAsync(16000); // 5th
+		await vi.advanceTimersByTimeAsync(32000); // 6th
+		expect(fetchMock).toHaveBeenCalledTimes(6);
+		// 7th should fire at 60000ms (capped), not 64000ms
+		await vi.advanceTimersByTimeAsync(60000);
+		expect(fetchMock).toHaveBeenCalledTimes(7);
+		expect(onStatusChange).toHaveBeenCalledWith(
+			"ready",
+			"https://cdn.example.com/video.mp4",
+		);
+	});
+
+	it("uses data.status as detail fallback when no resolutions in processing response", async () => {
+		const onStatusChange = vi.fn();
+		const ac = new AbortController();
+
+		vi.stubGlobal(
+			"fetch",
+			vi.fn().mockResolvedValueOnce({
+				json: () =>
+					Promise.resolve({
+						id: "video-1",
+						isPublic: true,
+						resolutions: {},
+						status: "encoding",
+					}),
+				ok: true,
+			}),
+		);
+
+		pollVideoStatus({
+			apiKey: "test-key",
+			baseUrl: "https://api.example.com",
+			intervalMs: 1000,
+			isPublic: true,
+			onStatusChange,
+			signal: ac.signal,
+			videoId: "video-1",
+		});
+
+		await vi.advanceTimersByTimeAsync(0);
+
+		expect(onStatusChange).toHaveBeenCalledWith(
+			"processing",
+			undefined,
+			"encoding",
+		);
+	});
+
 	it("includes resolution statuses in statusDetail when processing", async () => {
 		const onStatusChange = vi.fn();
 		const ac = new AbortController();
@@ -569,6 +666,58 @@ describe("HyperserveStatusChecker", () => {
 			"https://api.example.com/video/video-99/private/3600",
 			expect.any(Object),
 		);
+	});
+
+	it("defaults intervalMs to 3000 when not provided", async () => {
+		vi.spyOn(Math, "random").mockReturnValue(0);
+		const onStatusChange = vi.fn();
+		const ac = new AbortController();
+
+		const fetchMock = vi
+			.fn()
+			.mockResolvedValueOnce({
+				json: () =>
+					Promise.resolve({
+						id: "video-1",
+						isPublic: true,
+						resolutions: {},
+						status: "pending",
+					}),
+				ok: true,
+			})
+			.mockResolvedValueOnce({
+				json: () =>
+					Promise.resolve({
+						id: "video-1",
+						isPublic: true,
+						resolutions: {},
+						status: "fail",
+					}),
+				ok: true,
+			});
+
+		vi.stubGlobal("fetch", fetchMock);
+
+		const checker = new HyperserveStatusChecker({
+			apiKey: "key",
+			baseUrl: "https://api.example.com",
+		});
+
+		checker.checkStatus({
+			onStatusChange,
+			signal: ac.signal,
+			uploadResult: { videoId: "video-1" },
+		});
+
+		await vi.advanceTimersByTimeAsync(0);
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+
+		// Default is 3000ms, not 1000ms
+		await vi.advanceTimersByTimeAsync(2999);
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+
+		await vi.advanceTimersByTimeAsync(1);
+		expect(fetchMock).toHaveBeenCalledTimes(2);
 	});
 
 	it("defaults isPublic to true when metadata missing", async () => {

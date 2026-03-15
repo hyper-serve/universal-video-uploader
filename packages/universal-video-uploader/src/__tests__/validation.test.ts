@@ -66,6 +66,14 @@ describe("allowedTypes", () => {
 	});
 });
 
+describe("allowedTypes edge cases", () => {
+	it("rejects all files when types array is empty", () => {
+		const validator = allowedTypes([]);
+		const result = validator(makeFileRef({ type: "video/mp4" }));
+		expect(result).toMatchObject({ valid: false });
+	});
+});
+
 describe("composeValidators", () => {
 	it("passes when all validators pass", async () => {
 		const validator = composeValidators(
@@ -93,5 +101,27 @@ describe("composeValidators", () => {
 		);
 		const result = await validator(makeFileRef({ type: "video/mp4" }));
 		expect(result).toMatchObject({ valid: false });
+	});
+
+	it("returns valid when composed with zero validators", async () => {
+		const validator = composeValidators();
+		const result = await validator(makeFileRef());
+		expect(result).toEqual({ valid: true });
+	});
+
+	it("works with a single validator", async () => {
+		const validator = composeValidators(maxFileSize(100));
+		const result = await validator(makeFileRef({ size: 200 }));
+		expect(result).toMatchObject({ valid: false });
+	});
+
+	it("handles async validators correctly", async () => {
+		const asyncValidator = async (file: FileRef) => {
+			await new Promise((r) => setTimeout(r, 10));
+			return file.size > 500 ? { valid: false as const, reason: "too big" } : { valid: true as const };
+		};
+		const validator = composeValidators(asyncValidator, allowedTypes(["video/mp4"]));
+		const result = await validator(makeFileRef({ size: 1000 }));
+		expect(result).toEqual({ valid: false, reason: "too big" });
 	});
 });

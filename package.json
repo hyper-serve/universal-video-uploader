@@ -8,7 +8,7 @@
 	"scripts": {
 		"build": "bun run --filter '@hyperserve/*' build",
 		"build:watch": "bun run --filter '@hyperserve/*' build:watch",
-		"test": "bun run --filter '@hyperserve/universal-video-uploader' test && bun run --filter '@hyperserve/universal-video-uploader-react' test",
+		"test": "bun run --filter '@hyperserve/universal-video-uploader' test && bun run --filter '@hyperserve/universal-video-uploader-react' test && bun run --filter '@hyperserve/universal-video-uploader-native' test",
 		"test:watch": "bun run --filter '@hyperserve/universal-video-uploader' test:watch",
 		"format:check": "biome format",
 		"format:write": "biome format --write",
@@ -18,6 +18,7 @@
 		"start:react-native": "bun run --filter '@hyperserve/universal-video-uploader-rn-example' start"
 	},
 	"devDependencies": {
+		"@babel/runtime": "^7.28.6",
 		"@biomejs/biome": "2.4.4"
 	}
 }

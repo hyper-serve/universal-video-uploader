@@ -42,6 +42,23 @@ describe("StatusBadge", () => {
 		const el = screen.getByTestId("custom");
 		expect(el.textContent).toMatch(/Failed/i);
 	});
+
+	it("renders correct labels for all 6 statuses", () => {
+		const statuses: Array<{ status: import("@hyperserve/universal-video-uploader").FileStatus; label: string }> = [
+			{ status: "selected", label: "Selected" },
+			{ status: "validating", label: "Validating" },
+			{ status: "uploading", label: "Uploading" },
+			{ status: "processing", label: "Processing" },
+			{ status: "ready", label: "Ready" },
+			{ status: "failed", label: "Failed" },
+		];
+
+		for (const { status, label } of statuses) {
+			const { unmount } = render(<StatusBadge status={status} />);
+			expect(screen.getByText(label)).toBeTruthy();
+			unmount();
+		}
+	});
 });
 
 describe("Thumbnail", () => {
@@ -114,6 +131,48 @@ describe("Thumbnail", () => {
 		expect(info.textContent).toContain("video.mp4");
 		expect(info.textContent).toContain("blob:thumb");
 	});
+
+	it("falls back to placeholder when thumbnail image fails to load", () => {
+		const file = { ...baseFile, thumbnailUri: "blob:broken" };
+		const { container } = render(<Thumbnail file={file} />);
+
+		const img = container.querySelector("img");
+		expect(img).not.toBeNull();
+
+		const { fireEvent } = require("@testing-library/react");
+		fireEvent.error(img!);
+
+		expect(container.querySelector("img")).toBeNull();
+		expect(container.querySelector("svg")).toBeTruthy();
+	});
+
+	it("does not render video when playback is true but file is not ready", () => {
+		const file: FileState = {
+			...baseFile,
+			status: "uploading",
+			playbackUrl: null,
+		};
+		const { container } = render(<Thumbnail file={file} playback />);
+		expect(container.querySelector("video")).toBeNull();
+	});
+
+	it("renders video with controls prop", () => {
+		const file: FileState = {
+			...baseFile,
+			status: "ready",
+			playbackUrl: "https://cdn.example.com/video.mp4",
+		};
+
+		const { container: c1 } = render(<Thumbnail file={file} playback controls={false} />);
+		const video1 = c1.querySelector("video");
+		expect(video1).not.toBeNull();
+		expect(video1?.hasAttribute("controls")).toBe(false);
+
+		const { container: c2 } = render(<Thumbnail file={file} playback controls />);
+		const video2 = c2.querySelector("video");
+		expect(video2).not.toBeNull();
+		expect(video2?.hasAttribute("controls")).toBe(true);
+	});
 });
 
 describe("ProgressBar", () => {
@@ -132,6 +191,24 @@ describe("ProgressBar", () => {
 			</ProgressBar>,
 		);
 		expect(screen.getByTestId("label").textContent).toBe("75%");
+	});
+
+	it("renders correctly at 0%", () => {
+		const { getByRole } = render(<ProgressBar progress={0} />);
+		const bar = getByRole("progressbar");
+		expect(bar.getAttribute("aria-valuenow")).toBe("0");
+		expect(bar.getAttribute("aria-valuemin")).toBe("0");
+		expect(bar.getAttribute("aria-valuemax")).toBe("100");
+		const inner = (bar as HTMLElement).firstElementChild as HTMLElement;
+		expect(inner.style.width).toBe("0%");
+	});
+
+	it("renders correctly at 100%", () => {
+		const { getByRole } = render(<ProgressBar progress={100} />);
+		const bar = getByRole("progressbar");
+		expect(bar.getAttribute("aria-valuenow")).toBe("100");
+		const inner = (bar as HTMLElement).firstElementChild as HTMLElement;
+		expect(inner.style.width).toBe("100%");
 	});
 });
 
