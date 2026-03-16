@@ -1,0 +1,63 @@
+---
+title: FileItem
+description: Compound component for rendering individual file upload states.
+---
+
+import ComposableDemo from "../../../components/demos/ComposableDemo";
+
+## Usage
+
+`FileItem` is a compound component. Use it with its sub-components to build custom file row/card layouts.
+
+```tsx
+import { FileItem, Thumbnail } from "@hyper-serve/upload-react";
+
+<FileItem file={file} layout="column">
+  <Thumbnail file={file} playback />
+  <FileItem.FileName />
+  <FileItem.Meta>
+    <FileItem.FileSize />
+    <FileItem.StatusIcon />
+  </FileItem.Meta>
+  <FileItem.UploadProgress />
+  <FileItem.ErrorMessage />
+  <FileItem.Actions>
+    <FileItem.RemoveButton />
+    <FileItem.RetryButton />
+  </FileItem.Actions>
+</FileItem>
+```
+
+<ComposableDemo client:load />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `file` | `FileState` | **required** | The file state object |
+| `layout` | `"row" \| "column"` | `"column"` | Layout direction |
+| `style` | `CSSProperties` | — | Container styles |
+| `className` | `string` | — | Container class |
+| `children` | `ReactNode \| (file) => ReactNode` | — | Sub-components or render function |
+
+## Sub-components
+
+All sub-components read from the parent `FileItem` context. They don't need explicit props.
+
+| Sub-component | Description |
+|---------------|-------------|
+| `FileItem.FileName` | File name, truncated with ellipsis |
+| `FileItem.FileSize` | Human-readable file size |
+| `FileItem.ErrorMessage` | Renders `file.error` when present |
+| `FileItem.RemoveButton` | Hidden during `processing`/`ready` |
+| `FileItem.RetryButton` | Only shown when `failed` |
+| `FileItem.StatusIcon` | Spinner during `processing`, check mark when `ready` |
+| `FileItem.Meta` | Flex row container for status metadata |
+| `FileItem.Actions` | Flex column container for action buttons |
+| `FileItem.UploadProgress` | Progress bar, visible only during `uploading` |
+| `FileItem.PlaybackPreview` | Thumbnail in playback mode, visible only when `ready` |
+| `FileItem.Content` | Opinionated default layout combining all sub-components |
+
+## Default rendering
+
+When `children` is omitted on `FileItem`, it renders `FileItem.Content` — which assembles all sub-components in a sensible default layout that adapts to the `layout` prop.

@@ -1,0 +1,31 @@
+---
+title: Thumbnail
+description: Renders a file thumbnail with optional playback mode.
+---
+
+## Usage
+
+```tsx
+import { Thumbnail } from "@hyper-serve/upload-react";
+
+// Thumbnail image
+<Thumbnail file={file} />
+
+// Playback mode — renders <video> when ready
+<Thumbnail file={file} playback />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `file` | `FileState` | **required** | The file state object |
+| `playback` | `boolean` | `false` | Render a `<video>` element when `file.playbackUrl` is available |
+| `style` | `CSSProperties` | — | Container styles |
+| `className` | `string` | — | Container class |
+
+## Behavior
+
+- Shows the thumbnail from `file.thumbnailUri` (generated on file add, web only)
+- When `playback` is true and the file is `ready`, renders a `<video>` element with the `playbackUrl`
+- Shows a placeholder icon when no thumbnail is available

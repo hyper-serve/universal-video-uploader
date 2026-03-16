@@ -1,0 +1,85 @@
+---
+title: Headless Usage
+description: Build fully custom upload UI using only the core hooks.
+---
+
+import HeadlessDemo from "../../../components/demos/HeadlessDemo";
+
+Both UI packages are optional. The core hooks (`useUpload`, `useFile`) provide everything needed to build fully custom UI.
+
+## Demo
+
+This demo uses zero UI components — just `useUpload`, `toFileRefs`, and plain HTML:
+
+<HeadlessDemo client:load />
+
+## Example
+
+```tsx
+import {
+  UploadProvider,
+  useUpload,
+  toFileRefs,
+} from "@hyper-serve/upload";
+
+function CustomUploadUI() {
+  const { addFiles, files, removeFile, retryFile } = useUpload();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      addFiles(toFileRefs(e.target.files));
+      e.target.value = "";
+    }
+  };
+
+  return (
+    <div>
+      <input
+        accept="video/*"
+        multiple
+        onChange={onInputChange}
+        ref={inputRef}
+        type="file"
+        hidden
+      />
+      <button onClick={() => inputRef.current?.click()}>
+        Select Videos
+      </button>
+
+      {files.map((file) => (
+        <div key={file.id}>
+          <span>{file.ref.name}</span>
+          <span>{file.status}</span>
+          {file.status === "uploading" && (
+            <progress value={file.progress} max={100} />
+          )}
+          {file.error && <span>{file.error}</span>}
+          {file.status === "failed" && (
+            <button onClick={() => retryFile(file.id)}>Retry</button>
+          )}
+          {file.status !== "processing" && file.status !== "ready" && (
+            <button onClick={() => removeFile(file.id)}>Remove</button>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <UploadProvider config={config}>
+      <CustomUploadUI />
+    </UploadProvider>
+  );
+}
+```
+
+## Key points
+
+- `toFileRefs` converts a `FileList` or `File[]` into the `FileRef[]` the provider expects
+- `removeFile` is a no-op for `processing`/`ready` files (server-committed)
+- `retryFile` resets a failed file back to `selected`, re-entering the queue
+- `file.progress` updates during upload (0–100)
+- `file.statusDetail` provides sub-status during processing (e.g. "Transcoding 480p")

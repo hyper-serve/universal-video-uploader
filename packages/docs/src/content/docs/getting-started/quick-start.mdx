@@ -1,0 +1,75 @@
+---
+title: Quick Start
+description: Get a working upload UI in under 20 lines of code.
+---
+
+import DefaultDemo from "../../../components/demos/DefaultDemo";
+
+## Minimal example
+
+```tsx
+import {
+  UploadProvider,
+  createHyperserveConfig,
+  composeValidators,
+  maxFileSize,
+  allowedTypes,
+} from "@hyper-serve/upload";
+import {
+  DropZone,
+  FileList,
+  FileListToolbar,
+  ViewModeProvider,
+} from "@hyper-serve/upload-react";
+
+const config = createHyperserveConfig({
+  apiKey: import.meta.env.VITE_HYPERSERVE_API_KEY,
+  uploadOptions: {
+    isPublic: true,
+    resolutions: "480p,1080p",
+  },
+  validate: composeValidators(
+    maxFileSize(500 * 1024 * 1024),
+    allowedTypes(["video/*"]),
+  ),
+});
+
+function App() {
+  return (
+    <UploadProvider config={config}>
+      <ViewModeProvider>
+        <DropZone supportingText="MP4, WebM, MOV — up to 500 MB" />
+        <FileListToolbar right={<FileListToolbar.ViewToggle />} />
+        <FileList />
+      </ViewModeProvider>
+    </UploadProvider>
+  );
+}
+```
+
+### Result
+
+<DefaultDemo client:load />
+
+## What's happening
+
+1. **`createHyperserveConfig`** wires up the Hyperserve adapter, status checker, and your validation rules into a single config object.
+2. **`UploadProvider`** manages the upload state machine — file queue, concurrency, progress, abort/retry.
+3. **`ViewModeProvider`** provides list/grid toggle state to the UI components.
+4. **`DropZone`** handles drag-and-drop and file picker input.
+5. **`FileList`** renders each file with progress bars, status badges, and action buttons.
+
+All components read from the `UploadProvider` context. No prop drilling required.
+
+## Using a different backend
+
+Replace `createHyperserveConfig` with a plain `UploadConfig` object and your own adapter. See [Custom Backend](/guides/custom-backend/) for a full walkthrough.
+
+## Try it locally
+
+```bash
+git clone https://github.com/hyper-serve/upload
+cd upload/examples/web
+cp .env.example .env   # add your Hyperserve API key
+bun install && bun dev
+```

@@ -1,0 +1,41 @@
+---
+title: Universal Video Uploader
+description: Cross-platform React library for uploading videos to any backend.
+template: splash
+hero:
+  tagline: Headless upload logic + composable UI for React and React Native.
+  actions:
+    - text: Get Started
+      link: /getting-started/installation/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/hyper-serve/upload
+      icon: external
+---
+
+import { Card, CardGrid } from "@astrojs/starlight/components";
+import DefaultDemo from "../../components/demos/DefaultDemo";
+
+## Try it
+
+Drop a video file into the demo below — uploads are fully simulated, nothing leaves your browser.
+
+<DefaultDemo client:load />
+
+## Why
+
+<CardGrid>
+  <Card title="Any Backend" icon="puzzle">
+    Built on a simple adapter interface. Ships with Hyperserve support; bring your own Mux, Bunny, api.video, or custom backend.
+  </Card>
+  <Card title="Cross-Platform" icon="laptop">
+    Same core logic for React (web) and React Native. Platform-specific UI packages with identical APIs.
+  </Card>
+  <Card title="Composable UI" icon="setting">
+    Pre-built compound components you can assemble, rearrange, or replace. Or go fully headless and build your own.
+  </Card>
+  <Card title="Production Ready" icon="approve-check">
+    Concurrency control, abort/retry, progress tracking, client-side validation, post-upload status monitoring.
+  </Card>
+</CardGrid>

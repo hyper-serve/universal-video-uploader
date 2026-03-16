@@ -1,0 +1,58 @@
+---
+title: File State Machine
+description: Every uploaded file moves through a defined set of statuses.
+---
+
+## Status flow
+
+```
+selected ──► validating ──► uploading ──► processing ──► ready
+                │                │              │
+                ▼                ▼              ▼
+              failed          failed         failed
+
+retry (from failed) ──► selected (re-enters the flow)
+```
+
+| Status | Description |
+|--------|-------------|
+| `selected` | File added, waiting for an upload slot |
+| `validating` | Running client-side validation (size, type, duration) |
+| `uploading` | Upload in progress, `progress` updates via adapter callback |
+| `processing` | Upload complete, backend is processing (transcoding, etc.) |
+| `ready` | Playback URL available |
+| `failed` | Validation, upload, or processing failed. `error` contains the reason |
+
+## FileState
+
+```typescript
+type FileState = {
+  id: string;
+  ref: FileRef;
+  status: FileStatus;
+  progress: number;            // 0–100 during upload
+  thumbnailUri: string | null; // Preview image (web only currently)
+  playbackUrl: string | null;  // Available when ready
+  videoId: string | null;      // Backend video ID
+  error: string | null;        // Error message when failed
+  statusDetail: string | null; // Sub-status from StatusChecker
+};
+```
+
+## Immutability rules
+
+- Files in `processing` or `ready` cannot be removed — they're committed to the server. `removeFile` on these statuses is a no-op.
+- The file list is an append-only record of uploads in the current session.
+- `retry` resets a `failed` file back to `selected`, re-entering the flow.
+
+## Concurrency
+
+The provider processes files in FIFO order with a configurable concurrency limit (`maxConcurrentUploads`, default 3). Files stay in `"selected"` until a slot opens.
+
+## statusDetail
+
+Populated during `processing` when the `StatusChecker` provides sub-status updates (e.g. `"Transcoding 480p"`). Render it in your UI when `file.status === "processing" && file.statusDetail`.
+
+## Thumbnails
+
+Thumbnails are created eagerly when a file is added. The blob URL is stored in `FileState.thumbnailUri`. When a file transitions to `ready`, the blob URL is revoked and `thumbnailUri` is set to `null` — the `playbackUrl` takes over. On provider unmount, all remaining blob URLs are revoked.

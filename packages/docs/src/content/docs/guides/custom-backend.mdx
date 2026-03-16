@@ -1,0 +1,94 @@
+---
+title: Custom Backend
+description: Implement your own adapter for Mux, Bunny, api.video, or any video service.
+---
+
+## Implementing an adapter
+
+Create a class that implements `UploadAdapter<YourOptions>`:
+
+```typescript
+import type { UploadAdapter, FileRef, UploadResult } from "@hyper-serve/upload";
+
+type MuxOptions = {
+  playbackPolicy: "public" | "signed";
+};
+
+class MuxAdapter implements UploadAdapter<MuxOptions> {
+  constructor(private tokenEndpoint: string) {}
+
+  async upload(
+    file: FileRef,
+    options: MuxOptions,
+    callbacks: { onProgress: (pct: number) => void },
+    signal: AbortSignal,
+  ): Promise<UploadResult> {
+    // 1. Get an upload URL from your backend
+    const { uploadUrl, videoId } = await fetch(this.tokenEndpoint, {
+      method: "POST",
+      body: JSON.stringify({ playbackPolicy: options.playbackPolicy }),
+      signal,
+    }).then((r) => r.json());
+
+    // 2. Upload the file with progress tracking
+    await uploadWithProgress(uploadUrl, file, callbacks, signal);
+
+    // 3. Return the result
+    return { videoId };
+  }
+}
+```
+
+## Adding a status checker
+
+If your backend needs time to process after upload, implement `StatusChecker`:
+
+```typescript
+import type { StatusChecker } from "@hyper-serve/upload";
+
+class MuxStatusChecker implements StatusChecker {
+  constructor(private statusEndpoint: string) {}
+
+  checkStatus({ uploadResult, onStatusChange, signal }) {
+    const poll = async () => {
+      while (!signal.aborted) {
+        const res = await fetch(
+          `${this.statusEndpoint}/${uploadResult.videoId}`,
+          { signal },
+        ).then((r) => r.json());
+
+        if (res.status === "ready") {
+          onStatusChange("ready", res.playbackUrl);
+          return;
+        }
+        if (res.status === "errored") {
+          onStatusChange("failed");
+          return;
+        }
+        onStatusChange("processing", undefined, res.statusDetail);
+        await new Promise((r) => setTimeout(r, 3000));
+      }
+    };
+    poll();
+  }
+}
+```
+
+## Wiring it together
+
+```typescript
+import type { UploadConfig } from "@hyper-serve/upload";
+
+const config: UploadConfig<MuxOptions> = {
+  adapter: new MuxAdapter("/api/mux-upload-url"),
+  uploadOptions: { playbackPolicy: "public" },
+  statusChecker: new MuxStatusChecker("/api/mux-status"),
+  maxConcurrentUploads: 2,
+};
+```
+
+The generic parameter on `UploadConfig<MuxOptions>` ensures type safety — `uploadOptions` must match the adapter's expected type.
+
+## Skipping the status checker
+
+If your adapter returns a `playbackUrl` in `UploadResult`, the status checker is skipped entirely and the file transitions directly to `"ready"`. This is useful for backends that return the playback URL immediately after upload.

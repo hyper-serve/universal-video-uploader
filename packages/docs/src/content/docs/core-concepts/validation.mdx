@@ -1,0 +1,73 @@
+---
+title: Validation
+description: Composable client-side validators for file size, type, and duration.
+---
+
+## Built-in validators
+
+| Validator | Platform | Description |
+|-----------|----------|-------------|
+| `maxFileSize(bytes)` | Both | Checks `file.size` |
+| `allowedTypes(types)` | Both | Checks `file.type` against MIME types (supports wildcards like `video/*`) |
+| `maxDuration(seconds)` | Both | Web: DOM video element. Native: `expo-video-metadata` (optional, skips if missing) |
+
+## Composing validators
+
+Use `composeValidators` to chain validators in order. Stops at the first failure.
+
+```typescript
+import {
+  composeValidators,
+  maxFileSize,
+  allowedTypes,
+  maxDuration,
+} from "@hyper-serve/upload";
+
+const validate = composeValidators(
+  maxFileSize(500 * 1024 * 1024),     // 500 MB
+  allowedTypes(["video/*"]),           // any video MIME type
+  maxDuration(120),                    // 2 minutes
+);
+```
+
+Pass the result to your config:
+
+```typescript
+const config = createHyperserveConfig({
+  // ...
+  validate,
+});
+```
+
+## Custom validators
+
+A validator is any function matching the `Validator` type:
+
+```typescript
+type Validator = (file: FileRef) => ValidationResult | Promise<ValidationResult>;
+
+type ValidationResult =
+  | { valid: true }
+  | { valid: false; reason: string };
+```
+
+Example — check minimum file size:
+
+```typescript
+const minFileSize = (bytes: number): Validator => (file) => {
+  if (file.size < bytes) {
+    return { valid: false, reason: `File must be at least ${bytes} bytes` };
+  }
+  return { valid: true };
+};
+```
+
+Compose custom validators alongside built-in ones:
+
+```typescript
+const validate = composeValidators(
+  minFileSize(1024),
+  maxFileSize(500 * 1024 * 1024),
+  allowedTypes(["video/mp4", "video/webm"]),
+);
+```

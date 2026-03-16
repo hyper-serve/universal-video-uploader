@@ -1,0 +1,86 @@
+---
+title: React Native
+description: Using Universal Video Uploader with React Native and Expo.
+---
+
+## Setup
+
+Install the core and native UI packages:
+
+```bash
+npm install @hyper-serve/upload @hyper-serve/upload-react-native
+```
+
+### Optional dependencies
+
+```bash
+npx expo install expo-video-metadata expo-video-thumbnails react-native-background-upload
+```
+
+See [Installation](/getting-started/installation/) for what each provides.
+
+## Platform resolution
+
+The core package uses the `.native.ts` convention. Metro resolves `foo.js` to `foo.native.ts` when bundling for iOS/Android.
+
+| Module | Web | Native |
+|--------|-----|--------|
+| `adapter/hyperserve` | XHR with progress events | `react-native-background-upload` with fallback to `fetch` |
+| `platform/fileRef` | `File` → `FileRef` with `raw` | `DocumentPickerResult` → `FileRef` with `uri` |
+| `platform/thumbnail` | `URL.createObjectURL` | `expo-video-thumbnails` or `null` |
+| `validation/maxDuration` | DOM video element | `expo-video-metadata` (skips if missing) |
+
+## FileRef
+
+`FileRef` is a discriminated union on `platform`:
+
+```typescript
+type WebFileRef  = { platform: "web";    uri: string; name: string; size: number; type: string; raw: File };
+type NativeFileRef = { platform: "native"; uri: string; name: string; size: number; type: string };
+```
+
+On native, `raw` is not available — the adapter uses the `uri` directly.
+
+## Components
+
+The native UI package mirrors the web package:
+
+| Web | Native |
+|-----|--------|
+| `DropZone` | `FilePicker` |
+| `FileList` | `FileList` (uses `FlatList`, supports `numColumns`) |
+| `FileItem` + sub-components | Same compound component API |
+| `FileListToolbar` | Same API |
+| `Thumbnail` | Renders `Image` (no built-in playback) |
+
+## Example
+
+```tsx
+import {
+  UploadProvider,
+  createHyperserveConfig,
+} from "@hyper-serve/upload";
+import {
+  FilePicker,
+  FileList,
+  FileListToolbar,
+  ViewModeProvider,
+} from "@hyper-serve/upload-react-native";
+
+const config = createHyperserveConfig({
+  apiKey: process.env.EXPO_PUBLIC_HYPERSERVE_API_KEY,
+  uploadOptions: { isPublic: true, resolutions: "480p,1080p" },
+});
+
+export default function UploadScreen() {
+  return (
+    <UploadProvider config={config}>
+      <ViewModeProvider>
+        <FilePicker pickFiles={pickDocuments} />
+        <FileListToolbar />
+        <FileList />
+      </ViewModeProvider>
+    </UploadProvider>
+  );
+}
+```

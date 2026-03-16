@@ -1,0 +1,64 @@
+---
+title: FileListToolbar
+description: Toolbar with configurable slots for file count and view toggle.
+---
+
+## Usage
+
+```tsx
+import { FileListToolbar } from "@hyper-serve/upload-react";
+
+// Default — file count on left, view toggle on right
+<FileListToolbar />
+
+// Custom right slot
+<FileListToolbar right={<FileListToolbar.ViewToggle />} />
+
+// Hide default slots
+<FileListToolbar showFileCount={false} showViewToggle={false} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `left` | `ReactNode \| null` | `FileCount` | Left slot content |
+| `right` | `ReactNode \| null` | `ViewToggle` | Right slot content |
+| `showFileCount` | `boolean` | `true` | Show default file count in left slot |
+| `showViewToggle` | `boolean` | `true` | Show default view toggle in right slot |
+| `style` | `CSSProperties` | — | Container styles |
+| `className` | `string` | — | Container class |
+
+## Sub-components
+
+### FileListToolbar.FileCount
+
+Shows `"N files added"` by default. Accepts a `label` render prop:
+
+```tsx
+<FileListToolbar
+  left={
+    <FileListToolbar.FileCount
+      label={(count) => `${count} video${count !== 1 ? "s" : ""}`}
+    />
+  }
+/>
+```
+
+### FileListToolbar.ViewToggle
+
+List/grid toggle buttons. Requires a `ViewModeProvider` ancestor. Accepts a `children` render prop for custom toggle UI:
+
+```tsx
+<FileListToolbar.ViewToggle>
+  {({ viewMode, setViewMode }) => (
+    <select
+      value={viewMode}
+      onChange={(e) => setViewMode(e.target.value as "list" | "grid")}
+    >
+      <option value="list">List</option>
+      <option value="grid">Grid</option>
+    </select>
+  )}
+</FileListToolbar.ViewToggle>
+```

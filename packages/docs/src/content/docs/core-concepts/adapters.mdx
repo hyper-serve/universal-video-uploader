@@ -1,0 +1,85 @@
+---
+title: Adapters
+description: The adapter interface that connects uploads to any video backend.
+---
+
+## UploadAdapter interface
+
+The adapter is responsible for uploading a file to a backend. The interface is generic over `TOptions`, so each backend defines its own options type.
+
+```typescript
+interface UploadAdapter<TOptions = Record<string, unknown>> {
+  upload(
+    file: FileRef,
+    options: TOptions,
+    callbacks: { onProgress: (pct: number) => void },
+    signal: AbortSignal,
+  ): Promise<UploadResult>;
+}
+```
+
+The adapter owns its own auth and endpoint configuration via its constructor. The core never handles API keys or URLs directly.
+
+### UploadResult
+
+```typescript
+type UploadResult = {
+  videoId: string;
+  playbackUrl?: string;
+  metadata?: Record<string, unknown>;
+};
+```
+
+If the adapter returns a `playbackUrl`, the status checker is skipped entirely and the file transitions directly to `"ready"`.
+
+## StatusChecker
+
+Optional interface for post-upload status monitoring. Called after a successful upload when the backend needs time to process the video (transcoding, etc.).
+
+```typescript
+interface StatusChecker {
+  checkStatus(options: {
+    uploadResult: UploadResult;
+    onStatusChange: (
+      status: "processing" | "ready" | "failed",
+      playbackUrl?: string,
+      statusDetail?: string,
+    ) => void;
+    signal: AbortSignal;
+  }): void;
+}
+```
+
+If no `statusChecker` is provided, the file stays in `"processing"` after upload — you can drive status updates externally.
+
+## Built-in: Hyperserve
+
+The `HyperserveAdapter` and `HyperserveStatusChecker` provide first-party support for the Hyperserve video API. Use the convenience factory:
+
+```typescript
+import {
+  createHyperserveConfig,
+  composeValidators,
+  maxFileSize,
+} from "@hyper-serve/upload";
+
+const config = createHyperserveConfig({
+  apiKey: "your-api-key",
+  baseUrl: "https://api.hyperserve.io/v1",  // optional, this is the default
+  uploadOptions: {
+    resolutions: "480p,1080p",
+    isPublic: true,
+    customUserMetadata: { postId: "123" },
+  },
+  validate: composeValidators(maxFileSize(500 * 1024 * 1024)),
+  pollingIntervalMs: 3000,
+});
+```
+
+### Custom metadata
+
+`customUserMetadata` is sent to Hyperserve as `custom_user_metadata` on the create-video request. Hyperserve stores it and includes it in webhook payloads as `customMetadata` when processing completes. Use this to associate uploads with entities in your app (post ID, product ID, etc.).
+
+## Custom adapters
+
+See the [Custom Backend](/guides/custom-backend/) guide for a full walkthrough of implementing your own adapter.

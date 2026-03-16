@@ -1,0 +1,70 @@
+---
+title: Installation
+description: Install Universal Video Uploader in your project.
+---
+
+import { Tabs, TabItem } from "@astrojs/starlight/components";
+
+## Packages
+
+| Package | Purpose |
+|---------|---------|
+| `@hyper-serve/upload` | Core — hooks, adapters, validation, state machine |
+| `@hyper-serve/upload-react` | Web UI — DropZone, FileList, FileItem, etc. |
+| `@hyper-serve/upload-react-native` | React Native UI — FilePicker, FileList, FileItem, etc. |
+
+The core package is always required. Pick the UI package for your platform, or use neither for fully headless usage.
+
+## Web (React)
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @hyper-serve/upload @hyper-serve/upload-react
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add @hyper-serve/upload @hyper-serve/upload-react
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @hyper-serve/upload @hyper-serve/upload-react
+    ```
+  </TabItem>
+  <TabItem label="bun">
+    ```bash
+    bun add @hyper-serve/upload @hyper-serve/upload-react
+    ```
+  </TabItem>
+</Tabs>
+
+**Peer dependencies:** React 18+ and React DOM 18+.
+
+## React Native
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @hyper-serve/upload @hyper-serve/upload-react-native
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add @hyper-serve/upload @hyper-serve/upload-react-native
+    ```
+  </TabItem>
+</Tabs>
+
+**Peer dependencies:** React 18+.
+
+### Optional native dependencies
+
+All three are optional peer dependencies. The library gracefully degrades without them.
+
+| Package | Purpose | Without it |
+|---------|---------|------------|
+| `expo-video-metadata` | `maxDuration` validation | Skips validation, warns once |
+| `expo-video-thumbnails` | Thumbnail generation | `thumbnailUri` stays `null` |
+| `react-native-background-upload` | True background upload with progress | Falls back to `fetch` with estimated progress |

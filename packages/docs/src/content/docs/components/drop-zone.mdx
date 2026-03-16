@@ -1,0 +1,49 @@
+---
+title: DropZone
+description: Drag-and-drop and file picker component for adding files.
+---
+
+import DefaultDemo from "../../../components/demos/DefaultDemo";
+
+## Usage
+
+```tsx
+import { DropZone } from "@hyper-serve/upload-react";
+
+<DropZone supportingText="MP4, WebM, MOV — up to 500 MB" />
+```
+
+<DefaultDemo client:load />
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `accept` | `string` | `"video/*"` | MIME type filter for the file input |
+| `multiple` | `boolean` | `true` | Allow multiple files |
+| `disabled` | `boolean` | `false` | Disable the drop zone (also disables when `canAddMore` is false) |
+| `supportingText` | `ReactNode` | — | Help text below the main label |
+| `style` | `CSSProperties` | — | Base styles |
+| `activeStyle` | `CSSProperties` | — | Merged during drag hover |
+| `className` | `string` | — | Base class |
+| `activeClassName` | `string` | — | Appended during drag hover |
+| `children` | `ReactNode \| (state) => ReactNode` | — | Custom content or render function |
+
+## Render function
+
+For full control over the drop zone content:
+
+```tsx
+<DropZone>
+  {({ isDragging, openPicker }) => (
+    <div>
+      {isDragging ? "Release to upload" : "Custom drop zone UI"}
+      <button onClick={openPicker}>Select Files</button>
+    </div>
+  )}
+</DropZone>
+```
+
+## Styling
+
+The default drop zone uses inline styles from the shared theme. Override with `style`/`className` or use the render function for complete control.

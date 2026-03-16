@@ -1,0 +1,64 @@
+---
+title: Theming
+description: Customize colors, spacing, and status appearance using the shared theme system.
+---
+
+## Theme tokens
+
+The core package exports design tokens consumed by both UI packages:
+
+```typescript
+import {
+  themeColors,        // accent, error, border, bg variants, etc.
+  themeRadius,        // sm, md, lg, xl, pill
+  themeFontScale,     // xs, sm, md, lg, xl (pixel values)
+  themeSpacingScale,  // xxs, xs, sm, … cardX, cardY, dropZone, etc.
+} from "@hyper-serve/upload";
+```
+
+These are plain objects — use them in inline styles, CSS-in-JS, or reference them when building your own components.
+
+## Status config
+
+`statusConfig` maps every `FileStatus` to a background color, text color, and label:
+
+```typescript
+import { statusConfig } from "@hyper-serve/upload";
+
+// statusConfig.uploading = { bg: "#eff6ff", text: "#2563eb", label: "Uploading" }
+// statusConfig.failed    = { bg: "#fef2f2", text: "#dc2626", label: "Failed" }
+// ...
+```
+
+## Overriding per component
+
+Components like `StatusBadge` accept per-status overrides:
+
+```tsx
+<StatusBadge
+  status={file.status}
+  statusConfig={{
+    ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
+    failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
+  }}
+/>
+```
+
+## Styling components
+
+All UI components accept `style` and `className` props. For deeper customization, use the render function / children pattern:
+
+```tsx
+<DropZone
+  style={{ borderColor: "#e2e8f0", borderRadius: 12 }}
+  activeStyle={{ borderColor: "#3b82f6", background: "#eff6ff" }}
+/>
+
+<FileItem file={file}>
+  {(file) => (
+    <div className="my-custom-file-row">
+      {/* fully custom layout */}
+    </div>
+  )}
+</FileItem>
+```

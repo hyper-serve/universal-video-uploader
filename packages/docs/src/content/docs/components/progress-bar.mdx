@@ -1,0 +1,34 @@
+---
+title: ProgressBar
+description: Standalone progress track and fill component.
+---
+
+## Usage
+
+```tsx
+import { ProgressBar } from "@hyper-serve/upload-react";
+
+<ProgressBar progress={file.progress} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `progress` | `number` | **required** | 0–100 |
+| `trackStyle` | `CSSProperties` | — | Styles for the track element |
+| `fillStyle` | `CSSProperties` | — | Styles for the fill element |
+| `trackClassName` | `string` | — | Class for the track |
+| `fillClassName` | `string` | — | Class for the fill |
+
+## Styling
+
+The track and fill are separate elements, each accepting their own style and className props:
+
+```tsx
+<ProgressBar
+  progress={75}
+  trackStyle={{ height: 8, borderRadius: 4 }}
+  fillStyle={{ background: "linear-gradient(90deg, #06b6d4, #3b82f6)" }}
+/>
+```

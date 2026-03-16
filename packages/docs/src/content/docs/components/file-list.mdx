@@ -1,0 +1,57 @@
+---
+title: FileList
+description: Renders the list of files with support for list and grid view modes.
+---
+
+## Usage
+
+```tsx
+import { FileList } from "@hyper-serve/upload-react";
+
+// Default rendering
+<FileList />
+
+// With empty state
+<FileList emptyMessage="No files selected yet." />
+
+// Grid mode
+<FileList mode="grid" columns="repeat(3, 1fr)" />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `mode` | `"list" \| "grid"` | From `ViewModeProvider` or `"list"` | Layout mode |
+| `columns` | `string` | `"repeat(auto-fill, minmax(180px, 1fr))"` | CSS `grid-template-columns` for grid mode |
+| `emptyMessage` | `ReactNode` | — | Shown when no files |
+| `emptyClassName` | `string` | — | Class for empty state container |
+| `emptyStyle` | `CSSProperties` | — | Styles for empty state container |
+| `renderEmpty` | `() => ReactNode` | — | Custom empty state renderer (overrides `emptyMessage`) |
+| `children` | `(file, index) => ReactNode` | — | Custom item renderer |
+| `style` | `CSSProperties` | — | Container styles |
+| `className` | `string` | — | Container class |
+
+## Custom item rendering
+
+When `children` is omitted, `FileList` renders a default `FileItem` per file. Provide a render function for custom items:
+
+```tsx
+<FileList>
+  {(file, index) => (
+    <FileItem key={file.id} file={file} layout="column">
+      <Thumbnail file={file} playback />
+      <FileItem.FileName />
+      <FileItem.UploadProgress />
+      <FileItem.Actions>
+        <FileItem.RemoveButton />
+        <FileItem.RetryButton />
+      </FileItem.Actions>
+    </FileItem>
+  )}
+</FileList>
+```
+
+## View mode
+
+`FileList` reads the view mode from `ViewModeProvider` context when available. The `mode` prop always takes precedence over context. Without either, it defaults to `"list"`.

@@ -1,0 +1,49 @@
+---
+title: StatusBadge
+description: Pill badge displaying the current file status.
+---
+
+## Usage
+
+```tsx
+import { StatusBadge } from "@hyper-serve/upload-react";
+
+<StatusBadge status={file.status} />
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `status` | `FileStatus` | **required** | The file status |
+| `statusConfig` | `Partial<Record<FileStatus, StatusConfigEntry>>` | — | Per-status overrides for colors/labels |
+| `getLabel` | `(status: FileStatus) => string` | — | Custom label function |
+| `children` | `(info) => ReactNode` | — | Headless render function |
+| `style` | `CSSProperties` | — | Container styles |
+| `className` | `string` | — | Container class |
+
+## Customization
+
+Override colors and labels per status:
+
+```tsx
+<StatusBadge
+  status={file.status}
+  statusConfig={{
+    ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
+    failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
+  }}
+/>
+```
+
+## Headless mode
+
+Use the `children` render function for complete control:
+
+```tsx
+<StatusBadge status={file.status}>
+  {({ label, color }) => (
+    <span style={{ color, fontWeight: 600 }}>{label}</span>
+  )}
+</StatusBadge>
+```
