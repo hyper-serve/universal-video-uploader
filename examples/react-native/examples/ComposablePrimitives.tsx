@@ -9,7 +9,7 @@ import {
 	Thumbnail,
 	ViewModeProvider,
 	useViewMode,
-} from "@hyperserve/universal-video-uploader-native";
+} from "@hyper-serve/upload-react-native";
 import { pickVideos } from "./shared";
 
 function UploadUI() {

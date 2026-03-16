@@ -1,0 +1,146 @@
+import React from "react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { FileListToolbar } from "../FileListToolbar.js";
+import { ViewModeProvider } from "../ViewModeContext.js";
+import type { FileState } from "@hyper-serve/upload";
+
+let mockFiles: FileState[] = [];
+
+vi.mock("@hyper-serve/upload", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@hyper-serve/upload")>();
+	return {
+		...actual,
+		useUpload: () => ({
+			files: mockFiles,
+		}),
+	};
+});
+
+function makeFile(id: string): FileState {
+	return {
+		id,
+		ref: { name: `${id}.mp4`, size: 1000, type: "video/mp4", uri: "x" },
+		status: "selected",
+		progress: 0,
+		thumbnailUri: null,
+		playbackUrl: null,
+		videoId: null,
+		error: null,
+		statusDetail: null,
+	};
+}
+
+describe("FileListToolbar", () => {
+	beforeEach(() => {
+		mockFiles = [];
+	});
+
+	it("renders file count with correct singular/plural", () => {
+		mockFiles = [makeFile("1")];
+		const { rerender } = render(
+			<ViewModeProvider>
+				<FileListToolbar />
+			</ViewModeProvider>,
+		);
+		expect(screen.getByText("1 file added")).toBeTruthy();
+
+		mockFiles = [makeFile("1"), makeFile("2")];
+		rerender(
+			<ViewModeProvider>
+				<FileListToolbar />
+			</ViewModeProvider>,
+		);
+		expect(screen.getByText("2 files added")).toBeTruthy();
+	});
+
+	it("renders 0 files added when empty", () => {
+		render(
+			<ViewModeProvider>
+				<FileListToolbar />
+			</ViewModeProvider>,
+		);
+		expect(screen.getByText("0 files added")).toBeTruthy();
+	});
+
+	it("uses custom label function for FileCount", () => {
+		mockFiles = [makeFile("1"), makeFile("2"), makeFile("3")];
+		render(
+			<ViewModeProvider>
+				<FileListToolbar
+					left={<FileListToolbar.FileCount label={(n) => `${n} videos`} />}
+				/>
+			</ViewModeProvider>,
+		);
+		expect(screen.getByText("3 videos")).toBeTruthy();
+	});
+
+	it("renders ViewToggle with List and Grid buttons", () => {
+		render(
+			<ViewModeProvider>
+				<FileListToolbar />
+			</ViewModeProvider>,
+		);
+		expect(screen.getByLabelText("List view")).toBeTruthy();
+		expect(screen.getByLabelText("Grid view")).toBeTruthy();
+	});
+
+	it("ViewToggle calls setViewMode on click", () => {
+		render(
+			<ViewModeProvider>
+				<FileListToolbar />
+			</ViewModeProvider>,
+		);
+		fireEvent.click(screen.getByLabelText("Grid view"));
+		fireEvent.click(screen.getByLabelText("List view"));
+	});
+
+	it("hides file count when showFileCount is false", () => {
+		mockFiles = [makeFile("1")];
+		render(
+			<ViewModeProvider>
+				<FileListToolbar showFileCount={false} />
+			</ViewModeProvider>,
+		);
+		expect(screen.queryByText("1 file added")).toBeNull();
+	});
+
+	it("hides view toggle when showViewToggle is false", () => {
+		render(
+			<ViewModeProvider>
+				<FileListToolbar showViewToggle={false} />
+			</ViewModeProvider>,
+		);
+		expect(screen.queryByLabelText("List view")).toBeNull();
+		expect(screen.queryByLabelText("Grid view")).toBeNull();
+	});
+
+	it("uses custom left and right slots", () => {
+		render(
+			<ViewModeProvider>
+				<FileListToolbar
+					left={<span>Custom Left</span>}
+					right={<span>Custom Right</span>}
+				/>
+			</ViewModeProvider>,
+		);
+		expect(screen.getByText("Custom Left")).toBeTruthy();
+		expect(screen.getByText("Custom Right")).toBeTruthy();
+		expect(screen.queryByLabelText("List view")).toBeNull();
+	});
+
+	it("ViewToggle supports children render-prop", () => {
+		render(
+			<ViewModeProvider>
+				<FileListToolbar
+					right={
+						<FileListToolbar.ViewToggle>
+							{({ viewMode }) => <span data-testid="mode">{viewMode}</span>}
+						</FileListToolbar.ViewToggle>
+					}
+				/>
+			</ViewModeProvider>,
+		);
+		expect(screen.getByTestId("mode").textContent).toBe("list");
+	});
+});

@@ -1,0 +1,159 @@
+import React from "react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { render, fireEvent, screen } from "@testing-library/react";
+import { DropZone } from "../DropZone.js";
+
+const addFilesMock = vi.fn();
+let canAddMoreValue = true;
+
+vi.mock("@hyper-serve/upload", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@hyper-serve/upload")>();
+	return {
+		...actual,
+		useUpload: () => ({
+			addFiles: addFilesMock,
+			canAddMore: canAddMoreValue,
+		}),
+		toFileRefs: (files: File[] | FileList) => Array.from(files),
+	};
+});
+
+function createFile(name: string, type: string): File {
+	return new File(["content"], name, { type });
+}
+
+describe("DropZone", () => {
+	beforeEach(() => {
+		addFilesMock.mockReset();
+		canAddMoreValue = true;
+		vi.restoreAllMocks();
+	});
+
+	it("calls input click on Enter and Space when enabled", () => {
+		const clickSpy = vi
+			.spyOn(HTMLInputElement.prototype, "click")
+			.mockImplementation(() => {});
+
+		const { getByRole } = render(<DropZone />);
+		const button = getByRole("button");
+
+		fireEvent.keyDown(button, { key: "Enter" });
+		fireEvent.keyDown(button, { key: " " });
+
+		expect(clickSpy).toHaveBeenCalledTimes(2);
+	});
+
+	it("does not open picker when disabled", () => {
+		const clickSpy = vi
+			.spyOn(HTMLInputElement.prototype, "click")
+			.mockImplementation(() => {});
+
+		const { getByRole } = render(<DropZone disabled />);
+		const button = getByRole("button");
+
+		fireEvent.keyDown(button, { key: "Enter" });
+		fireEvent.keyDown(button, { key: " " });
+		fireEvent.click(button);
+
+		expect(clickSpy).not.toHaveBeenCalled();
+	});
+
+	it("filters dropped files using accept and passes only matching files to addFiles", () => {
+		const { getByRole } = render(<DropZone accept="video/*" />);
+		const zone = getByRole("button");
+
+		const videoFile = createFile("video.mp4", "video/mp4");
+		const textFile = createFile("notes.txt", "text/plain");
+
+		fireEvent.drop(zone, {
+			dataTransfer: {
+				files: [videoFile, textFile],
+			},
+		});
+
+		expect(addFilesMock).toHaveBeenCalledTimes(1);
+		const passed = addFilesMock.mock.calls[0][0] as File[];
+		expect(passed).toHaveLength(1);
+		expect(passed[0].name).toBe("video.mp4");
+	});
+
+	it("adds files via file input change event", () => {
+		const { container } = render(<DropZone />);
+		const input = container.querySelector("input[type='file']") as HTMLInputElement;
+		const videoFile = createFile("video.mp4", "video/mp4");
+
+		Object.defineProperty(input, "files", {
+			value: [videoFile],
+			writable: false,
+		});
+
+		fireEvent.change(input);
+
+		expect(addFilesMock).toHaveBeenCalledTimes(1);
+	});
+
+	it("passes multiple prop to file input", () => {
+		const { container: c1 } = render(<DropZone multiple={false} />);
+		const input1 = c1.querySelector("input[type='file']") as HTMLInputElement;
+		expect(input1.hasAttribute("multiple")).toBe(false);
+
+		const { container: c2 } = render(<DropZone multiple />);
+		const input2 = c2.querySelector("input[type='file']") as HTMLInputElement;
+		expect(input2.hasAttribute("multiple")).toBe(true);
+	});
+
+	it("renders supportingText when provided", () => {
+		render(<DropZone supportingText="MP4 files up to 100MB" />);
+		expect(screen.getByText("MP4 files up to 100MB")).toBeTruthy();
+	});
+
+	it("renders children render-prop with isDragging and openPicker", () => {
+		const childFn = vi.fn(({ isDragging, openPicker }) => (
+			<div>
+				<span data-testid="dragging">{isDragging.toString()}</span>
+				<button onClick={openPicker} data-testid="pick-btn">Pick</button>
+			</div>
+		));
+
+		render(<DropZone>{childFn}</DropZone>);
+
+		expect(childFn).toHaveBeenCalled();
+		expect(screen.getByTestId("dragging").textContent).toBe("false");
+	});
+
+	it("sets isDragging to true on dragOver and false on dragLeave", () => {
+		const childFn = vi.fn(({ isDragging }: { isDragging: boolean }) => (
+			<span data-testid="dragging">{isDragging.toString()}</span>
+		));
+
+		const { getByRole } = render(<DropZone>{childFn}</DropZone>);
+		const zone = getByRole("button");
+
+		fireEvent.dragOver(zone, { dataTransfer: { files: [] } });
+		expect(screen.getByTestId("dragging").textContent).toBe("true");
+
+		fireEvent.dragLeave(zone, { relatedTarget: null });
+		expect(screen.getByTestId("dragging").textContent).toBe("false");
+	});
+
+	it("does nothing on drop when disabled via canAddMore === false", () => {
+		addFilesMock.mockImplementation(() => {});
+		canAddMoreValue = false;
+
+		const { getByRole } = render(<DropZone />);
+		const zone = getByRole("button");
+
+		const videoFile = createFile("video.mp4", "video/mp4");
+
+		fireEvent.drop(zone, {
+			dataTransfer: {
+				files: [videoFile],
+			},
+		});
+
+		expect(addFilesMock).not.toHaveBeenCalled();
+		expect(zone.getAttribute("aria-disabled")).toBe("true");
+		expect(zone.getAttribute("tabindex")).toBe("-1");
+	});
+});
+

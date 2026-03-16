@@ -1,5 +1,5 @@
 {
-	"name": "@hyperserve/universal-video-uploader-web-example",
+	"name": "@hyper-serve/upload-example-web",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
@@ -9,8 +9,8 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@hyperserve/universal-video-uploader": "workspace:*",
-		"@hyperserve/universal-video-uploader-react": "workspace:*",
+		"@hyper-serve/upload": "workspace:*",
+		"@hyper-serve/upload-react": "workspace:*",
 		"react": "19.2.4",
 		"react-dom": "19.2.4"
 	},

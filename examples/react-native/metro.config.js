@@ -6,11 +6,11 @@ const config = getDefaultConfig(__dirname);
 const repoRoot = path.resolve(__dirname, "../..");
 const corePackageRoot = path.resolve(
 	repoRoot,
-	"packages/universal-video-uploader",
+	"packages/core",
 );
 const nativeUiPackageRoot = path.resolve(
 	repoRoot,
-	"packages/universal-video-uploader-native",
+	"packages/react-native",
 );
 
 config.watchFolders = [

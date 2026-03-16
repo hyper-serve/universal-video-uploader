@@ -1,0 +1,96 @@
+import React, { useEffect, useState } from "react";
+import { Image, StyleSheet, View } from "react-native";
+import type { FileState } from "@hyper-serve/upload";
+import type { StyleProp, ViewStyle, ImageStyle } from "react-native";
+import { colors, radius } from "./theme.js";
+
+export type ThumbnailProps = {
+	file: FileState;
+	style?: StyleProp<ImageStyle>;
+	placeholderStyle?: StyleProp<ViewStyle>;
+	placeholder?: React.ReactNode;
+	children?: (info: {
+		thumbnailUri: string | null;
+		playbackUrl: string | null;
+		isReady: boolean;
+	}) => React.ReactNode;
+};
+
+export function Thumbnail({
+	file,
+	style,
+	placeholderStyle,
+	placeholder,
+	children,
+}: ThumbnailProps) {
+	const isReady = file.status === "ready";
+	const [thumbnailLoadFailed, setThumbnailLoadFailed] = useState(false);
+
+	useEffect(() => {
+		setThumbnailLoadFailed(false);
+	}, [file.thumbnailUri, file.id]);
+
+	if (children) {
+		return (
+			<>
+				{children({
+					isReady,
+					playbackUrl: file.playbackUrl,
+					thumbnailUri: file.thumbnailUri,
+				})}
+			</>
+		);
+	}
+
+	if (file.thumbnailUri && !thumbnailLoadFailed) {
+		return (
+			<Image
+				onError={() => setThumbnailLoadFailed(true)}
+				source={{ uri: file.thumbnailUri }}
+				style={[styles.image, style]}
+			/>
+		);
+	}
+
+	return (
+		<View style={[styles.placeholder, placeholderStyle, style as StyleProp<ViewStyle>]}>
+			{placeholder !== undefined ? (
+				placeholder
+			) : (
+				<View style={styles.placeholderIcon}>
+					<View style={styles.filmSegment} />
+					<View style={styles.filmSegment} />
+				</View>
+			)}
+		</View>
+	);
+}
+
+const styles = StyleSheet.create({
+	image: {
+		borderRadius: radius.md,
+		height: 100,
+		width: "100%",
+	},
+	placeholder: {
+		alignItems: "center",
+		backgroundColor: colors.bgPlaceholder,
+		borderRadius: radius.md,
+		borderWidth: 1,
+		borderColor: colors.borderPlaceholder,
+		height: 100,
+		justifyContent: "center",
+	},
+	placeholderIcon: {
+		alignItems: "center",
+		flexDirection: "row",
+		gap: 6,
+		justifyContent: "center",
+	},
+	filmSegment: {
+		backgroundColor: colors.iconMuted,
+		borderRadius: 2,
+		height: 32,
+		width: 10,
+	},
+});

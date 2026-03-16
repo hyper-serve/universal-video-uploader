@@ -1,0 +1,43 @@
+{
+	"name": "@hyper-serve/upload-react",
+	"version": "0.0.1",
+	"author": "Ryan Trann",
+	"description": "Composable React UI components for @hyper-serve/upload",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"sideEffects": false,
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc",
+		"build:watch": "tsc --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"prepublishOnly": "bun run build"
+	},
+	"peerDependencies": {
+		"@hyper-serve/upload": ">=0.0.1",
+		"react": ">=18.0.0",
+		"react-dom": ">=18.0.0"
+	},
+	"devDependencies": {
+		"@hyper-serve/upload": "workspace:*",
+		"@testing-library/react": "16.3.2",
+		"@types/react": "19.2.14",
+		"@types/react-dom": "19.2.3",
+		"jsdom": "28.1.0",
+		"react": "19.2.4",
+		"react-dom": "19.2.4",
+		"typescript": "5.9.3",
+		"vitest": "4.0.18"
+	}
+}

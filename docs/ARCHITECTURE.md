@@ -6,9 +6,9 @@ Universal Video Uploader is a cross-platform React library for uploading videos 
 
 ```
 packages/
-├── universal-video-uploader          # Core — headless logic, adapters, hooks, shared theme
-├── universal-video-uploader-react    # Web UI — DropZone, FileList, FileItem, etc.
-└── universal-video-uploader-native   # RN UI — FilePicker, FileList, FileItem, etc.
+├── core            # Core — headless logic, adapters, hooks, shared theme
+├── react           # Web UI — DropZone, FileList, FileItem, etc.
+└── react-native    # RN UI — FilePicker, FileList, FileItem, etc.
 
 examples/
 ├── web/            # Vite + React 19
@@ -32,7 +32,7 @@ examples/
           └────────────┬─────────────┘
                        │
           ┌────────────▼─────────────┐
-          │ universal-video-uploader  │
+          │ @hyper-serve/upload       │
           │ (core)                    │
           │                           │
           │ UploadProvider, useUpload  │
@@ -277,7 +277,7 @@ import {
   themeFontScale,  // xs, sm, md, lg, xl (pixel values; web converts to rem)
   themeSpacingScale, // xxs, xs, sm, … cardX, cardY, dropZone, etc.
   statusConfig,    // Record<FileStatus, { bg, text, label }>
-} from "@hyperserve/universal-video-uploader";
+} from "@hyper-serve/upload";
 ```
 
 `statusConfig` maps every `FileStatus` to a color pair and default label. UI packages consume it directly; consumers can override per-status entries when using `StatusBadge`.

@@ -1,8 +1,8 @@
 {
 	"files": [],
 	"references": [
-		{ "path": "packages/universal-video-uploader" },
-		{ "path": "packages/universal-video-uploader-react" },
-		{ "path": "packages/universal-video-uploader-native" }
+		{ "path": "packages/core" },
+		{ "path": "packages/react" },
+		{ "path": "packages/react-native" }
 	]
 }

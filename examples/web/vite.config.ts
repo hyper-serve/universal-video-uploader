@@ -6,8 +6,8 @@ export default defineConfig({
 	plugins: [react()],
 	resolve: {
 		alias: {
-		  "@hyperserve/universal-video-uploader-react": path.resolve(__dirname, "../../packages/universal-video-uploader-react/src"),
-		  "@hyperserve/universal-video-uploader": path.resolve(__dirname, "../../packages/universal-video-uploader/src"),
+		  "@hyper-serve/upload-react": path.resolve(__dirname, "../../packages/react/src"),
+		  "@hyper-serve/upload": path.resolve(__dirname, "../../packages/core/src"),
 		},
 	},
 });

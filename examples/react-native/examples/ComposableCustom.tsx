@@ -10,7 +10,7 @@ import {
 	ViewModeProvider,
 	useViewMode,
 	type ViewMode,
-} from "@hyperserve/universal-video-uploader-native";
+} from "@hyper-serve/upload-react-native";
 import { Playback, pickVideos } from "./shared";
 
 function ModeToggle({

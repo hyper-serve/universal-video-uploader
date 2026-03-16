@@ -1,0 +1,45 @@
+{
+	"name": "@hyper-serve/upload-react-native",
+	"version": "0.0.1",
+	"author": "Ryan Trann",
+	"description": "Composable React Native UI components for @hyper-serve/upload",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"sideEffects": false,
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc",
+		"build:watch": "tsc --watch",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"prepublishOnly": "bun run build"
+	},
+	"peerDependencies": {
+		"@hyper-serve/upload": ">=0.0.1",
+		"react": ">=18.0.0",
+		"react-native": ">=0.73.0"
+	},
+	"devDependencies": {
+		"@hyper-serve/upload": "workspace:*",
+		"@react-native/babel-preset": "^0.84.1",
+		"@testing-library/react-native": "^13.3.1",
+		"@types/jest": "^29.5.14",
+		"@types/react": "19.2.14",
+		"babel-jest": "^29.7.0",
+		"jest": "^29.7.0",
+		"react": "19.2.0",
+		"react-native": "0.84.1",
+		"react-test-renderer": "19.2.0",
+		"typescript": "5.9.3"
+	}
+}

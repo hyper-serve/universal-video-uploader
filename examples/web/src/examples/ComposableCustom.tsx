@@ -6,7 +6,7 @@ import {
 	createHyperserveConfig,
 	maxDuration,
 	maxFileSize,
-} from "@hyperserve/universal-video-uploader";
+} from "@hyper-serve/upload";
 import {
 	DropZone,
 	FileItem,
@@ -16,8 +16,8 @@ import {
 	Thumbnail,
 	ViewModeProvider,
 	useViewMode,
-} from "@hyperserve/universal-video-uploader-react";
-import type { FileStatus } from "@hyperserve/universal-video-uploader";
+} from "@hyper-serve/upload-react";
+import type { FileStatus } from "@hyper-serve/upload";
 import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
 
 const validate = composeValidators(
