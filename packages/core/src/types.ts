@@ -91,11 +91,13 @@ export interface UploadAdapter<TOptions = Record<string, unknown>> {
 	): Promise<UploadResult>;
 }
 
+export type ProcessingStatus = "processing" | "ready" | "failed";
+
 export interface StatusChecker {
 	checkStatus(options: {
 		uploadResult: UploadResult;
 		onStatusChange: (
-			status: "processing" | "ready" | "failed",
+			status: ProcessingStatus,
 			playbackUrl?: string,
 			statusDetail?: string,
 		) => void;
@@ -108,4 +110,21 @@ export type HyperserveUploadOptions = {
 	isPublic: boolean;
 	thumbnailTimestamps?: string;
 	customUserMetadata?: Record<string, unknown>;
+};
+
+export type MuxUploadOptions = {
+	passthrough?: string;
+};
+
+export type MuxDirectUploadResponse = {
+	url: string;
+	id: string;
+};
+
+export type MuxAssetStatusValue = "waiting" | "preparing" | "ready" | "errored";
+
+export type MuxAssetStatus = {
+	status: MuxAssetStatusValue;
+	playbackId?: string;
+	assetId?: string;
 };

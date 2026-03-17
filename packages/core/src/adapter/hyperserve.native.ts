@@ -4,36 +4,10 @@ import type {
 	UploadAdapter,
 	UploadResult,
 } from "../types.js";
+import type { BackgroundUploadModule } from "../platform/backgroundUpload.native.js";
+import { getBackgroundUpload } from "../platform/backgroundUpload.native.js";
 
-export type BackgroundUploadModule = {
-	startUpload: (options: Record<string, unknown>) => Promise<string>;
-	addListener: (
-		event: string,
-		uploadId: string,
-		callback: (data: Record<string, unknown>) => void,
-	) => { remove: () => void };
-	cancelUpload: (uploadId: string) => void;
-};
-
-let backgroundUploadModule: BackgroundUploadModule | null = null;
-let backgroundResolved = false;
-let warnedMissingBackgroundModule = false;
-
-function getBackgroundUpload(): BackgroundUploadModule | null {
-	if (backgroundResolved) return backgroundUploadModule;
-	backgroundResolved = true;
-	try {
-		backgroundUploadModule = require("react-native-background-upload");
-	} catch {
-		if (!warnedMissingBackgroundModule) {
-			warnedMissingBackgroundModule = true;
-			console.warn(
-				"HyperserveAdapter: react-native-background-upload is not installed. Falling back to fetch-based upload with coarse progress reporting.",
-			);
-		}
-	}
-	return backgroundUploadModule;
-}
+export type { BackgroundUploadModule };
 
 export class HyperserveAdapter implements UploadAdapter<HyperserveUploadOptions> {
 	private apiKey: string;

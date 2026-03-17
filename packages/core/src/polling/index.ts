@@ -1,4 +1,5 @@
-import type { StatusChecker, UploadResult } from "../types.js";
+import type { ProcessingStatus, StatusChecker, UploadResult } from "../types.js";
+import { backoffDelay } from "./backoff.js";
 
 type PollOptions = {
 	apiKey: string;
@@ -6,7 +7,7 @@ type PollOptions = {
 	intervalMs: number;
 	isPublic: boolean;
 	onStatusChange: (
-		status: "processing" | "ready" | "failed",
+		status: ProcessingStatus,
 		playbackUrl?: string,
 		statusDetail?: string,
 	) => void;
@@ -27,20 +28,6 @@ type VideoResponse = {
 	resolutions: Record<string, VideoResolutionResponse | undefined>;
 	status: string;
 };
-
-const MAX_BACKOFF_MS = 60_000;
-
-function withJitter(ms: number): number {
-	return ms + Math.random() * 0.3 * ms;
-}
-
-function backoffDelay(intervalMs: number, consecutiveErrors: number): number {
-	const delay = Math.min(
-		intervalMs * Math.pow(2, consecutiveErrors),
-		MAX_BACKOFF_MS,
-	);
-	return withJitter(delay);
-}
 
 export function pollVideoStatus(options: PollOptions): void {
 	const {
@@ -135,7 +122,7 @@ export class HyperserveStatusChecker implements StatusChecker {
 	checkStatus(options: {
 		uploadResult: UploadResult;
 		onStatusChange: (
-			status: "processing" | "ready" | "failed",
+			status: ProcessingStatus,
 			playbackUrl?: string,
 			statusDetail?: string,
 		) => void;

@@ -13,6 +13,11 @@ export {
 } from "./polling/index.js";
 export { createHyperserveConfig } from "./createHyperserveConfig.js";
 export type { HyperserveConfig } from "./createHyperserveConfig.js";
+export { MuxAdapter } from "./adapter/mux.js";
+export { MuxStatusChecker, pollMuxStatus } from "./polling/mux.js";
+export type { MuxStatusCheckerConfig } from "./polling/mux.js";
+export { createMuxConfig } from "./createMuxConfig.js";
+export type { MuxConfig } from "./createMuxConfig.js";
 export {
 	allowedTypes,
 	composeValidators,
@@ -32,10 +37,15 @@ export type {
 	ErrorMessages,
 	FileRef,
 	HyperserveUploadOptions,
+	MuxAssetStatus,
+	MuxAssetStatusValue,
+	MuxDirectUploadResponse,
+	MuxUploadOptions,
 	NativeFileRef,
 	WebFileRef,
 	FileState,
 	FileStatus,
+	ProcessingStatus,
 	StatusChecker,
 	UploadAdapter,
 	UploadConfig,
