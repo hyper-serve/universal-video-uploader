@@ -4,11 +4,11 @@ import type { HyperserveUploadOptions } from "../types.js";
 import type { BackgroundUploadModule } from "../adapter/hyperserve.native.js";
 import { HyperserveAdapter } from "../adapter/hyperserve.native.js";
 
-vi.mock("hyperserve-sdk/react-native", () => ({
+vi.mock("@hyperserve/hyperserve-js/react-native", () => ({
 	putVideoToStorage: vi.fn(),
 }));
 
-import { putVideoToStorage } from "hyperserve-sdk/react-native";
+import { putVideoToStorage } from "@hyperserve/hyperserve-js/react-native";
 
 function makeFileRef(name = "test.mp4"): FileRef {
 	return {

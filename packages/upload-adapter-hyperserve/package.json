@@ -26,7 +26,7 @@
 	},
 	"dependencies": {
 		"@hyperserve/upload": "workspace:*",
-		"hyperserve-sdk": "latest"
+		"@hyperserve/hyperserve-js": "latest"
 	},
 	"peerDependencies": {
 		"react-native-background-upload": ">=6.0.0"

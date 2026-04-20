@@ -3,7 +3,7 @@ import { createHyperserveConfig } from "../createHyperserveConfig.js";
 import { HyperserveAdapter } from "../adapter/hyperserve.js";
 import { HyperserveStatusChecker } from "../polling/index.js";
 
-vi.mock("hyperserve-sdk/browser", () => ({
+vi.mock("@hyperserve/hyperserve-js/browser", () => ({
 	putVideoToStorage: vi.fn(),
 }));
 

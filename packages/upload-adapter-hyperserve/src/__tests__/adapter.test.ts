@@ -3,11 +3,11 @@ import { HyperserveAdapter } from "../adapter/hyperserve.js";
 import type { FileRef } from "@hyperserve/upload";
 import type { HyperserveUploadOptions } from "../types.js";
 
-vi.mock("hyperserve-sdk/browser", () => ({
+vi.mock("@hyperserve/hyperserve-js/browser", () => ({
 	putVideoToStorage: vi.fn(),
 }));
 
-import { putVideoToStorage } from "hyperserve-sdk/browser";
+import { putVideoToStorage } from "@hyperserve/hyperserve-js/browser";
 
 function makeFileRef(): FileRef {
 	const blob = new Blob(["fake video content"], { type: "video/mp4" });

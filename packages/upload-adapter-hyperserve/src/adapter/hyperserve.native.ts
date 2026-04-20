@@ -1,4 +1,4 @@
-import { putVideoToStorage } from "hyperserve-sdk/react-native";
+import { putVideoToStorage } from "@hyperserve/hyperserve-js/react-native";
 import type { FileRef, UploadAdapter, UploadResult } from "@hyperserve/upload";
 import type { HyperserveAdapterConfig, HyperserveUploadOptions } from "../types.js";
 import type { BackgroundUploadModule } from "../platform/backgroundUpload.native.js";
