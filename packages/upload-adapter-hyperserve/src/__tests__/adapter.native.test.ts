@@ -87,7 +87,7 @@ describe("HyperserveAdapter (native) - sdk fallback", () => {
 		});
 	});
 
-	it("passes onProgress and signal to putVideoToStorage", async () => {
+	it("passes onProgress to putVideoToStorage", async () => {
 		const config = makeConfig();
 		const adapter = createAdapter(config, null);
 		const onProgress = vi.fn();
@@ -96,7 +96,7 @@ describe("HyperserveAdapter (native) - sdk fallback", () => {
 		await adapter.upload(makeFileRef(), defaultOptions, { onProgress }, ac.signal);
 
 		expect(putVideoToStorage).toHaveBeenCalledWith(
-			expect.objectContaining({ onProgress, signal: ac.signal }),
+			expect.objectContaining({ onProgress }),
 		);
 	});
 

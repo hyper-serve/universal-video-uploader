@@ -82,7 +82,7 @@ describe("HyperserveAdapter (web)", () => {
 		});
 	});
 
-	it("passes onProgress and signal to putVideoToStorage", async () => {
+	it("passes onProgress to putVideoToStorage", async () => {
 		const config = makeConfig();
 		const adapter = new HyperserveAdapter(config);
 		const ac = new AbortController();
@@ -93,7 +93,6 @@ describe("HyperserveAdapter (web)", () => {
 		expect(putVideoToStorage).toHaveBeenCalledWith(
 			expect.objectContaining({
 				onProgress,
-				signal: ac.signal,
 			}),
 		);
 	});

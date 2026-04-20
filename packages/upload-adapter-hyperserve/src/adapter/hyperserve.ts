@@ -24,7 +24,6 @@ export class HyperserveAdapter implements UploadAdapter<HyperserveUploadOptions>
 			contentType,
 			file: file.raw,
 			onProgress: callbacks.onProgress,
-			signal,
 			uploadUrl,
 		});
 

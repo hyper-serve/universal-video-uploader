@@ -8,7 +8,7 @@ import {
 
 const API_KEY = import.meta.env.VITE_HYPERSERVE_API_KEY ?? "";
 const BASE_URL =
-	import.meta.env.VITE_HYPERSERVE_BASE_URL ?? "https://api.hyperserve.io/v1";
+	import.meta.env.VITE_HYPERSERVE_BASE_URL ?? "";
 
 const validate = composeValidators(
 	maxFileSize(500 * 1024 * 1024),

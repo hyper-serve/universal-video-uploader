@@ -124,7 +124,6 @@ export class HyperserveAdapter implements UploadAdapter<HyperserveUploadOptions>
 		await putVideoToStorage({
 			contentType,
 			onProgress: callbacks.onProgress,
-			signal,
 			uploadUrl,
 			uri: file.uri,
 		});
