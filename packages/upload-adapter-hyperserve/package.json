@@ -1,0 +1,44 @@
+{
+	"name": "@hyperserve/upload-adapter-hyperserve",
+	"version": "0.0.1",
+	"author": "Ryan Trann",
+	"description": "Hyperserve adapter for @hyperserve/upload",
+	"license": "MIT",
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"sideEffects": false,
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc",
+		"build:watch": "tsc --watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"prepublishOnly": "bun run build"
+	},
+	"dependencies": {
+		"@hyperserve/upload": "workspace:*",
+		"hyperserve-sdk": "latest"
+	},
+	"peerDependencies": {
+		"react-native-background-upload": ">=6.0.0"
+	},
+	"peerDependenciesMeta": {
+		"react-native-background-upload": {
+			"optional": true
+		}
+	},
+	"devDependencies": {
+		"@types/node": "22.15.0",
+		"typescript": "5.9.3",
+		"vitest": "4.0.18"
+	}
+}

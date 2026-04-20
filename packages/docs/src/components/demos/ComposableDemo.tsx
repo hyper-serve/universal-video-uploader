@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { UploadProvider } from "@hyper-serve/upload";
+import { UploadProvider } from "@hyperserve/upload";
 import {
 	DropZone,
 	FileItem,
@@ -8,7 +8,7 @@ import {
 	Thumbnail,
 	ViewModeProvider,
 	useViewMode,
-} from "@hyper-serve/upload-react";
+} from "@hyperserve/upload-react";
 import { createMockConfig } from "./MockAdapter";
 
 function UploadUI() {

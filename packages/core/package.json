@@ -1,8 +1,8 @@
 {
-	"name": "@hyper-serve/upload",
+	"name": "@hyperserve/upload",
 	"version": "0.0.1",
 	"author": "Ryan Trann",
-	"description": "Headless cross-platform video upload component for Hyperserve",
+	"description": "Headless cross-platform video upload component for Hyperserve. Supports custom adapters for Mux, Bunny, and other video platforms.",
 	"license": "MIT",
 	"type": "module",
 	"exports": {

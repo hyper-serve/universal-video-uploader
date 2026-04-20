@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
-import type { FileState } from "@hyper-serve/upload";
-import { useUpload } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
+import { useUpload } from "@hyperserve/upload";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
 import { ProgressBar } from "./ProgressBar.js";
 import { Thumbnail } from "./Thumbnail.js";

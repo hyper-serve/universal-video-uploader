@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
-import type { FileState } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
 import type { StyleProp, ViewStyle, ImageStyle } from "react-native";
 import { colors, radius } from "./theme.js";
 

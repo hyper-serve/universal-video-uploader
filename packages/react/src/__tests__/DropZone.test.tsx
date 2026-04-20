@@ -6,8 +6,8 @@ import { DropZone } from "../DropZone.js";
 const addFilesMock = vi.fn();
 let canAddMoreValue = true;
 
-vi.mock("@hyper-serve/upload", async (importOriginal) => {
-	const actual = await importOriginal<typeof import("@hyper-serve/upload")>();
+vi.mock("@hyperserve/upload", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@hyperserve/upload")>();
 	return {
 		...actual,
 		useUpload: () => ({

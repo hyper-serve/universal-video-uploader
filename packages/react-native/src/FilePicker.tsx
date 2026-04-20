@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useUpload } from "@hyper-serve/upload";
-import type { FileRef } from "@hyper-serve/upload";
+import { useUpload } from "@hyperserve/upload";
+import type { FileRef } from "@hyperserve/upload";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
 import { colors, radius } from "./theme.js";
 

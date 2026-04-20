@@ -91,11 +91,13 @@ export interface UploadAdapter<TOptions = Record<string, unknown>> {
 	): Promise<UploadResult>;
 }
 
+export type ProcessingStatus = "processing" | "ready" | "failed";
+
 export interface StatusChecker {
 	checkStatus(options: {
 		uploadResult: UploadResult;
 		onStatusChange: (
-			status: "processing" | "ready" | "failed",
+			status: ProcessingStatus,
 			playbackUrl?: string,
 			statusDetail?: string,
 		) => void;
@@ -103,9 +105,3 @@ export interface StatusChecker {
 	}): void;
 }
 
-export type HyperserveUploadOptions = {
-	resolutions: string;
-	isPublic: boolean;
-	thumbnailTimestamps?: string;
-	customUserMetadata?: Record<string, unknown>;
-};

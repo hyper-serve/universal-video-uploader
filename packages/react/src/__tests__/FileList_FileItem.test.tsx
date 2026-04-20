@@ -1,7 +1,7 @@
 import React from "react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import type { FileState } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
 import { FileList } from "../FileList.js";
 import { FileItem } from "../FileItem.js";
 
@@ -20,8 +20,8 @@ let mockContext: MockUploadContext = {
 	retryFile: retryFileMock,
 };
 
-vi.mock("@hyper-serve/upload", async (importOriginal) => {
-	const actual = await importOriginal<typeof import("@hyper-serve/upload")>();
+vi.mock("@hyperserve/upload", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@hyperserve/upload")>();
 	return {
 		...actual,
 		useUpload: () => mockContext,

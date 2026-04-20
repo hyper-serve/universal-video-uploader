@@ -1,12 +1,12 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
 import { FilePicker } from "../FilePicker";
-import type { FileRef } from "@hyper-serve/upload";
+import type { FileRef } from "@hyperserve/upload";
 
 const mockAddFiles = jest.fn();
 
-jest.mock("@hyper-serve/upload", () => ({
-	...jest.requireActual("@hyper-serve/upload"),
+jest.mock("@hyperserve/upload", () => ({
+	...jest.requireActual("@hyperserve/upload"),
 	useUpload: () => ({
 		addFiles: mockAddFiles,
 	}),

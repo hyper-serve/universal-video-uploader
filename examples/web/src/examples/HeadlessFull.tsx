@@ -8,7 +8,7 @@ import {
 	maxFileSize,
 	toFileRefs,
 	useUpload,
-} from "@hyper-serve/upload";
+} from "@hyperserve/upload";
 import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
 
 const validate = composeValidators(

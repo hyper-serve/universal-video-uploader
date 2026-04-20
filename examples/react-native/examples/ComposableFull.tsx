@@ -5,7 +5,7 @@ import {
 	FileListToolbar,
 	FilePicker,
 	ViewModeProvider,
-} from "@hyper-serve/upload-react-native";
+} from "@hyperserve/upload-react-native";
 import { pickVideos } from "./shared";
 
 export function Default() {

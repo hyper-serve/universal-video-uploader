@@ -3,7 +3,7 @@ import {
 	UploadProvider,
 	toFileRefs,
 	useUpload,
-} from "@hyper-serve/upload";
+} from "@hyperserve/upload";
 import { createMockConfig } from "./MockAdapter";
 
 function formatSize(bytes: number): string {

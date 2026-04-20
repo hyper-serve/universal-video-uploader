@@ -6,13 +6,6 @@ export {
 	createThumbnail,
 	revokeThumbnail,
 } from "./platform/thumbnail.js";
-export { HyperserveAdapter } from "./adapter/hyperserve.js";
-export {
-	HyperserveStatusChecker,
-	pollVideoStatus,
-} from "./polling/index.js";
-export { createHyperserveConfig } from "./createHyperserveConfig.js";
-export type { HyperserveConfig } from "./createHyperserveConfig.js";
 export {
 	allowedTypes,
 	composeValidators,
@@ -31,11 +24,11 @@ export type { ViewMode, ViewModeProviderProps } from "./viewMode.js";
 export type {
 	ErrorMessages,
 	FileRef,
-	HyperserveUploadOptions,
 	NativeFileRef,
 	WebFileRef,
 	FileState,
 	FileStatus,
+	ProcessingStatus,
 	StatusChecker,
 	UploadAdapter,
 	UploadConfig,

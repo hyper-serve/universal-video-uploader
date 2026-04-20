@@ -3,7 +3,7 @@ import {
 	themeRadius,
 	themeFontScale,
 	themeSpacingScale,
-} from "@hyper-serve/upload";
+} from "@hyperserve/upload";
 
 export const colors = themeColors;
 

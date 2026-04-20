@@ -3,38 +3,61 @@ import { createHyperserveConfig } from "../createHyperserveConfig.js";
 import { HyperserveAdapter } from "../adapter/hyperserve.js";
 import { HyperserveStatusChecker } from "../polling/index.js";
 
+vi.mock("hyperserve-sdk/browser", () => ({
+	putVideoToStorage: vi.fn(),
+}));
+
+function makeCallbacks() {
+	return {
+		createUpload: vi.fn().mockResolvedValue({
+			videoId: "v1",
+			uploadUrl: "https://s3.example.com/presigned",
+			contentType: "video/mp4",
+		}),
+		completeUpload: vi.fn().mockResolvedValue(undefined),
+		getVideoStatus: vi.fn().mockResolvedValue({ status: "failed" }),
+	};
+}
+
 describe("createHyperserveConfig", () => {
 	it("returns config with HyperserveAdapter and HyperserveStatusChecker", () => {
+		const { createUpload, completeUpload, getVideoStatus } = makeCallbacks();
 		const config = createHyperserveConfig({
-			apiKey: "key",
-			uploadOptions: { isPublic: true, resolutions: "480p" },
+			createUpload,
+			completeUpload,
+			getVideoStatus,
+			uploadOptions: { isPublic: true, resolutions: ["480p"] },
 		});
 
 		expect(config.adapter).toBeInstanceOf(HyperserveAdapter);
 		expect(config.statusChecker).toBeInstanceOf(HyperserveStatusChecker);
 		expect(config.uploadOptions).toEqual({
 			isPublic: true,
-			resolutions: "480p",
+			resolutions: ["480p"],
 		});
 	});
 
-	it("uses default baseUrl when not provided", () => {
+	it("omits statusChecker when getVideoStatus is not provided", () => {
+		const { createUpload, completeUpload } = makeCallbacks();
 		const config = createHyperserveConfig({
-			apiKey: "key",
-			uploadOptions: { isPublic: true, resolutions: "480p" },
+			createUpload,
+			completeUpload,
+			uploadOptions: { isPublic: true, resolutions: ["480p"] },
 		});
 
-		expect(config.statusChecker).toBeInstanceOf(HyperserveStatusChecker);
+		expect(config.statusChecker).toBeUndefined();
 	});
 
-	it("passes through baseUrl, maxConcurrentUploads, pollingIntervalMs, validate", () => {
+	it("passes through maxConcurrentUploads, pollingIntervalMs, validate", () => {
+		const { createUpload, completeUpload, getVideoStatus } = makeCallbacks();
 		const validate = vi.fn().mockResolvedValue({ valid: true });
 		const config = createHyperserveConfig({
-			apiKey: "key",
-			baseUrl: "https://custom.api/v1",
+			createUpload,
+			completeUpload,
+			getVideoStatus,
 			maxConcurrentUploads: 5,
 			pollingIntervalMs: 5000,
-			uploadOptions: { isPublic: false, resolutions: "1080p" },
+			uploadOptions: { isPublic: false, resolutions: ["1080p"] },
 			validate,
 		});
 
@@ -42,19 +65,21 @@ describe("createHyperserveConfig", () => {
 		expect(config.validate).toBe(validate);
 		expect(config.uploadOptions).toEqual({
 			isPublic: false,
-			resolutions: "1080p",
+			resolutions: ["1080p"],
 		});
 	});
 
 	it("passes through maxFiles, onFileReady, onUploadFailed", () => {
+		const { createUpload, completeUpload } = makeCallbacks();
 		const onFileReady = vi.fn();
 		const onUploadFailed = vi.fn();
 		const config = createHyperserveConfig({
-			apiKey: "key",
+			createUpload,
+			completeUpload,
 			maxFiles: 5,
 			onFileReady,
 			onUploadFailed,
-			uploadOptions: { isPublic: true, resolutions: "480p" },
+			uploadOptions: { isPublic: true, resolutions: ["480p"] },
 		});
 
 		expect(config.maxFiles).toBe(5);
@@ -63,14 +88,16 @@ describe("createHyperserveConfig", () => {
 	});
 
 	it("passes through errorMessages", () => {
+		const { createUpload, completeUpload } = makeCallbacks();
 		const errorMessages = {
 			processingFailed: "Processing error",
 			validationError: "Validation error",
 		};
 		const config = createHyperserveConfig({
-			apiKey: "key",
+			createUpload,
+			completeUpload,
 			errorMessages,
-			uploadOptions: { isPublic: true, resolutions: "480p" },
+			uploadOptions: { isPublic: true, resolutions: ["480p"] },
 		});
 
 		expect(config.errorMessages).toBe(errorMessages);

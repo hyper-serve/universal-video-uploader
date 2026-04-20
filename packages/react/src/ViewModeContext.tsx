@@ -1,8 +1,8 @@
 export {
 	ViewModeProvider,
 	useViewMode,
-} from "@hyper-serve/upload";
+} from "@hyperserve/upload";
 export type {
 	ViewMode,
 	ViewModeProviderProps,
-} from "@hyper-serve/upload";
+} from "@hyperserve/upload";

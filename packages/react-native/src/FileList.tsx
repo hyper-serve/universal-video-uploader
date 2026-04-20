@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import type { FileState } from "@hyper-serve/upload";
-import { useUpload } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
+import { useUpload } from "@hyperserve/upload";
 import type { StyleProp, ViewStyle } from "react-native";
 import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";

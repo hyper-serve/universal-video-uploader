@@ -1,8 +1,8 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { useUpload } from "@hyper-serve/upload";
-import type { ViewMode } from "@hyper-serve/upload-react-native";
-import { ProgressBar } from "@hyper-serve/upload-react-native";
+import { useUpload } from "@hyperserve/upload";
+import type { ViewMode } from "@hyperserve/upload-react-native";
+import { ProgressBar } from "@hyperserve/upload-react-native";
 import { Playback, pickVideos } from "./shared";
 
 function ModeToggle({

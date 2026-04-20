@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
-import { UploadProvider } from "@hyper-serve/upload";
+import { UploadProvider } from "@hyperserve/upload";
 import {
 	DropZone,
 	FileList,
 	FileListToolbar,
 	ViewModeProvider,
-} from "@hyper-serve/upload-react";
+} from "@hyperserve/upload-react";
 import { createMockConfig } from "./MockAdapter";
 
 function UploadUI() {

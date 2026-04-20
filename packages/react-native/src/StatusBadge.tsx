@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import type { FileStatus } from "@hyper-serve/upload";
+import type { FileStatus } from "@hyperserve/upload";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
 import { radius } from "./theme.js";
 import { statusConfig } from "./utils.js";

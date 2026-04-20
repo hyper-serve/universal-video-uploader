@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from "react";
-import type { FileState } from "@hyper-serve/upload";
-import { useUpload } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
+import { useUpload } from "@hyperserve/upload";
 import { CheckCircleIcon, RetryIcon, SpinnerIcon } from "./icons.js";
 import { ProgressBar } from "./ProgressBar.js";
 import { Thumbnail } from "./Thumbnail.js";

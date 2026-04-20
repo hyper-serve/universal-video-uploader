@@ -6,8 +6,8 @@ export default defineConfig({
 	plugins: [react()],
 	resolve: {
 		alias: {
-		  "@hyper-serve/upload-react": path.resolve(__dirname, "../../packages/react/src"),
-		  "@hyper-serve/upload": path.resolve(__dirname, "../../packages/core/src"),
+		  "@hyperserve/upload-react": path.resolve(__dirname, "../../packages/react/src"),
+		  "@hyperserve/upload": path.resolve(__dirname, "../../packages/core/src"),
 		},
 	},
 });

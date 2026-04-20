@@ -1,8 +1,8 @@
 {
-	"name": "@hyper-serve/upload-react",
+	"name": "@hyperserve/upload-react",
 	"version": "0.0.1",
 	"author": "Ryan Trann",
-	"description": "Composable React UI components for @hyper-serve/upload",
+	"description": "Composable React UI components for @hyperserve/upload",
 	"license": "MIT",
 	"type": "module",
 	"exports": {
@@ -25,12 +25,12 @@
 		"prepublishOnly": "bun run build"
 	},
 	"peerDependencies": {
-		"@hyper-serve/upload": ">=0.0.1",
+		"@hyperserve/upload": ">=0.0.1",
 		"react": ">=18.0.0",
 		"react-dom": ">=18.0.0"
 	},
 	"devDependencies": {
-		"@hyper-serve/upload": "workspace:*",
+		"@hyperserve/upload": "workspace:*",
 		"@testing-library/react": "16.3.2",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",

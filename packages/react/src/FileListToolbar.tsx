@@ -1,5 +1,5 @@
 import React from "react";
-import { useUpload } from "@hyper-serve/upload";
+import { useUpload } from "@hyperserve/upload";
 import { GridIcon, ListIcon } from "./icons.js";
 import { colors, radius } from "./theme.js";
 import { type ViewMode, useViewMode } from "./ViewModeContext.js";

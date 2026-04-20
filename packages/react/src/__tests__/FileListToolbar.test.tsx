@@ -3,12 +3,12 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { FileListToolbar } from "../FileListToolbar.js";
 import { ViewModeProvider } from "../ViewModeContext.js";
-import type { FileState } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
 
 let mockFiles: FileState[] = [];
 
-vi.mock("@hyper-serve/upload", async (importOriginal) => {
-	const actual = await importOriginal<typeof import("@hyper-serve/upload")>();
+vi.mock("@hyperserve/upload", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@hyperserve/upload")>();
 	return {
 		...actual,
 		useUpload: () => ({

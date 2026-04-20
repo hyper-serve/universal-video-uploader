@@ -1,24 +1,24 @@
 {
-	"name": "@hyper-serve/upload-monorepo",
+	"name": "@hyperserve/upload-monorepo",
 	"private": true,
 	"workspaces": [
 		"packages/*",
 		"examples/*"
 	],
 	"scripts": {
-		"build": "bun run --filter '@hyper-serve/*' build",
-		"build:watch": "bun run --filter '@hyper-serve/*' build:watch",
-		"test": "bun run --filter '@hyper-serve/upload' test && bun run --filter '@hyper-serve/upload-react' test && bun run --filter '@hyper-serve/upload-react-native' test",
-		"test:watch": "bun run --filter '@hyper-serve/upload' test:watch",
+		"build": "bun run --filter '@hyperserve/*' build",
+		"build:watch": "bun run --filter '@hyperserve/*' build:watch",
+		"test": "bun run --filter '@hyperserve/upload' test && bun run --filter '@hyperserve/upload-adapter-hyperserve' test && bun run --filter '@hyperserve/upload-react' test && bun run --filter '@hyperserve/upload-react-native' test",
+		"test:watch": "bun run --filter '@hyperserve/upload' test:watch",
 		"format:check": "biome format",
 		"format:write": "biome format --write",
 		"lint:check": "biome lint",
 		"lint:fix": "biome lint --write",
-		"start:web": "bun run --filter '@hyper-serve/upload-example-web' dev",
-		"start:react-native": "bun run --filter '@hyper-serve/upload-example-react-native' start",
-		"docs:dev": "bun run --filter '@hyper-serve/upload-docs' dev",
-		"docs:build": "bun run --filter '@hyper-serve/upload-docs' build",
-		"docs:preview": "bun run --filter '@hyper-serve/upload-docs' preview"
+		"start:web": "bun run --filter '@hyperserve/upload-example-web' dev",
+		"start:react-native": "bun run --filter '@hyperserve/upload-example-react-native' start",
+		"docs:dev": "bun run --filter '@hyperserve/upload-docs' dev",
+		"docs:build": "bun run --filter '@hyperserve/upload-docs' build",
+		"docs:preview": "bun run --filter '@hyperserve/upload-docs' preview"
 	},
 	"devDependencies": {
 		"@babel/runtime": "^7.28.6",

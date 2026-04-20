@@ -4,7 +4,7 @@ import { render, screen } from "@testing-library/react";
 import { StatusBadge } from "../StatusBadge.js";
 import { Thumbnail } from "../Thumbnail.js";
 import { ProgressBar } from "../ProgressBar.js";
-import type { FileState } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
 
 describe("StatusBadge", () => {
 	it("uses default config for status and renders label", () => {
@@ -44,7 +44,7 @@ describe("StatusBadge", () => {
 	});
 
 	it("renders correct labels for all 6 statuses", () => {
-		const statuses: Array<{ status: import("@hyper-serve/upload").FileStatus; label: string }> = [
+		const statuses: Array<{ status: import("@hyperserve/upload").FileStatus; label: string }> = [
 			{ status: "selected", label: "Selected" },
 			{ status: "validating", label: "Validating" },
 			{ status: "uploading", label: "Uploading" },

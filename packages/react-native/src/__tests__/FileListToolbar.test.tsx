@@ -2,7 +2,7 @@ import React from "react";
 import { Text } from "react-native";
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import { FileListToolbar } from "../FileListToolbar";
-import type { FileState } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
 
 let mockFiles: FileState[] = [];
 let mockViewMode = "list";
@@ -10,8 +10,8 @@ const mockSetViewMode = jest.fn((mode: string) => {
 	mockViewMode = mode;
 });
 
-jest.mock("@hyper-serve/upload", () => ({
-	...jest.requireActual("@hyper-serve/upload"),
+jest.mock("@hyperserve/upload", () => ({
+	...jest.requireActual("@hyperserve/upload"),
 	useUpload: () => ({
 		files: mockFiles,
 	}),

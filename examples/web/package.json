@@ -1,5 +1,5 @@
 {
-	"name": "@hyper-serve/upload-example-web",
+	"name": "@hyperserve/upload-example-web",
 	"private": true,
 	"version": "0.0.1",
 	"type": "module",
@@ -9,8 +9,8 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
-		"@hyper-serve/upload": "workspace:*",
-		"@hyper-serve/upload-react": "workspace:*",
+		"@hyperserve/upload": "workspace:*",
+		"@hyperserve/upload-react": "workspace:*",
 		"react": "19.2.4",
 		"react-dom": "19.2.4"
 	},

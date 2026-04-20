@@ -9,7 +9,7 @@ import {
 	maxFileSize,
 	type FileRef,
 	type FileState,
-} from "@hyper-serve/upload";
+} from "@hyperserve/upload";
 
 const validate = composeValidators(
 	maxFileSize(500 * 1024 * 1024),

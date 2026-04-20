@@ -2,7 +2,7 @@ import React from "react";
 import { Text } from "react-native";
 import { render, screen } from "@testing-library/react-native";
 import { StatusBadge } from "../StatusBadge";
-import type { FileStatus } from "@hyper-serve/upload";
+import type { FileStatus } from "@hyperserve/upload";
 
 describe("StatusBadge (native)", () => {
 	it("renders default label for each status", () => {

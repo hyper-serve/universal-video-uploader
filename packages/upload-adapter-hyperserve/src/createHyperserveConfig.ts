@@ -1,19 +1,20 @@
-import { HyperserveAdapter } from "./adapter/hyperserve.js";
-import type { HyperserveUploadOptions } from "./types.js";
-import { HyperserveStatusChecker } from "./polling/index.js";
 import type {
 	ErrorMessages,
 	FileRef,
 	FileState,
 	UploadConfig,
 	ValidationResult,
+} from "@hyperserve/upload";
+import type {
+	HyperserveAdapterConfig,
+	HyperserveUploadOptions,
+	VideoStatusResult,
 } from "./types.js";
+import { HyperserveAdapter } from "./adapter/hyperserve.js";
+import { HyperserveStatusChecker } from "./polling/index.js";
 
-const DEFAULT_BASE_URL = "https://api.hyperserve.io/v1";
-
-export type HyperserveConfig = {
-	apiKey: string;
-	baseUrl?: string;
+export type HyperserveConfig = HyperserveAdapterConfig & {
+	getVideoStatus?: (videoId: string) => Promise<VideoStatusResult>;
 	maxConcurrentUploads?: number;
 	maxFiles?: number;
 	pollingIntervalMs?: number;
@@ -27,20 +28,22 @@ export type HyperserveConfig = {
 export function createHyperserveConfig(
 	options: HyperserveConfig,
 ): UploadConfig<HyperserveUploadOptions> {
-	const baseUrl = options.baseUrl ?? DEFAULT_BASE_URL;
-	const adapterConfig = { apiKey: options.apiKey, baseUrl };
-
 	return {
-		adapter: new HyperserveAdapter(adapterConfig),
+		adapter: new HyperserveAdapter({
+			completeUpload: options.completeUpload,
+			createUpload: options.createUpload,
+		}),
 		errorMessages: options.errorMessages,
 		maxConcurrentUploads: options.maxConcurrentUploads,
 		maxFiles: options.maxFiles,
 		onFileReady: options.onFileReady,
 		onUploadFailed: options.onUploadFailed,
-		statusChecker: new HyperserveStatusChecker({
-			...adapterConfig,
-			intervalMs: options.pollingIntervalMs,
-		}),
+		statusChecker: options.getVideoStatus
+			? new HyperserveStatusChecker({
+					getVideoStatus: options.getVideoStatus,
+					intervalMs: options.pollingIntervalMs,
+				})
+			: undefined,
 		uploadOptions: options.uploadOptions,
 		validate: options.validate,
 	};

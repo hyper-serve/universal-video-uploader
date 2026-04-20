@@ -1,5 +1,5 @@
 import React from "react";
-import type { FileStatus } from "@hyper-serve/upload";
+import type { FileStatus } from "@hyperserve/upload";
 import { radius } from "./theme.js";
 import { statusConfig } from "./utils.js";
 

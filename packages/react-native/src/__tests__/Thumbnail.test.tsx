@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import { Image } from "react-native";
 import { Thumbnail } from "../Thumbnail";
-import type { FileState } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
 
 const baseFile: FileState = {
 	id: "f1",

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { ScrollView, StyleSheet, Text, Pressable, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { UploadProvider } from "@hyper-serve/upload";
+import { UploadProvider } from "@hyperserve/upload";
 import { Default } from "./examples/ComposableFull";
 import { Custom } from "./examples/ComposableCustom";
 import { Composable } from "./examples/ComposablePrimitives";

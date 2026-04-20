@@ -1,13 +1,13 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import { FileItem } from "../FileItem";
-import type { FileState } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
 
 const mockRemoveFile = jest.fn();
 const mockRetryFile = jest.fn();
 
-jest.mock("@hyper-serve/upload", () => ({
-	...jest.requireActual("@hyper-serve/upload"),
+jest.mock("@hyperserve/upload", () => ({
+	...jest.requireActual("@hyperserve/upload"),
 	useUpload: () => ({
 		removeFile: mockRemoveFile,
 		retryFile: mockRetryFile,

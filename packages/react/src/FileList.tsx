@@ -1,6 +1,6 @@
 import React from "react";
-import type { FileState } from "@hyper-serve/upload";
-import { useUpload } from "@hyper-serve/upload";
+import type { FileState } from "@hyperserve/upload";
+import { useUpload } from "@hyperserve/upload";
 import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";
 import { type ViewMode, useViewMode } from "./ViewModeContext.js";

@@ -6,7 +6,7 @@ import {
 	createHyperserveConfig,
 	maxDuration,
 	maxFileSize,
-} from "@hyper-serve/upload";
+} from "@hyperserve/upload";
 import {
 	DropZone,
 	FileItem,
@@ -15,7 +15,7 @@ import {
 	Thumbnail,
 	ViewModeProvider,
 	useViewMode,
-} from "@hyper-serve/upload-react";
+} from "@hyperserve/upload-react";
 import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
 
 const validate = composeValidators(

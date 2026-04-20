@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import {
 	toFileRefs,
 	useUpload,
-} from "@hyper-serve/upload";
+} from "@hyperserve/upload";
 import { filterFilesByAccept } from "./acceptFilter.js";
 import { UploadIcon } from "./icons.js";
 import { colors, radius } from "./theme.js";

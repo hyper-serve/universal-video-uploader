@@ -1,5 +1,5 @@
 {
-  "name": "@hyper-serve/upload-example-react-native",
+  "name": "@hyperserve/upload-example-react-native",
   "private": true,
   "version": "0.0.1",
   "main": "index.js",
@@ -12,8 +12,8 @@
     "verify:bundle": "npx expo export --platform ios --dev --output-dir /tmp/uvu-bundle-check && echo '✅ Metro bundle resolved successfully'"
   },
   "dependencies": {
-    "@hyper-serve/upload": "workspace:*",
-    "@hyper-serve/upload-react-native": "workspace:*",
+    "@hyperserve/upload": "workspace:*",
+    "@hyperserve/upload-react-native": "workspace:*",
     "expo": "55.0.4",
     "expo-document-picker": "55.0.8",
     "expo-status-bar": "55.0.4",
