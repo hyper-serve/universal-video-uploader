@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@hyperserve/upload": "workspace:*",
+    "@hyperserve/upload-adapter-hyperserve": "workspace:*",
     "@hyperserve/upload-react-native": "workspace:*",
     "expo": "55.0.4",
     "expo-document-picker": "55.0.8",

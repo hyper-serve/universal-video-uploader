@@ -1,35 +1,12 @@
 import React from "react";
-import {
-	UploadProvider,
-	allowedTypes,
-	composeValidators,
-	createHyperserveConfig,
-	maxDuration,
-	maxFileSize,
-} from "@hyperserve/upload";
+import { UploadProvider } from "@hyperserve/upload";
 import {
 	DropZone,
 	FileList,
 	FileListToolbar,
 	ViewModeProvider,
 } from "@hyperserve/upload-react";
-import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
-
-const validate = composeValidators(
-	maxFileSize(500 * 1024 * 1024),
-	allowedTypes(["video/*"]),
-	maxDuration(120),
-);
-
-const config = createHyperserveConfig({
-	apiKey: HYPERSERVE_API_KEY,
-	baseUrl: HYPERSERVE_BASE_URL,
-	uploadOptions: {
-		isPublic: true,
-		resolutions: "240p,480p,720p",
-	},
-	validate,
-});
+import { demoConfig } from "../shared";
 
 function UploadUI() {
 	return (
@@ -43,7 +20,7 @@ function UploadUI() {
 
 export function Default() {
 	return (
-		<UploadProvider config={config}>
+		<UploadProvider config={demoConfig}>
 			<ViewModeProvider>
 				<UploadUI />
 			</ViewModeProvider>

@@ -1,15 +1,19 @@
 import React from "react";
 import { useVideoPlayer, VideoView } from "expo-video";
 import * as DocumentPicker from "expo-document-picker";
+import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
 import {
 	allowedTypes,
 	composeValidators,
-	createHyperserveConfig,
 	maxDuration,
 	maxFileSize,
 	type FileRef,
 	type FileState,
 } from "@hyperserve/upload";
+
+const API_KEY = process.env.EXPO_PUBLIC_HYPERSERVE_API_KEY ?? "";
+const BASE_URL =
+	process.env.EXPO_PUBLIC_HYPERSERVE_BASE_URL ?? "https://api.hyperserve.io/v1";
 
 const validate = composeValidators(
 	maxFileSize(500 * 1024 * 1024),
@@ -18,13 +22,30 @@ const validate = composeValidators(
 );
 
 export const demoConfig = createHyperserveConfig({
-	apiKey: process.env.EXPO_PUBLIC_HYPERSERVE_API_KEY ?? "",
-	baseUrl:
-		process.env.EXPO_PUBLIC_HYPERSERVE_BASE_URL ??
-		"https://api.hyperserve.io/v1",
+	createUpload: async (file, options) => {
+		const res = await fetch(`${BASE_URL}/videos`, {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${API_KEY}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ name: file.name, size: file.size, ...options }),
+		}).then((r) => r.json());
+		return { videoId: res.videoId, uploadUrl: res.uploadUrl, contentType: res.contentType };
+	},
+	completeUpload: async (videoId) => {
+		await fetch(`${BASE_URL}/videos/${videoId}/complete`, {
+			method: "POST",
+			headers: { Authorization: `Bearer ${API_KEY}` },
+		});
+	},
+	getVideoStatus: async (videoId) =>
+		fetch(`${BASE_URL}/videos/${videoId}`, {
+			headers: { Authorization: `Bearer ${API_KEY}` },
+		}).then((r) => r.json()),
 	uploadOptions: {
 		isPublic: true,
-		resolutions: "240p,480p,720p",
+		resolutions: ["240p", "480p", "720p"],
 	},
 	validate,
 });

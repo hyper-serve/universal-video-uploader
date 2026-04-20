@@ -14,6 +14,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@hyperserve/upload": "workspace:*",
+        "@hyperserve/upload-adapter-hyperserve": "workspace:*",
         "@hyperserve/upload-react-native": "workspace:*",
         "expo": "55.0.4",
         "expo-document-picker": "55.0.8",
@@ -37,6 +38,7 @@
       "version": "0.0.1",
       "dependencies": {
         "@hyperserve/upload": "workspace:*",
+        "@hyperserve/upload-adapter-hyperserve": "workspace:*",
         "@hyperserve/upload-react": "workspace:*",
         "react": "19.2.4",
         "react-dom": "19.2.4",
@@ -137,8 +139,8 @@
       "name": "@hyperserve/upload-adapter-hyperserve",
       "version": "0.0.1",
       "dependencies": {
+        "@hyperserve/hyperserve-js": "latest",
         "@hyperserve/upload": "workspace:*",
-        "hyperserve-sdk": "latest",
       },
       "devDependencies": {
         "@types/node": "22.15.0",
@@ -527,6 +529,8 @@
     "@expressive-code/plugin-shiki": ["@expressive-code/plugin-shiki@0.41.7", "", { "dependencies": { "@expressive-code/core": "^0.41.7", "shiki": "^3.2.2" } }, "sha512-DL605bLrUOgqTdZ0Ot5MlTaWzppRkzzqzeGEu7ODnHF39IkEBbFdsC7pbl3LbUQ1DFtnfx6rD54k/cdofbW6KQ=="],
 
     "@expressive-code/plugin-text-markers": ["@expressive-code/plugin-text-markers@0.41.7", "", { "dependencies": { "@expressive-code/core": "^0.41.7" } }, "sha512-Ewpwuc5t6eFdZmWlFyeuy3e1PTQC0jFvw2Q+2bpcWXbOZhPLsT7+h8lsSIJxb5mS7wZko7cKyQ2RLYDyK6Fpmw=="],
+
+    "@hyperserve/hyperserve-js": ["@hyperserve/hyperserve-js@0.1.0", "", {}, "sha512-I8oBQ1f1CpK7wrV35+NcUVCEt26+JWwHJsgKOtEDLBQAz2fXH9a6trkLlqu2iauq1LmFSAuLT5jHbhljTAxcbQ=="],
 
     "@hyperserve/upload": ["@hyperserve/upload@workspace:packages/core"],
 
@@ -1317,8 +1321,6 @@
     "https-proxy-agent": ["https-proxy-agent@7.0.6", "", { "dependencies": { "agent-base": "^7.1.2", "debug": "4" } }, "sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw=="],
 
     "human-signals": ["human-signals@2.1.0", "", {}, "sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw=="],
-
-    "hyperserve-sdk": ["hyperserve-sdk@0.1.0", "", {}, "sha512-TJTL5mgO0iZkVk01NQRWKwETYuIHbcQQPjgq/JhyAuibfA1mnH3+Kk8S1DpjbjB6bJQ2yB9otTgLp/xTERmW1A=="],
 
     "i18next": ["i18next@23.16.8", "", { "dependencies": { "@babel/runtime": "^7.23.2" } }, "sha512-06r/TitrM88Mg5FdUXAKL96dJMzgqLE5dv3ryBAra4KCwD9mJ4ndOTS95ZuymIGoE+2hzfdaMak2X11/es7ZWg=="],
 

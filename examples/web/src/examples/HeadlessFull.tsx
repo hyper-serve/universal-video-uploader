@@ -1,31 +1,10 @@
 import React, { useRef, useState } from "react";
 import {
 	UploadProvider,
-	allowedTypes,
-	composeValidators,
-	createHyperserveConfig,
-	maxDuration,
-	maxFileSize,
 	toFileRefs,
 	useUpload,
 } from "@hyperserve/upload";
-import { HYPERSERVE_API_KEY, HYPERSERVE_BASE_URL } from "../shared";
-
-const validate = composeValidators(
-	maxFileSize(500 * 1024 * 1024),
-	allowedTypes(["video/*"]),
-	maxDuration(120),
-);
-
-const config = createHyperserveConfig({
-	apiKey: HYPERSERVE_API_KEY,
-	baseUrl: HYPERSERVE_BASE_URL,
-	uploadOptions: {
-		isPublic: true,
-		resolutions: "240p,480p,720p",
-	},
-	validate,
-});
+import { demoConfig } from "../shared";
 
 function formatSize(bytes: number): string {
 	const mb = bytes / (1024 * 1024);
@@ -156,7 +135,7 @@ function UploadUI() {
 
 export function HeadlessFull() {
 	return (
-		<UploadProvider config={config}>
+		<UploadProvider config={demoConfig}>
 			<UploadUI />
 		</UploadProvider>
 	);
