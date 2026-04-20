@@ -23,26 +23,45 @@ const validate = composeValidators(
 
 export const demoConfig = createHyperserveConfig({
 	createUpload: async (file, options) => {
-		const res = await fetch(`${BASE_URL}/videos`, {
+		const res = await fetch(`${BASE_URL}/video`, {
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${API_KEY}`,
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify({ name: file.name, size: file.size, ...options }),
+			body: JSON.stringify({
+				filename: file.name,
+				fileSizeBytes: file.size,
+				resolutions: options.resolutions,
+				isPublic: options.isPublic,
+				...(options.metadata && { custom_user_metadata: options.metadata }),
+				...(options.thumbnail && {
+					thumbnail_timestamps_seconds: [options.thumbnail.timestampMs / 1000],
+				}),
+			}),
 		}).then((r) => r.json());
-		return { videoId: res.videoId, uploadUrl: res.uploadUrl, contentType: res.contentType };
+		return { videoId: res.id, uploadUrl: res.uploadUrl, contentType: res.contentType };
 	},
 	completeUpload: async (videoId) => {
-		await fetch(`${BASE_URL}/videos/${videoId}/complete`, {
+		await fetch(`${BASE_URL}/video/${videoId}/complete-upload`, {
 			method: "POST",
 			headers: { Authorization: `Bearer ${API_KEY}` },
 		});
 	},
-	getVideoStatus: async (videoId) =>
-		fetch(`${BASE_URL}/videos/${videoId}`, {
+	getVideoStatus: async (videoId) => {
+		const res = await fetch(`${BASE_URL}/video/${videoId}/public`, {
 			headers: { Authorization: `Bearer ${API_KEY}` },
-		}).then((r) => r.json()),
+		}).then((r) => r.json());
+
+		const status =
+			res.status === "ready" ? "ready" : res.status === "fail" ? "failed" : "processing";
+
+		const readyResolution = Object.values(
+			(res.resolutions ?? {}) as Record<string, { status: string; video_url: string }>,
+		).find((r) => r?.status === "ready" && r?.video_url);
+
+		return { status, playbackUrl: readyResolution?.video_url };
+	},
 	uploadOptions: {
 		isPublic: true,
 		resolutions: ["240p", "480p", "720p"],
