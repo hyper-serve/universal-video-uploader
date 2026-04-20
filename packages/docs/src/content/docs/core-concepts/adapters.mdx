@@ -52,33 +52,56 @@ interface StatusChecker {
 
 If no `statusChecker` is provided, the file stays in `"processing"` after upload — you can drive status updates externally.
 
-## Built-in: Hyperserve
+## Official Adapter: Hyperserve
+
+Install the adapter package:
+
+```bash
+npm install @hyperserve/upload-adapter-hyperserve
+```
 
 The `HyperserveAdapter` and `HyperserveStatusChecker` provide first-party support for the Hyperserve video API. Use the convenience factory:
 
 ```typescript
-import {
-  createHyperserveConfig,
-  composeValidators,
-  maxFileSize,
-} from "@hyper-serve/upload";
+import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+import { composeValidators, maxFileSize } from "@hyperserve/upload";
 
 const config = createHyperserveConfig({
-  apiKey: "your-api-key",
-  baseUrl: "https://api.hyperserve.io/v1",  // optional, this is the default
+  createUpload: async (file, options) =>
+    fetch("/api/create-upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: file.name, size: file.size, ...options }),
+    }).then((r) => r.json()),
+  completeUpload: async (videoId) => {
+    await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });
+  },
+  getVideoStatus: async (videoId) =>
+    fetch(`/api/video-status/${videoId}`).then((r) => r.json()),
   uploadOptions: {
-    resolutions: "480p,1080p",
+    resolutions: ["480p", "1080p"],
     isPublic: true,
-    customUserMetadata: { postId: "123" },
+    metadata: { postId: "123" },
   },
   validate: composeValidators(maxFileSize(500 * 1024 * 1024)),
   pollingIntervalMs: 3000,
 });
 ```
 
-### Custom metadata
+The callbacks (`createUpload`, `completeUpload`, `getVideoStatus`) call your backend, which proxies to Hyperserve using your API key. This keeps credentials server-side.
 
-`customUserMetadata` is sent to Hyperserve as `custom_user_metadata` on the create-video request. Hyperserve stores it and includes it in webhook payloads as `customMetadata` when processing completes. Use this to associate uploads with entities in your app (post ID, product ID, etc.).
+### HyperserveUploadOptions
+
+```typescript
+type HyperserveUploadOptions = {
+  resolutions: string[];
+  isPublic: boolean;
+  thumbnail?: { timestampMs: number };
+  metadata?: Record<string, unknown>;
+};
+```
+
+`metadata` is sent to Hyperserve on the create-video request and included in webhook payloads when processing completes. Use it to associate uploads with entities in your app (post ID, product ID, etc.).
 
 ## Custom adapters
 

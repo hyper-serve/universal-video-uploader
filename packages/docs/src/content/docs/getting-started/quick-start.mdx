@@ -8,25 +8,35 @@ import DefaultDemo from "../../../components/demos/DefaultDemo";
 ## Minimal example
 
 ```tsx
+import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
 import {
   UploadProvider,
-  createHyperserveConfig,
   composeValidators,
   maxFileSize,
   allowedTypes,
-} from "@hyper-serve/upload";
+} from "@hyperserve/upload";
 import {
   DropZone,
   FileList,
   FileListToolbar,
   ViewModeProvider,
-} from "@hyper-serve/upload-react";
+} from "@hyperserve/upload-react";
 
 const config = createHyperserveConfig({
-  apiKey: import.meta.env.VITE_HYPERSERVE_API_KEY,
+  createUpload: async (file, options) =>
+    fetch("/api/create-upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: file.name, size: file.size, ...options }),
+    }).then((r) => r.json()),
+  completeUpload: async (videoId) => {
+    await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });
+  },
+  getVideoStatus: async (videoId) =>
+    fetch(`/api/video-status/${videoId}`).then((r) => r.json()),
   uploadOptions: {
     isPublic: true,
-    resolutions: "480p,1080p",
+    resolutions: ["480p", "1080p"],
   },
   validate: composeValidators(
     maxFileSize(500 * 1024 * 1024),
@@ -53,7 +63,7 @@ function App() {
 
 ## What's happening
 
-1. **`createHyperserveConfig`** wires up the Hyperserve adapter, status checker, and your validation rules into a single config object.
+1. **`createHyperserveConfig`** wires up the Hyperserve adapter, status checker, and your validation rules into a single config object. The callbacks (`createUpload`, `completeUpload`, `getVideoStatus`) call your backend, which proxies to Hyperserve with your API key.
 2. **`UploadProvider`** manages the upload state machine — file queue, concurrency, progress, abort/retry.
 3. **`ViewModeProvider`** provides list/grid toggle state to the UI components.
 4. **`DropZone`** handles drag-and-drop and file picker input.

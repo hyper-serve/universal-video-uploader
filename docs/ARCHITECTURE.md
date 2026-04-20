@@ -6,9 +6,10 @@ Universal Video Uploader is a cross-platform React library for uploading videos 
 
 ```
 packages/
-├── core            # Core — headless logic, adapters, hooks, shared theme
-├── react           # Web UI — DropZone, FileList, FileItem, etc.
-└── react-native    # RN UI — FilePicker, FileList, FileItem, etc.
+├── core                        # @hyperserve/upload — hooks, state machine, validation, theme
+├── react                       # @hyperserve/upload-react — Web UI components
+├── react-native                # @hyperserve/upload-react-native — React Native UI components
+└── upload-adapter-hyperserve   # @hyperserve/upload-adapter-hyperserve — Official Hyperserve adapter
 
 examples/
 ├── web/            # Vite + React 19
@@ -32,17 +33,17 @@ examples/
           └────────────┬─────────────┘
                        │
           ┌────────────▼─────────────┐
-          │ @hyper-serve/upload       │
+          │ @hyperserve/upload         │
           │ (core)                    │
           │                           │
           │ UploadProvider, useUpload  │
-          │ Adapters, StatusChecker   │
+          │ StatusChecker interface   │
           │ Validators, Platform utils│
           │ ViewModeProvider, theme   │
           └───────────────────────────┘
 ```
 
-The core package has **zero hard dependencies** beyond React as a peer dependency. `react-native-background-upload` is an optional peer for native background uploads.
+The core package has **zero hard dependencies** beyond React as a peer dependency. Adapters are separate packages — `@hyperserve/upload-adapter-hyperserve` adds `@hyperserve/hyperserve-js` as a dependency; third-party adapters for other video providers follow the same pattern.
 
 ## Core Concepts
 
@@ -204,7 +205,7 @@ Platform-specific behavior uses the `.native.ts` convention. Metro (React Native
 
 | Module | Web (.ts) | Native (.native.ts) |
 |--------|-----------|---------------------|
-| `adapter/hyperserve` | XHR with progress events, requires `file.raw` | `react-native-background-upload` with fallback to `fetch` |
+| `adapter/hyperserve` (adapter package) | XHR with progress events, requires `file.raw` | `react-native-background-upload` with fallback to `fetch` |
 | `platform/fileRef` | `File` → `FileRef` with `raw` and object URL | `DocumentPickerResult` → `FileRef` with `uri` only |
 | `platform/thumbnail` | `URL.createObjectURL(file.raw)` | Returns `null` (not yet implemented) |
 | `validation/maxDuration` | DOM video element for duration check | Warns and skips (returns valid) |
@@ -219,16 +220,27 @@ type FileRef = WebFileRef | NativeFileRef;
 
 ## Hyperserve Integration
 
-The built-in `HyperserveAdapter` and `HyperserveStatusChecker` provide first-party support for the Hyperserve video API. A convenience factory wires everything together:
+The `@hyperserve/upload-adapter-hyperserve` package provides `HyperserveAdapter` and `HyperserveStatusChecker`. A convenience factory wires everything together:
 
 ```typescript
+import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+
 const config = createHyperserveConfig({
-  apiKey: "...",
-  baseUrl: "https://api.hyperserve.io/v1",  // optional, this is the default
+  createUpload: async (file, options) =>
+    fetch("/api/create-upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: file.name, size: file.size, ...options }),
+    }).then((r) => r.json()),
+  completeUpload: async (videoId) => {
+    await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });
+  },
+  getVideoStatus: async (videoId) =>
+    fetch(`/api/video-status/${videoId}`).then((r) => r.json()),
   uploadOptions: {
-    resolutions: "480p,1080p",
+    resolutions: ["480p", "1080p"],
     isPublic: true,
-    customUserMetadata: { postId: "123", entityType: "post" },  // optional
+    metadata: { postId: "123", entityType: "post" },
   },
   errorMessages: {
     uploadFailed: "Upload failed. Please try again.",
@@ -238,11 +250,17 @@ const config = createHyperserveConfig({
 });
 ```
 
+The callbacks call your backend, which proxies to Hyperserve with your API key. The adapter uses `@hyperserve/hyperserve-js` SDK internally to upload files to the presigned storage URL returned by `createUpload`.
+
+### Upload flow
+
+1. `createUpload(file, options)` — your backend creates a video record and returns `{ videoId, uploadUrl, contentType }`
+2. `putVideoToStorage(...)` (SDK) — the adapter uploads the file bytes to the presigned `uploadUrl`
+3. `completeUpload(videoId)` — your backend signals Hyperserve that the upload is finished
+
 ### Custom metadata
 
-`HyperserveUploadOptions` supports optional `customUserMetadata?: Record<string, unknown>`. The adapter sends it to Hyperserve as `custom_user_metadata` (JSON) on the create-video request. Hyperserve stores it and includes it in webhook payloads as `customMetadata` when processing completes (e.g. `video-processing-success`).
-
-Use this to associate uploads with entities in your app (e.g. post id, product id). Your backend webhook handler can read `videoId` and `customMetadata` from the event and persist the video to the correct record in your database, so you can retrieve and play it when users visit the relevant page. Upload options are shared for the whole provider session; all files added in that session receive the same `uploadOptions` (including `customUserMetadata`).
+`HyperserveUploadOptions.metadata` is sent on the create-video request and included in Hyperserve webhook payloads when processing completes. Use it to associate uploads with entities in your app (post ID, product ID, etc.). Upload options are shared for the whole provider session — all files receive the same `uploadOptions`.
 
 ### Config identity
 
@@ -277,7 +295,7 @@ import {
   themeFontScale,  // xs, sm, md, lg, xl (pixel values; web converts to rem)
   themeSpacingScale, // xxs, xs, sm, … cardX, cardY, dropZone, etc.
   statusConfig,    // Record<FileStatus, { bg, text, label }>
-} from "@hyper-serve/upload";
+} from "@hyperserve/upload";
 ```
 
 `statusConfig` maps every `FileStatus` to a color pair and default label. UI packages consume it directly; consumers can override per-status entries when using `StatusBadge`.

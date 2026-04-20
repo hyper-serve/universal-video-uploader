@@ -9,9 +9,10 @@ import { Tabs, TabItem } from "@astrojs/starlight/components";
 
 | Package | Purpose |
 |---------|---------|
-| `@hyper-serve/upload` | Core — hooks, adapters, validation, state machine |
-| `@hyper-serve/upload-react` | Web UI — DropZone, FileList, FileItem, etc. |
-| `@hyper-serve/upload-react-native` | React Native UI — FilePicker, FileList, FileItem, etc. |
+| `@hyperserve/upload` | Core — hooks, state machine, validation, shared theme |
+| `@hyperserve/upload-react` | Web UI — DropZone, FileList, FileItem, etc. |
+| `@hyperserve/upload-react-native` | React Native UI — FilePicker, FileList, FileItem, etc. |
+| `@hyperserve/upload-adapter-hyperserve` | Official Hyperserve adapter |
 
 The core package is always required. Pick the UI package for your platform, or use neither for fully headless usage.
 
@@ -20,22 +21,22 @@ The core package is always required. Pick the UI package for your platform, or u
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @hyper-serve/upload @hyper-serve/upload-react
+    npm install @hyperserve/upload @hyperserve/upload-react
     ```
   </TabItem>
   <TabItem label="yarn">
     ```bash
-    yarn add @hyper-serve/upload @hyper-serve/upload-react
+    yarn add @hyperserve/upload @hyperserve/upload-react
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @hyper-serve/upload @hyper-serve/upload-react
+    pnpm add @hyperserve/upload @hyperserve/upload-react
     ```
   </TabItem>
   <TabItem label="bun">
     ```bash
-    bun add @hyper-serve/upload @hyper-serve/upload-react
+    bun add @hyperserve/upload @hyperserve/upload-react
     ```
   </TabItem>
 </Tabs>
@@ -47,12 +48,12 @@ The core package is always required. Pick the UI package for your platform, or u
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @hyper-serve/upload @hyper-serve/upload-react-native
+    npm install @hyperserve/upload @hyperserve/upload-react-native
     ```
   </TabItem>
   <TabItem label="yarn">
     ```bash
-    yarn add @hyper-serve/upload @hyper-serve/upload-react-native
+    yarn add @hyperserve/upload @hyperserve/upload-react-native
     ```
   </TabItem>
 </Tabs>
@@ -68,3 +69,30 @@ All three are optional peer dependencies. The library gracefully degrades withou
 | `expo-video-metadata` | `maxDuration` validation | Skips validation, warns once |
 | `expo-video-thumbnails` | Thumbnail generation | `thumbnailUri` stays `null` |
 | `react-native-background-upload` | True background upload with progress | Falls back to `fetch` with estimated progress |
+
+## Hyperserve Adapter
+
+If you are uploading to Hyperserve, install the official adapter package:
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @hyperserve/upload-adapter-hyperserve
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add @hyperserve/upload-adapter-hyperserve
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @hyperserve/upload-adapter-hyperserve
+    ```
+  </TabItem>
+  <TabItem label="bun">
+    ```bash
+    bun add @hyperserve/upload-adapter-hyperserve
+    ```
+  </TabItem>
+</Tabs>

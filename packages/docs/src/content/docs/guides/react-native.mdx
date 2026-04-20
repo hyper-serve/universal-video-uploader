@@ -8,7 +8,13 @@ description: Using Universal Video Uploader with React Native and Expo.
 Install the core and native UI packages:
 
 ```bash
-npm install @hyper-serve/upload @hyper-serve/upload-react-native
+npm install @hyperserve/upload @hyperserve/upload-react-native
+```
+
+For the Hyperserve adapter:
+
+```bash
+npm install @hyperserve/upload-adapter-hyperserve
 ```
 
 ### Optional dependencies
@@ -21,7 +27,7 @@ See [Installation](/getting-started/installation/) for what each provides.
 
 ## Platform resolution
 
-The core package uses the `.native.ts` convention. Metro resolves `foo.js` to `foo.native.ts` when bundling for iOS/Android.
+The adapter packages use the `.native.ts` convention. Metro resolves `foo.js` to `foo.native.ts` when bundling for iOS/Android.
 
 | Module | Web | Native |
 |--------|-----|--------|
@@ -56,20 +62,28 @@ The native UI package mirrors the web package:
 ## Example
 
 ```tsx
-import {
-  UploadProvider,
-  createHyperserveConfig,
-} from "@hyper-serve/upload";
+import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+import { UploadProvider } from "@hyperserve/upload";
 import {
   FilePicker,
   FileList,
   FileListToolbar,
   ViewModeProvider,
-} from "@hyper-serve/upload-react-native";
+} from "@hyperserve/upload-react-native";
 
 const config = createHyperserveConfig({
-  apiKey: process.env.EXPO_PUBLIC_HYPERSERVE_API_KEY,
-  uploadOptions: { isPublic: true, resolutions: "480p,1080p" },
+  createUpload: async (file, options) =>
+    fetch("/api/create-upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: file.name, size: file.size, ...options }),
+    }).then((r) => r.json()),
+  completeUpload: async (videoId) => {
+    await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });
+  },
+  getVideoStatus: async (videoId) =>
+    fetch(`/api/video-status/${videoId}`).then((r) => r.json()),
+  uploadOptions: { isPublic: true, resolutions: ["480p", "1080p"] },
 });
 
 export default function UploadScreen() {
