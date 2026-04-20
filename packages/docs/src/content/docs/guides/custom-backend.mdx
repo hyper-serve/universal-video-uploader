@@ -8,7 +8,7 @@ description: Implement your own adapter for Mux, Bunny, api.video, or any video 
 Create a class that implements `UploadAdapter<YourOptions>`:
 
 ```typescript
-import type { UploadAdapter, FileRef, UploadResult } from "@hyper-serve/upload";
+import type { UploadAdapter, FileRef, UploadResult } from "@hyperserve/upload";
 
 type MuxOptions = {
   playbackPolicy: "public" | "signed";
@@ -44,7 +44,7 @@ class MuxAdapter implements UploadAdapter<MuxOptions> {
 If your backend needs time to process after upload, implement `StatusChecker`:
 
 ```typescript
-import type { StatusChecker } from "@hyper-serve/upload";
+import type { StatusChecker } from "@hyperserve/upload";
 
 class MuxStatusChecker implements StatusChecker {
   constructor(private statusEndpoint: string) {}
@@ -77,7 +77,7 @@ class MuxStatusChecker implements StatusChecker {
 ## Wiring it together
 
 ```typescript
-import type { UploadConfig } from "@hyper-serve/upload";
+import type { UploadConfig } from "@hyperserve/upload";
 
 const config: UploadConfig<MuxOptions> = {
   adapter: new MuxAdapter("/api/mux-upload-url"),

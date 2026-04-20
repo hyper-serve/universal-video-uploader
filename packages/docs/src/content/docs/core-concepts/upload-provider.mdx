@@ -8,7 +8,7 @@ description: The UploadProvider manages the upload state machine and exposes con
 `UploadProvider` is a React context provider that manages the entire upload lifecycle — file queue, validation, upload execution, concurrency, progress tracking, and post-upload status monitoring.
 
 ```tsx
-import { UploadProvider } from "@hyper-serve/upload";
+import { UploadProvider } from "@hyperserve/upload";
 
 <UploadProvider config={config}>
   {/* children can use useUpload() and useFile() */}
@@ -78,7 +78,7 @@ const {
 Per-file hook for use inside custom `FileItem` render functions. Provides the file state for the current `FileItem` context.
 
 ```tsx
-import { useFile } from "@hyper-serve/upload";
+import { useFile } from "@hyperserve/upload";
 
 function CustomFileRow() {
   const file = useFile();
