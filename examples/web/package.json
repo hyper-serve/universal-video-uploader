@@ -2,24 +2,23 @@
 	"name": "@hyperserve/upload-example-web",
 	"private": true,
 	"version": "0.0.1",
-	"type": "module",
 	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview"
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start"
 	},
 	"dependencies": {
+		"@hyperserve/hyperserve-js": "latest",
 		"@hyperserve/upload": "workspace:*",
 		"@hyperserve/upload-adapter-hyperserve": "workspace:*",
 		"@hyperserve/upload-react": "workspace:*",
-		"react": "19.2.4",
-		"react-dom": "19.2.4"
+		"next": "^15.0.0",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0"
 	},
 	"devDependencies": {
-		"@types/react": "19.2.14",
-		"@types/react-dom": "19.2.3",
-		"@vitejs/plugin-react": "5.1.4",
-		"typescript": "5.9.3",
-		"vite": "7.3.1"
+		"@types/react": "^19.0.0",
+		"@types/react-dom": "^19.0.0",
+		"typescript": "5.9.3"
 	}
 }
