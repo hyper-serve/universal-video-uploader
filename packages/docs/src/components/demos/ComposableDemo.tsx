@@ -16,7 +16,7 @@ function UploadUI() {
 
 	return (
 		<div style={wrap}>
-			<DropZone supportingText="MP4, WebM, MOV — up to 500 MB (simulated)" />
+			<DropZone supportingText="Simulated upload — real uploads transcode to browser-compatible formats" />
 			<FileListToolbar showViewToggle={false} />
 			<FileList emptyMessage="Drop or browse files to see composable items." mode={viewMode}>
 				{(file) => (

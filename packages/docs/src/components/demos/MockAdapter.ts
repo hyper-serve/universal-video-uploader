@@ -72,7 +72,7 @@ class MockStatusChecker implements StatusChecker {
 				onStatusChange("processing", undefined, `Transcoding ${pct}%`);
 			} else {
 				clearInterval(interval);
-				onStatusChange("ready", "https://example.com/mock-playback.mp4");
+				onStatusChange("ready");
 			}
 		}, 500);
 	}
