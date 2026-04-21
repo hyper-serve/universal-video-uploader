@@ -9,7 +9,7 @@
     "ios": "expo run:ios",
     "build:ios": "expo run:ios",
     "build:android": "expo run:android",
-    "server": "bun run server.ts",
+    "server": "bun server.ts",
     "verify:bundle": "npx expo export --platform ios --dev --output-dir /tmp/uvu-bundle-check && echo '✅ Metro bundle resolved successfully'"
   },
   "dependencies": {

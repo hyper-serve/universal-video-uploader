@@ -7,17 +7,24 @@ import { DropZone, FileList, FileListToolbar, ViewModeProvider } from "@hyperser
 
 function makeConfig() {
 	return createHyperserveConfig({
-		createUpload: (file, options) =>
-			fetch("/api/create-upload", {
+		createUpload: async (file, options) => {
+			const r = await fetch("/api/create-upload", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ filename: file.name, fileSizeBytes: file.size, ...options }),
-			}).then((r) => r.json()),
-		completeUpload: async (videoId) => {
-			await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });
+			});
+			if (!r.ok) throw new Error(`Upload init failed: ${r.status}`);
+			return r.json();
 		},
-		getVideoStatus: (videoId) =>
-			fetch(`/api/video-status/${videoId}`).then((r) => r.json()),
+		completeUpload: async (videoId) => {
+			const r = await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });
+			if (!r.ok) throw new Error(`Complete upload failed: ${r.status}`);
+		},
+		getVideoStatus: async (videoId) => {
+			const r = await fetch(`/api/video-status/${videoId}`);
+			if (!r.ok) throw new Error(`Status check failed: ${r.status}`);
+			return r.json();
+		},
 		uploadOptions: { isPublic: true, resolutions: ["480p", "1080p"] },
 		validate: composeValidators(
 			maxFileSize(500 * 1024 * 1024),

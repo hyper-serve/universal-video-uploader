@@ -11,5 +11,6 @@ android/
 
 .env
 .env.local
+.next
 
 /docs/

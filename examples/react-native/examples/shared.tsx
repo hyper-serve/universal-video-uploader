@@ -20,17 +20,24 @@ const validate = composeValidators(
 );
 
 export const demoConfig = createHyperserveConfig({
-	createUpload: (file, options) =>
-		fetch(`${SERVER_URL}/create-upload`, {
+	createUpload: async (file, options) => {
+		const r = await fetch(`${SERVER_URL}/create-upload`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ filename: file.name, fileSizeBytes: file.size, ...options }),
-		}).then((r) => r.json()),
-	completeUpload: async (videoId) => {
-		await fetch(`${SERVER_URL}/complete-upload/${videoId}`, { method: "POST" });
+		});
+		if (!r.ok) throw new Error(`Upload init failed: ${r.status}`);
+		return r.json();
 	},
-	getVideoStatus: (videoId) =>
-		fetch(`${SERVER_URL}/video-status/${videoId}`).then((r) => r.json()),
+	completeUpload: async (videoId) => {
+		const r = await fetch(`${SERVER_URL}/complete-upload/${videoId}`, { method: "POST" });
+		if (!r.ok) throw new Error(`Complete upload failed: ${r.status}`);
+	},
+	getVideoStatus: async (videoId) => {
+		const r = await fetch(`${SERVER_URL}/video-status/${videoId}`);
+		if (!r.ok) throw new Error(`Status check failed: ${r.status}`);
+		return r.json();
+	},
 	uploadOptions: {
 		isPublic: true,
 		resolutions: ["240p", "480p", "720p"],
