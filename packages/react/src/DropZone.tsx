@@ -7,6 +7,11 @@ import { filterFilesByAccept } from "./acceptFilter.js";
 import { UploadIcon } from "./icons.js";
 import { colors, radius } from "./theme.js";
 
+export type DropZoneRenderProps = {
+	isDragging: boolean;
+	openPicker: () => void;
+};
+
 export type DropZoneProps = {
 	accept?: string;
 	multiple?: boolean;
@@ -16,9 +21,7 @@ export type DropZoneProps = {
 	className?: string;
 	activeClassName?: string;
 	supportingText?: React.ReactNode;
-	children?:
-		| React.ReactNode
-		| ((state: { isDragging: boolean; openPicker: () => void }) => React.ReactNode);
+	children?: React.ReactNode | ((state: DropZoneRenderProps) => React.ReactNode);
 };
 
 export function DropZone({

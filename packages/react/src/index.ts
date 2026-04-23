@@ -2,7 +2,7 @@ export { ViewModeProvider, useViewMode } from "./ViewModeContext.js";
 export type { ViewMode, ViewModeProviderProps } from "./ViewModeContext.js";
 
 export { DropZone } from "./DropZone.js";
-export type { DropZoneProps } from "./DropZone.js";
+export type { DropZoneProps, DropZoneRenderProps } from "./DropZone.js";
 
 export {
 	CheckCircleIcon,
