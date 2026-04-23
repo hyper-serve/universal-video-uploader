@@ -72,6 +72,7 @@ export type UploadContextValue = {
 	addFiles: (files: FileRef[]) => void;
 	removeFile: (id: string) => void;
 	retryFile: (id: string) => void;
+	updateFileStatus: (videoId: string, status: "ready" | "failed", playbackUrl?: string) => void;
 	maxFiles?: number;
 	canAddMore: boolean;
 	isUploading: boolean;
