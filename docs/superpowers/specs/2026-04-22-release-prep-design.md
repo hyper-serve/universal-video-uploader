@@ -17,8 +17,7 @@ Get the `universal-video-uploader` monorepo into a publishable state for `v0.1.0
 
 **Out of scope:**
 - Mux adapter (intentionally removed)
-- RN expo-video playback example
-- `DropZone openPicker` render prop typing
+- Expo Snack RN demo (separate spec: `2026-04-22-expo-snack-rn-demo-design.md`)
 - `npm publish` / registry push
 
 ---
@@ -88,6 +87,14 @@ Replace `"TODO"` with:
 - Minimal usage snippet (UploadProvider + adapter + a component)
 - Link to the docs site
 
+### Per-package `README.md`
+
+Each of the 4 packages needs its own `README.md` — npm displays it on the package page. Each should be brief:
+- One sentence describing what the package is and its role
+- Install command
+- Minimal usage snippet or pointer to the relevant part of the full docs
+- Link to the docs site
+
 ---
 
 ## Section 3: Documentation
@@ -114,6 +121,17 @@ Add the following (do not add any Mux-specific content):
 - **HyperserveUploadOptions reference** — add `thumbnail.timestampMs` field
 
 `custom-backend.mdx` — leave as-is. The `MuxAdapter` / `MuxStatusChecker` pseudocode is a fictional illustration of the adapter pattern; no changes needed and no new Mux references to be added.
+
+**`DropZone` render prop typing** — the `children` render prop interface already includes `openPicker` internally but `DropZoneProps` doesn't surface it clearly in the exported type. Add an explicit `DropZoneRenderProps` type:
+
+```typescript
+type DropZoneRenderProps = {
+  isDragging: boolean;
+  openPicker: () => void;
+};
+```
+
+Export it from `@hyperserve/upload-react` and use it as the `children` signature in `DropZoneProps`. Document it on the `drop-zone.mdx` docs page.
 
 ---
 
@@ -155,7 +173,7 @@ Run before declaring the branch ready:
 
 ### GitHub Actions (`.github/workflows/`)
 
-**`ci.yml`** — triggers on push and pull_request to `main`:
+**`ci.yml`** — triggers on `pull_request` targeting `main` (types: opened, synchronize, reopened). Direct pushes to `main` are blocked by branch protection; no push trigger needed.
 ```
 jobs:
   check:
@@ -167,7 +185,7 @@ jobs:
     - bun run test (per-package filters)
 ```
 
-**`pr-title.yml`** — triggers on `pull_request` (types: opened, edited, synchronize):
+**`pr-title.yml`** — triggers on `pull_request` targeting `main` (types: opened, edited, synchronize):
 - Validates PR title matches conventional commit regex
 - Fails with a clear message if the title doesn't conform
 
@@ -192,11 +210,12 @@ Lefthook added as a dev dependency in the root `package.json`. Install instructi
 ## Implementation Order
 
 1. `updateFileStatus` implementation + tests
-2. Package version bumps + publish field verification
-3. Root README
-4. ARCHITECTURE.md additions
-5. Docs site content gaps
-6. Open source markdown files
-7. GitHub Actions workflows
-8. Lefthook pre-push hook
-9. Pre-publish verification pass
+2. `DropZoneRenderProps` type + export + docs update
+3. Package version bumps + publish field verification
+4. Root README + per-package READMEs
+5. ARCHITECTURE.md additions
+6. Docs site content gaps
+7. Open source markdown files
+8. GitHub Actions workflows
+9. Lefthook pre-push hook
+10. Pre-publish verification pass
