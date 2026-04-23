@@ -363,6 +363,38 @@ export function UploadProvider<TOptions>({
 	bumpScheduler();
 }, [bumpScheduler, dispatchWithStatusTracking]);
 
+	const updateFileStatus = useCallback(
+		(videoId: string, status: "ready" | "failed", playbackUrl?: string) => {
+			const file = filesRef.current.find(
+				(f) => f.videoId === videoId && f.status === "processing",
+			);
+			if (!file) return;
+
+			if (status === "ready") {
+				const thumbnailUri = thumbnailUrisRef.current.get(file.id);
+				if (thumbnailUri) {
+					revokeThumbnail(thumbnailUri);
+					thumbnailUrisRef.current.delete(file.id);
+				}
+			}
+
+			dispatchWithStatusTracking({
+				id: file.id,
+				type: "UPDATE_FILE",
+				updates: {
+					error:
+						status === "failed"
+							? (configRef.current.errorMessages?.processingFailed ?? "Processing failed")
+							: null,
+					playbackUrl: playbackUrl ?? null,
+					status,
+					...(status === "ready" && { thumbnailUri: null }),
+				},
+			});
+		},
+		[dispatchWithStatusTracking],
+	);
+
 	const maxFiles = configRef.current.maxFiles;
 	const canAddMore = maxFiles == null || files.length < maxFiles;
 	const isUploading = files.some(
@@ -391,12 +423,14 @@ export function UploadProvider<TOptions>({
 			readyCount,
 			removeFile,
 			retryFile,
+			updateFileStatus,
 		}),
 		[
 			files,
 			addFiles,
 			removeFile,
 			retryFile,
+			updateFileStatus,
 			maxFiles,
 			canAddMore,
 			isUploading,
