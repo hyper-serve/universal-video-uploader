@@ -388,6 +388,7 @@ export function UploadProvider<TOptions>({
 							: null,
 					playbackUrl: playbackUrl ?? null,
 					status,
+					statusDetail: null,
 					...(status === "ready" && { thumbnailUri: null }),
 				},
 			});

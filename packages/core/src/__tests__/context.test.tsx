@@ -1210,4 +1210,21 @@ describe("UploadProvider + useUpload", () => {
 		act(() => { result.current.updateFileStatus("video-123", "failed"); });
 		expect(result.current.files[0].status).toBe("ready");
 	});
+
+	it("updateFileStatus clears statusDetail on terminal transition", async () => {
+		let invokeStatusChange: ((status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void) | undefined;
+		const statusChecker = createMockStatusChecker((invoke) => {
+			invokeStatusChange = invoke;
+		});
+		const adapter = createMockAdapter({ videoId: "video-123" });
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter, statusChecker })),
+		});
+		act(() => { result.current.addFiles([makeFileRef()]); });
+		await act(async () => { await vi.advanceTimersByTimeAsync(0); });
+		act(() => { invokeStatusChange?.("processing", undefined, "480p: transcoding"); });
+		expect(result.current.files[0].statusDetail).toBe("480p: transcoding");
+		act(() => { result.current.updateFileStatus("video-123", "ready", "https://cdn.example.com/v.mp4"); });
+		expect(result.current.files[0].statusDetail).toBeNull();
+	});
 });
