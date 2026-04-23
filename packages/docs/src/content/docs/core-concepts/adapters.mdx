@@ -52,6 +52,10 @@ interface StatusChecker {
 
 If no `statusChecker` is provided, the file stays in `"processing"` after upload — you can drive status updates externally.
 
+Call `updateFileStatus(videoId, "ready" | "failed", playbackUrl?)` from `useUpload()` to complete the transition from your webhook or SSE handler.
+
+`HyperserveStatusChecker` defaults to a `pollingIntervalMs` of `3000` (3 seconds) when omitted from `createHyperserveConfig`.
+
 ## Official Adapter: Hyperserve
 
 Install the adapter package:
