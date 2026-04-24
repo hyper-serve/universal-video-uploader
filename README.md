@@ -29,14 +29,17 @@ import { UploadProvider } from "@hyperserve/upload";
 import { DropZone, FileList } from "@hyperserve/upload-react";
 
 const config = createHyperserveConfig({
-  createUpload: async (file, options) =>
-    fetch("/api/create-upload", {
+  createUpload: async (file, options) => {
+    const raw = (file as import("@hyperserve/upload").WebFileRef).raw;
+    return fetch("/api/create-upload", {
       method: "POST",
-      body: JSON.stringify({ name: file.name, size: file.size, ...options }),
-    }).then((r) => r.json()),
+      body: JSON.stringify({ name: raw.name, size: raw.size, ...options }),
+    }).then((r) => r.json());
+  },
   completeUpload: async (videoId) => {
     await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });
   },
+  // optional — omit if you drive status updates via webhook or SSE instead of polling
   getVideoStatus: async (videoId) =>
     fetch(`/api/video-status/${videoId}`).then((r) => r.json()),
   uploadOptions: { isPublic: true, resolutions: ["480p", "1080p"] },
