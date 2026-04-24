@@ -31,7 +31,7 @@
 		"build:watch": "tsc --watch",
 		"test": "jest",
 		"test:watch": "jest --watch",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
 		"clean": "rm -rf dist",
 		"prepublishOnly": "bun run build"
 	},

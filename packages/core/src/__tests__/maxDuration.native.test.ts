@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { maxDuration } from "../validation/maxDuration.native.js";
 import type { FileRef } from "../types.js";
+import { maxDuration } from "../validation/maxDuration.native.js";
 
 function makeFileRef(): FileRef {
 	return {
-		platform: "native",
 		name: "test.mp4",
+		platform: "native",
 		size: 1024,
 		type: "video/mp4",
 		uri: "file:///tmp/test.mp4",

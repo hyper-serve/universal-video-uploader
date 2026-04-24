@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { createHyperserveConfig } from "../createHyperserveConfig.js";
 import { HyperserveAdapter } from "../adapter/hyperserve.js";
+import { createHyperserveConfig } from "../createHyperserveConfig.js";
 import { HyperserveStatusChecker } from "../polling/index.js";
 
 vi.mock("@hyperserve/hyperserve-js/browser", () => ({
@@ -9,12 +9,12 @@ vi.mock("@hyperserve/hyperserve-js/browser", () => ({
 
 function makeCallbacks() {
 	return {
-		createUpload: vi.fn().mockResolvedValue({
-			videoId: "v1",
-			uploadUrl: "https://s3.example.com/presigned",
-			contentType: "video/mp4",
-		}),
 		completeUpload: vi.fn().mockResolvedValue(undefined),
+		createUpload: vi.fn().mockResolvedValue({
+			contentType: "video/mp4",
+			uploadUrl: "https://s3.example.com/presigned",
+			videoId: "v1",
+		}),
 		getVideoStatus: vi.fn().mockResolvedValue({ status: "failed" }),
 	};
 }
@@ -23,8 +23,8 @@ describe("createHyperserveConfig", () => {
 	it("returns config with HyperserveAdapter and HyperserveStatusChecker", () => {
 		const { createUpload, completeUpload, getVideoStatus } = makeCallbacks();
 		const config = createHyperserveConfig({
-			createUpload,
 			completeUpload,
+			createUpload,
 			getVideoStatus,
 			uploadOptions: { isPublic: true, resolutions: ["480p"] },
 		});
@@ -40,8 +40,8 @@ describe("createHyperserveConfig", () => {
 	it("omits statusChecker when getVideoStatus is not provided", () => {
 		const { createUpload, completeUpload } = makeCallbacks();
 		const config = createHyperserveConfig({
-			createUpload,
 			completeUpload,
+			createUpload,
 			uploadOptions: { isPublic: true, resolutions: ["480p"] },
 		});
 
@@ -52,8 +52,8 @@ describe("createHyperserveConfig", () => {
 		const { createUpload, completeUpload, getVideoStatus } = makeCallbacks();
 		const validate = vi.fn().mockResolvedValue({ valid: true });
 		const config = createHyperserveConfig({
-			createUpload,
 			completeUpload,
+			createUpload,
 			getVideoStatus,
 			maxConcurrentUploads: 5,
 			pollingIntervalMs: 5000,
@@ -74,8 +74,8 @@ describe("createHyperserveConfig", () => {
 		const onFileReady = vi.fn();
 		const onUploadFailed = vi.fn();
 		const config = createHyperserveConfig({
-			createUpload,
 			completeUpload,
+			createUpload,
 			maxFiles: 5,
 			onFileReady,
 			onUploadFailed,
@@ -94,8 +94,8 @@ describe("createHyperserveConfig", () => {
 			validationError: "Validation error",
 		};
 		const config = createHyperserveConfig({
-			createUpload,
 			completeUpload,
+			createUpload,
 			errorMessages,
 			uploadOptions: { isPublic: true, resolutions: ["480p"] },
 		});

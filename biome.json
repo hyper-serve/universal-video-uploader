@@ -10,6 +10,15 @@
 		},
 		"enabled": true
 	},
+	"files": {
+		"includes": [
+			"**",
+			"!!**/package.json",
+			"!!**/package-lock.json",
+			"!!bun.lock",
+			"!!biome.json"
+		]
+	},
 	"formatter": {
 		"attributePosition": "auto",
 		"enabled": true,
@@ -29,9 +38,6 @@
 			"semicolons": "always",
 			"trailingCommas": "all"
 		}
-	},
-	"files": {
-		"includes": ["**", "!!**/package.json", "!!**/package-lock.json"]
 	},
 	"json": {
 		"formatter": {

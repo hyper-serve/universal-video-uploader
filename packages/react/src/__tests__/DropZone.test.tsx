@@ -1,5 +1,5 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, fireEvent, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { DropZone } from "../DropZone.js";
 
 const addFilesMock = vi.fn();
@@ -9,11 +9,11 @@ vi.mock("@hyperserve/upload", async (importOriginal) => {
 	const actual = await importOriginal<typeof import("@hyperserve/upload")>();
 	return {
 		...actual,
+		toFileRefs: (files: File[] | FileList) => Array.from(files),
 		useUpload: () => ({
 			addFiles: addFilesMock,
 			canAddMore: canAddMoreValue,
 		}),
-		toFileRefs: (files: File[] | FileList) => Array.from(files),
 	};
 });
 
@@ -112,7 +112,7 @@ describe("DropZone", () => {
 		const childFn = vi.fn(({ isDragging, openPicker }) => (
 			<div>
 				<span data-testid="dragging">{isDragging.toString()}</span>
-				<button onClick={openPicker} data-testid="pick-btn" type="button">
+				<button data-testid="pick-btn" onClick={openPicker} type="button">
 					Pick
 				</button>
 			</div>

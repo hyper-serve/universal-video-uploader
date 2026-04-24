@@ -1,17 +1,17 @@
-import { Text } from "react-native";
-import { render, screen } from "@testing-library/react-native";
-import { StatusBadge } from "../StatusBadge";
 import type { FileStatus } from "@hyperserve/upload";
+import { render, screen } from "@testing-library/react-native";
+import { Text } from "react-native";
+import { StatusBadge } from "../StatusBadge.js";
 
 describe("StatusBadge (native)", () => {
 	it("renders default label for each status", () => {
 		const statuses: Array<{ status: FileStatus; label: string }> = [
-			{ status: "selected", label: "Selected" },
-			{ status: "validating", label: "Validating" },
-			{ status: "uploading", label: "Uploading" },
-			{ status: "processing", label: "Processing" },
-			{ status: "ready", label: "Ready" },
-			{ status: "failed", label: "Failed" },
+			{ label: "Selected", status: "selected" },
+			{ label: "Validating", status: "validating" },
+			{ label: "Uploading", status: "uploading" },
+			{ label: "Processing", status: "processing" },
+			{ label: "Ready", status: "ready" },
+			{ label: "Failed", status: "failed" },
 		];
 
 		for (const { status, label } of statuses) {
@@ -26,7 +26,7 @@ describe("StatusBadge (native)", () => {
 			<StatusBadge
 				status="ready"
 				statusConfig={{
-					ready: { label: "Done!", bg: "#000", text: "#fff" },
+					ready: { bg: "#000", label: "Done!", text: "#fff" },
 				}}
 			/>,
 		);
@@ -36,10 +36,10 @@ describe("StatusBadge (native)", () => {
 	it("uses getLabel over statusConfig label", () => {
 		render(
 			<StatusBadge
-				status="ready"
 				getLabel={() => "Complete"}
+				status="ready"
 				statusConfig={{
-					ready: { label: "ignored", bg: "#000", text: "#fff" },
+					ready: { bg: "#000", label: "ignored", text: "#fff" },
 				}}
 			/>,
 		);

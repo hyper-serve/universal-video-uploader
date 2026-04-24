@@ -21,17 +21,17 @@ function makeFileRef(name = "test.mp4", withRaw = false): FileRef {
 	if (withRaw) {
 		const blob = new Blob(["x"], { type: "video/mp4" });
 		return {
-			platform: "web",
 			name,
+			platform: "web",
+			raw: new File([blob], name, { type: "video/mp4" }),
 			size: 1024,
 			type: "video/mp4",
 			uri: `blob:${name}`,
-			raw: new File([blob], name, { type: "video/mp4" }),
 		};
 	}
 	return {
-		platform: "native",
 		name,
+		platform: "native",
 		size: 1024,
 		type: "video/mp4",
 		uri: `blob:${name}`,
@@ -609,7 +609,7 @@ describe("UploadProvider + useUpload", () => {
 	});
 
 	it("aborts in-flight upload on unmount", async () => {
-		let capturedSignal: AbortSignal;
+		let capturedSignal: AbortSignal | undefined;
 		const adapter: UploadAdapter = {
 			upload: vi.fn((_file, _opts, _cb, signal) => {
 				capturedSignal = signal;
@@ -703,8 +703,8 @@ describe("UploadProvider + useUpload", () => {
 		expect(onFileReady).toHaveBeenCalledWith(
 			expect.objectContaining({
 				id: result.current.files[0].id,
-				status: "ready",
 				playbackUrl: "https://cdn.example.com/done.mp4",
+				status: "ready",
 				videoId: "v1",
 			}),
 		);
@@ -731,9 +731,9 @@ describe("UploadProvider + useUpload", () => {
 		expect(onUploadFailed).toHaveBeenCalledTimes(1);
 		expect(onUploadFailed).toHaveBeenCalledWith(
 			expect.objectContaining({
+				error: "Upload failed",
 				id: result.current.files[0].id,
 				status: "failed",
-				error: "Upload failed",
 			}),
 		);
 	});
@@ -770,8 +770,8 @@ describe("UploadProvider + useUpload", () => {
 		const validate = vi.fn().mockRejectedValue(new Error("crash"));
 		const config = makeConfig({
 			adapter,
-			validate,
 			errorMessages: { validationError: "Custom validation error" },
+			validate,
 		});
 
 		const { result } = renderHook(() => useUpload(), {
@@ -801,8 +801,8 @@ describe("UploadProvider + useUpload", () => {
 		});
 		const config = makeConfig({
 			adapter,
-			statusChecker,
 			errorMessages: { processingFailed: "Custom processing error" },
+			statusChecker,
 		});
 
 		const { result } = renderHook(() => useUpload(), {
@@ -956,7 +956,7 @@ describe("UploadProvider + useUpload", () => {
 			videoId: "video-1",
 		});
 		const onFileReady = vi.fn();
-		const config = makeConfig({ adapter, statusChecker, onFileReady });
+		const config = makeConfig({ adapter, onFileReady, statusChecker });
 
 		const { result } = renderHook(() => useUpload(), {
 			wrapper: makeWrapper(config),
@@ -981,8 +981,8 @@ describe("UploadProvider + useUpload", () => {
 		expect(onFileReady).toHaveBeenCalledTimes(1);
 		expect(onFileReady).toHaveBeenCalledWith(
 			expect.objectContaining({
-				status: "ready",
 				playbackUrl: "https://cdn.example.com/video.mp4",
+				status: "ready",
 			}),
 		);
 	});
@@ -1240,8 +1240,8 @@ describe("UploadProvider + useUpload", () => {
 
 	it("updateFileStatus is no-op when file is not processing", async () => {
 		const adapter = createMockAdapter({
-			videoId: "video-123",
 			playbackUrl: "https://cdn.example.com/v.mp4",
+			videoId: "video-123",
 		});
 		const { result } = renderHook(() => useUpload(), {
 			wrapper: makeWrapper(makeConfig({ adapter })),

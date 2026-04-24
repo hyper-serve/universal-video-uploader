@@ -1,20 +1,20 @@
 import { describe, expect, it } from "vitest";
 import {
-	createThumbnail,
-	revokeThumbnail,
-} from "../platform/thumbnail.native.js";
-import {
 	revokeFileRef,
 	toFileRef,
 	toFileRefs,
 } from "../platform/fileRef.native.js";
+import {
+	createThumbnail,
+	revokeThumbnail,
+} from "../platform/thumbnail.native.js";
 import type { FileRef } from "../types.js";
 
 describe("thumbnail.native", () => {
 	it("createThumbnail returns null without expo-video-thumbnails", async () => {
 		const ref: FileRef = {
-			platform: "native",
 			name: "test.mp4",
+			platform: "native",
 			size: 1024,
 			type: "video/mp4",
 			uri: "file:///tmp/test.mp4",
@@ -39,8 +39,8 @@ describe("fileRef.native", () => {
 		const ref = toFileRef(result);
 
 		expect(ref).toEqual({
-			platform: "native",
 			name: "video.mp4",
+			platform: "native",
 			size: 5000,
 			type: "video/mp4",
 			uri: "content://com.android.providers/video.mp4",
@@ -82,8 +82,8 @@ describe("fileRef.native", () => {
 
 	it("revokeFileRef is a safe no-op", () => {
 		const ref: FileRef = {
-			platform: "native",
 			name: "test.mp4",
+			platform: "native",
 			size: 1024,
 			type: "video/mp4",
 			uri: "file:///tmp/test.mp4",

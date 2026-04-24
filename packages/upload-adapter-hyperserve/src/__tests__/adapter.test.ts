@@ -1,6 +1,6 @@
+import type { FileRef } from "@hyperserve/upload";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { HyperserveAdapter } from "../adapter/hyperserve.js";
-import type { FileRef } from "@hyperserve/upload";
 import type { HyperserveUploadOptions } from "../types.js";
 
 vi.mock("@hyperserve/hyperserve-js/browser", () => ({
@@ -13,8 +13,8 @@ function makeFileRef(): FileRef {
 	const blob = new Blob(["fake video content"], { type: "video/mp4" });
 	const file = new File([blob], "test.mp4", { type: "video/mp4" });
 	return {
-		platform: "web",
 		name: "test.mp4",
+		platform: "web",
 		raw: file,
 		size: file.size,
 		type: "video/mp4",
@@ -36,12 +36,12 @@ function makeConfig(overrides?: {
 	completeUpload?: (videoId: string) => Promise<void>;
 }) {
 	return {
-		createUpload: vi.fn().mockResolvedValue({
-			videoId: "video-123",
-			uploadUrl: "https://storage.example.com/presigned",
-			contentType: "video/mp4",
-		}),
 		completeUpload: vi.fn().mockResolvedValue(undefined),
+		createUpload: vi.fn().mockResolvedValue({
+			contentType: "video/mp4",
+			uploadUrl: "https://storage.example.com/presigned",
+			videoId: "video-123",
+		}),
 		...overrides,
 	};
 }
@@ -75,14 +75,14 @@ describe("HyperserveAdapter (web)", () => {
 		);
 		expect(putVideoToStorage).toHaveBeenCalledWith(
 			expect.objectContaining({
-				uploadUrl: "https://storage.example.com/presigned",
 				contentType: "video/mp4",
+				uploadUrl: "https://storage.example.com/presigned",
 			}),
 		);
 		expect(config.completeUpload).toHaveBeenCalledWith("video-123");
 		expect(result).toEqual({
-			videoId: "video-123",
 			metadata: { isPublic: true },
+			videoId: "video-123",
 		});
 	});
 
@@ -110,8 +110,8 @@ describe("HyperserveAdapter (web)", () => {
 		const adapter = new HyperserveAdapter(makeConfig());
 		const ac = new AbortController();
 		const ref: FileRef = {
-			platform: "native",
 			name: "test.mp4",
+			platform: "native",
 			size: 1024,
 			type: "video/mp4",
 			uri: "file:///tmp/test.mp4",

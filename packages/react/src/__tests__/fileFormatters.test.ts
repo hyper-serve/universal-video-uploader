@@ -1,6 +1,6 @@
+import type { FileState } from "@hyperserve/upload";
 import { describe, expect, it } from "vitest";
 import { formatFileSize, getFileDisplayName } from "../fileFormatters.js";
-import type { FileState } from "@hyperserve/upload";
 
 describe("formatFileSize", () => {
 	it("returns KB for files under 1MB", () => {
@@ -28,15 +28,15 @@ describe("formatFileSize", () => {
 describe("getFileDisplayName", () => {
 	it("returns the file name from ref", () => {
 		const file = {
+			error: null,
 			id: "1",
+			playbackUrl: null,
+			progress: 0,
 			ref: { name: "my-video.mp4", size: 1000, type: "video/mp4", uri: "x" },
 			status: "selected",
-			progress: 0,
-			thumbnailUri: null,
-			playbackUrl: null,
-			videoId: null,
-			error: null,
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
 		} as FileState;
 
 		expect(getFileDisplayName(file)).toBe("my-video.mp4");

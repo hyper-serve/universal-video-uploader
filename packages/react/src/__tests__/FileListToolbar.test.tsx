@@ -1,8 +1,8 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import type { FileState, WebFileRef } from "@hyperserve/upload";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FileListToolbar } from "../FileListToolbar.js";
 import { ViewModeProvider } from "../ViewModeContext.js";
-import type { FileState } from "@hyperserve/upload";
 
 let mockFiles: FileState[] = [];
 
@@ -18,15 +18,22 @@ vi.mock("@hyperserve/upload", async (importOriginal) => {
 
 function makeFile(id: string): FileState {
 	return {
-		id,
-		ref: { name: `${id}.mp4`, size: 1000, type: "video/mp4", uri: "x" },
-		status: "selected",
-		progress: 0,
-		thumbnailUri: null,
-		playbackUrl: null,
-		videoId: null,
 		error: null,
+		id,
+		playbackUrl: null,
+		progress: 0,
+		ref: {
+			name: `${id}.mp4`,
+			platform: "web",
+			raw: new File([], `${id}.mp4`, { type: "video/mp4" }),
+			size: 1000,
+			type: "video/mp4",
+			uri: "x",
+		} satisfies WebFileRef,
+		status: "selected",
 		statusDetail: null,
+		thumbnailUri: null,
+		videoId: null,
 	};
 }
 

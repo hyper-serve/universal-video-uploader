@@ -10,8 +10,8 @@ function makeFileRef(
 	overrides: { size?: number; type?: string; name?: string } = {},
 ): FileRef {
 	return {
-		platform: "native",
 		name: "test.mp4",
+		platform: "native",
 		size: 1024 * 1024,
 		type: "video/mp4",
 		uri: "blob:test",
@@ -121,7 +121,7 @@ describe("composeValidators", () => {
 		const asyncValidator = async (file: FileRef) => {
 			await new Promise((r) => setTimeout(r, 10));
 			return file.size > 500
-				? { valid: false as const, reason: "too big" }
+				? { reason: "too big", valid: false as const }
 				: { valid: true as const };
 		};
 		const validator = composeValidators(
@@ -129,6 +129,6 @@ describe("composeValidators", () => {
 			allowedTypes(["video/mp4"]),
 		);
 		const result = await validator(makeFileRef({ size: 1000 }));
-		expect(result).toEqual({ valid: false, reason: "too big" });
+		expect(result).toEqual({ reason: "too big", valid: false });
 	});
 });

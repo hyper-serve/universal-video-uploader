@@ -1,11 +1,11 @@
+import type { FileRef } from "@hyperserve/upload";
 import {
+	fireEvent,
 	render,
 	screen,
-	fireEvent,
 	waitFor,
 } from "@testing-library/react-native";
-import { FilePicker } from "../FilePicker";
-import type { FileRef } from "@hyperserve/upload";
+import { FilePicker } from "../FilePicker.js";
 
 const mockAddFiles = jest.fn();
 
@@ -18,8 +18,8 @@ jest.mock("@hyperserve/upload", () => ({
 
 function makeRef(name = "video.mp4"): FileRef {
 	return {
-		platform: "native",
 		name,
+		platform: "native",
 		size: 1024,
 		type: "video/mp4",
 		uri: `file:///${name}`,

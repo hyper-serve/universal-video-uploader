@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { FileRef } from "@hyperserve/upload";
-import type { HyperserveUploadOptions } from "../types.js";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { BackgroundUploadModule } from "../adapter/hyperserve.native.js";
 import { HyperserveAdapter } from "../adapter/hyperserve.native.js";
+import type { HyperserveUploadOptions } from "../types.js";
 
 vi.mock("@hyperserve/hyperserve-js/react-native", () => ({
 	putVideoToStorage: vi.fn(),
@@ -12,8 +12,8 @@ import { putVideoToStorage } from "@hyperserve/hyperserve-js/react-native";
 
 function makeFileRef(name = "test.mp4"): FileRef {
 	return {
-		platform: "native",
 		name,
+		platform: "native",
 		size: 1024,
 		type: "video/mp4",
 		uri: "file:///tmp/test.mp4",
@@ -26,9 +26,9 @@ const defaultOptions: HyperserveUploadOptions = {
 };
 
 const defaultUploadResult = {
-	videoId: "video-123",
-	uploadUrl: "https://storage.example.com/presigned",
 	contentType: "video/mp4",
+	uploadUrl: "https://storage.example.com/presigned",
+	videoId: "video-123",
 };
 
 function makeConfig(overrides?: {
@@ -36,8 +36,8 @@ function makeConfig(overrides?: {
 	completeUpload?: (videoId: string) => Promise<void>;
 }) {
 	return {
-		createUpload: vi.fn().mockResolvedValue(defaultUploadResult),
 		completeUpload: vi.fn().mockResolvedValue(undefined),
+		createUpload: vi.fn().mockResolvedValue(defaultUploadResult),
 		...overrides,
 	};
 }
@@ -75,8 +75,8 @@ describe("HyperserveAdapter (native) - sdk fallback", () => {
 		expect(config.createUpload).toHaveBeenCalled();
 		expect(putVideoToStorage).toHaveBeenCalledWith(
 			expect.objectContaining({
-				uploadUrl: defaultUploadResult.uploadUrl,
 				contentType: defaultUploadResult.contentType,
+				uploadUrl: defaultUploadResult.uploadUrl,
 				uri: "file:///tmp/test.mp4",
 			}),
 		);
@@ -229,9 +229,9 @@ describe("HyperserveAdapter (native) - background upload", () => {
 		expect(startUploadArgs).toMatchObject({
 			headers: { "Content-Type": "video/mp4" },
 			method: "PUT",
+			path: "file:///tmp/test.mp4",
 			type: "raw",
 			url: defaultUploadResult.uploadUrl,
-			path: "file:///tmp/test.mp4",
 		});
 
 		bg.emit("completed", { responseCode: 200 });

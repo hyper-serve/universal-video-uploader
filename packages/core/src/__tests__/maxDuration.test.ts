@@ -1,26 +1,26 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { maxDuration } from "../validation/maxDuration.js";
 import type { FileRef } from "../types.js";
+import { maxDuration } from "../validation/maxDuration.js";
 
 function makeFileRef(): FileRef {
 	const blob = new Blob(["x"], { type: "video/mp4" });
 	return {
-		platform: "web",
 		name: "test.mp4",
+		platform: "web",
+		raw: new File([blob], "test.mp4", { type: "video/mp4" }),
 		size: 1024,
 		type: "video/mp4",
 		uri: "blob:test",
-		raw: new File([blob], "test.mp4", { type: "video/mp4" }),
 	};
 }
 
 function createMockVideo(duration: number, shouldError = false) {
 	const video = {
-		preload: "",
-		duration: 0,
-		onloadedmetadata: null as (() => void) | null,
-		onerror: null as (() => void) | null,
 		_src: "",
+		duration: 0,
+		onerror: null as (() => void) | null,
+		onloadedmetadata: null as (() => void) | null,
+		preload: "",
 		set src(val: string) {
 			this._src = val;
 			queueMicrotask(() => {
@@ -58,8 +58,8 @@ describe("maxDuration (web)", () => {
 	it("returns valid for native file ref", () => {
 		const validator = maxDuration(60);
 		const ref: FileRef = {
-			platform: "native",
 			name: "test.mp4",
+			platform: "native",
 			size: 1024,
 			type: "video/mp4",
 			uri: "file:///tmp/test.mp4",

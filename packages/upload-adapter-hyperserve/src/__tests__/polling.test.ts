@@ -15,8 +15,8 @@ describe("pollVideoStatus", () => {
 		const onStatusChange = vi.fn();
 		const ac = new AbortController();
 		const getVideoStatus = vi.fn().mockResolvedValue({
-			status: "ready",
 			playbackUrl: "https://cdn.example.com/video.mp4",
+			status: "ready",
 		});
 
 		pollVideoStatus({
@@ -61,8 +61,8 @@ describe("pollVideoStatus", () => {
 			.fn()
 			.mockResolvedValueOnce({ status: "processing", statusDetail: "encoding" })
 			.mockResolvedValueOnce({
-				status: "ready",
 				playbackUrl: "https://cdn.example.com/video.mp4",
+				status: "ready",
 			});
 
 		pollVideoStatus({
@@ -116,8 +116,8 @@ describe("pollVideoStatus", () => {
 			.fn()
 			.mockRejectedValueOnce(new Error("Network error"))
 			.mockResolvedValueOnce({
-				status: "ready",
 				playbackUrl: "https://cdn.example.com/video.mp4",
+				status: "ready",
 			});
 
 		pollVideoStatus({
@@ -153,8 +153,8 @@ describe("pollVideoStatus", () => {
 			.mockRejectedValueOnce(new Error("err")) // 2 → backoff 4000ms
 			.mockRejectedValueOnce(new Error("err")) // 3 → backoff 8000ms
 			.mockResolvedValueOnce({
-				status: "ready",
 				playbackUrl: "https://cdn.example.com/video.mp4",
+				status: "ready",
 			});
 
 		pollVideoStatus({
@@ -191,8 +191,8 @@ describe("pollVideoStatus", () => {
 			.mockRejectedValueOnce(new Error("err")) // error → backoff 2000ms
 			.mockResolvedValueOnce({ status: "processing" }) // success → reset to 1000ms
 			.mockResolvedValueOnce({
-				status: "ready",
 				playbackUrl: "https://cdn.example.com/video.mp4",
+				status: "ready",
 			});
 
 		pollVideoStatus({
@@ -231,8 +231,8 @@ describe("pollVideoStatus", () => {
 			.mockRejectedValueOnce(new Error("err")) // 5 → 32000
 			.mockRejectedValueOnce(new Error("err")) // 6 → 60000 (capped)
 			.mockResolvedValueOnce({
-				status: "ready",
 				playbackUrl: "https://cdn.example.com/video.mp4",
+				status: "ready",
 			});
 
 		pollVideoStatus({

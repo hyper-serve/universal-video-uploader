@@ -1,9 +1,9 @@
+import type { FileState } from "@hyperserve/upload";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { ProgressBar } from "../ProgressBar.js";
 import { StatusBadge } from "../StatusBadge.js";
 import { Thumbnail } from "../Thumbnail.js";
-import { ProgressBar } from "../ProgressBar.js";
-import type { FileState } from "@hyperserve/upload";
 
 describe("StatusBadge", () => {
 	it("uses default config for status and renders label", () => {
@@ -14,10 +14,10 @@ describe("StatusBadge", () => {
 	it("allows overriding label and colors via statusConfig and getLabel", () => {
 		render(
 			<StatusBadge
-				status="ready"
 				getLabel={() => "Done"}
+				status="ready"
 				statusConfig={{
-					ready: { bg: "#000000", text: "#ffffff", label: "ignored" },
+					ready: { bg: "#000000", label: "ignored", text: "#ffffff" },
 				}}
 			/>,
 		);
@@ -47,12 +47,12 @@ describe("StatusBadge", () => {
 			status: import("@hyperserve/upload").FileStatus;
 			label: string;
 		}> = [
-			{ status: "selected", label: "Selected" },
-			{ status: "validating", label: "Validating" },
-			{ status: "uploading", label: "Uploading" },
-			{ status: "processing", label: "Processing" },
-			{ status: "ready", label: "Ready" },
-			{ status: "failed", label: "Failed" },
+			{ label: "Selected", status: "selected" },
+			{ label: "Validating", status: "validating" },
+			{ label: "Uploading", status: "uploading" },
+			{ label: "Processing", status: "processing" },
+			{ label: "Ready", status: "ready" },
+			{ label: "Failed", status: "failed" },
 		];
 
 		for (const { status, label } of statuses) {
@@ -65,15 +65,22 @@ describe("StatusBadge", () => {
 
 describe("Thumbnail", () => {
 	const baseFile: FileState = {
-		id: "f1",
-		ref: { name: "clip.mp4", size: 1000, type: "video/mp4", uri: "x" },
-		status: "selected",
-		progress: 0,
-		thumbnailUri: null,
-		playbackUrl: null,
-		videoId: null,
 		error: null,
+		id: "f1",
+		playbackUrl: null,
+		progress: 0,
+		ref: {
+			name: "clip.mp4",
+			platform: "web",
+			raw: new File([], "clip.mp4", { type: "video/mp4" }),
+			size: 1000,
+			type: "video/mp4",
+			uri: "x",
+		},
+		status: "selected",
 		statusDetail: null,
+		thumbnailUri: null,
+		videoId: null,
 	};
 
 	it("renders placeholder when no thumbnail or playbackUrl", () => {
@@ -109,8 +116,8 @@ describe("Thumbnail", () => {
 	it("renders playback video when playback is true and file is ready", () => {
 		const file: FileState = {
 			...baseFile,
-			status: "ready",
 			playbackUrl: "https://cdn.example.com/video.mp4",
+			status: "ready",
 		};
 		const { container } = render(<Thumbnail file={file} playback />);
 		const video = container.querySelector("video");
@@ -120,8 +127,8 @@ describe("Thumbnail", () => {
 	it("supports render-prop children", () => {
 		const file: FileState = {
 			...baseFile,
-			status: "ready",
 			playbackUrl: "https://cdn.example.com/video.mp4",
+			status: "ready",
 			thumbnailUri: "blob:thumb",
 		};
 
@@ -148,7 +155,6 @@ describe("Thumbnail", () => {
 		const img = container.querySelector("img");
 		expect(img).not.toBeNull();
 
-		const { fireEvent } = require("@testing-library/react");
 		// biome-ignore lint/style/noNonNullAssertion: img is asserted non-null above
 		fireEvent.error(img!);
 
@@ -159,8 +165,8 @@ describe("Thumbnail", () => {
 	it("does not render video when playback is true but file is not ready", () => {
 		const file: FileState = {
 			...baseFile,
-			status: "uploading",
 			playbackUrl: null,
+			status: "uploading",
 		};
 		const { container } = render(<Thumbnail file={file} playback />);
 		expect(container.querySelector("video")).toBeNull();
@@ -169,19 +175,19 @@ describe("Thumbnail", () => {
 	it("renders video with controls prop", () => {
 		const file: FileState = {
 			...baseFile,
-			status: "ready",
 			playbackUrl: "https://cdn.example.com/video.mp4",
+			status: "ready",
 		};
 
 		const { container: c1 } = render(
-			<Thumbnail file={file} playback controls={false} />,
+			<Thumbnail controls={false} file={file} playback />,
 		);
 		const video1 = c1.querySelector("video");
 		expect(video1).not.toBeNull();
 		expect(video1?.hasAttribute("controls")).toBe(false);
 
 		const { container: c2 } = render(
-			<Thumbnail file={file} playback controls />,
+			<Thumbnail controls file={file} playback />,
 		);
 		const video2 = c2.querySelector("video");
 		expect(video2).not.toBeNull();

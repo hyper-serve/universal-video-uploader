@@ -1,8 +1,19 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
-import type { FileState } from "@hyperserve/upload";
-import { FileList } from "../FileList.js";
+import type { FileState, WebFileRef } from "@hyperserve/upload";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FileItem } from "../FileItem.js";
+import { FileList } from "../FileList.js";
+
+function makeRef(name: string, size: number): WebFileRef {
+	return {
+		name,
+		platform: "web",
+		raw: new File([], name, { type: "video/mp4" }),
+		size,
+		type: "video/mp4",
+		uri: "x",
+	};
+}
 
 type MockUploadContext = {
 	files: FileState[];
@@ -60,15 +71,15 @@ describe("FileList and FileItem", () => {
 
 	it("renders files in list mode by default", () => {
 		const file: FileState = {
-			id: "1",
-			ref: { name: "video.mp4", size: 1234, type: "video/mp4", uri: "x" },
-			status: "selected",
-			progress: 0,
-			thumbnailUri: null,
-			playbackUrl: null,
-			videoId: null,
 			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 0,
+			ref: makeRef("video.mp4", 1234),
+			status: "selected",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
 		};
 		mockContext.files = [file];
 
@@ -84,15 +95,15 @@ describe("FileList and FileItem", () => {
 
 	it("renders files in grid mode when viewMode is grid", () => {
 		const file: FileState = {
-			id: "1",
-			ref: { name: "video.mp4", size: 1234, type: "video/mp4", uri: "x" },
-			status: "selected",
-			progress: 0,
-			thumbnailUri: null,
-			playbackUrl: null,
-			videoId: null,
 			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 0,
+			ref: makeRef("video.mp4", 1234),
+			status: "selected",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
 		};
 		mockContext.files = [file];
 
@@ -107,15 +118,15 @@ describe("FileList and FileItem", () => {
 
 	it("FileItem compound components render name, size, error and buttons by status", () => {
 		const base: FileState = {
-			id: "1",
-			ref: { name: "clip.mp4", size: 1024 * 1024, type: "video/mp4", uri: "x" },
-			status: "failed",
-			progress: 0,
-			thumbnailUri: null,
-			playbackUrl: null,
-			videoId: null,
 			error: "Oops",
+			id: "1",
+			playbackUrl: null,
+			progress: 0,
+			ref: makeRef("clip.mp4", 1024 * 1024),
+			status: "failed",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
 		};
 
 		render(
@@ -141,15 +152,15 @@ describe("FileList and FileItem", () => {
 
 	it("FileItem children render-prop receives file state", () => {
 		const file: FileState = {
-			id: "1",
-			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
-			status: "uploading",
-			progress: 42,
-			thumbnailUri: null,
-			playbackUrl: null,
-			videoId: null,
 			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 42,
+			ref: makeRef("clip.mp4", 1024),
+			status: "uploading",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
 		};
 
 		render(
@@ -167,15 +178,15 @@ describe("FileList and FileItem", () => {
 
 	it("StatusIcon renders spinner text for processing status", () => {
 		const file: FileState = {
-			id: "1",
-			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
-			status: "processing",
-			progress: 100,
-			thumbnailUri: null,
-			playbackUrl: null,
-			videoId: "v1",
 			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 100,
+			ref: makeRef("clip.mp4", 1024),
+			status: "processing",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: "v1",
 		};
 
 		render(
@@ -189,15 +200,15 @@ describe("FileList and FileItem", () => {
 
 	it("StatusIcon renders check icon for ready status", () => {
 		const file: FileState = {
-			id: "1",
-			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
-			status: "ready",
-			progress: 100,
-			thumbnailUri: null,
-			playbackUrl: "https://example.com",
-			videoId: "v1",
 			error: null,
+			id: "1",
+			playbackUrl: "https://example.com",
+			progress: 100,
+			ref: makeRef("clip.mp4", 1024),
+			status: "ready",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: "v1",
 		};
 
 		const { container } = render(
@@ -211,15 +222,15 @@ describe("FileList and FileItem", () => {
 
 	it("StatusIcon renders nothing for selected status", () => {
 		const file: FileState = {
-			id: "1",
-			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
-			status: "selected",
-			progress: 0,
-			thumbnailUri: null,
-			playbackUrl: null,
-			videoId: null,
 			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 0,
+			ref: makeRef("clip.mp4", 1024),
+			status: "selected",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
 		};
 
 		const { container } = render(
@@ -234,15 +245,15 @@ describe("FileList and FileItem", () => {
 
 	it("UploadProgress only renders when status is uploading", () => {
 		const uploading: FileState = {
-			id: "1",
-			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
-			status: "uploading",
-			progress: 65,
-			thumbnailUri: null,
-			playbackUrl: null,
-			videoId: null,
 			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 65,
+			ref: makeRef("clip.mp4", 1024),
+			status: "uploading",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
 		};
 
 		const { container, rerender } = render(
@@ -255,8 +266,8 @@ describe("FileList and FileItem", () => {
 
 		const selected: FileState = {
 			...uploading,
-			status: "selected",
 			progress: 0,
+			status: "selected",
 		};
 		rerender(
 			<FileItem file={selected}>
@@ -269,15 +280,15 @@ describe("FileList and FileItem", () => {
 
 	it("RemoveButton shows Cancel label when file is uploading", () => {
 		const file: FileState = {
-			id: "1",
-			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
-			status: "uploading",
-			progress: 50,
-			thumbnailUri: null,
-			playbackUrl: null,
-			videoId: null,
 			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 50,
+			ref: makeRef("clip.mp4", 1024),
+			status: "uploading",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
 		};
 
 		render(
@@ -291,15 +302,15 @@ describe("FileList and FileItem", () => {
 
 	it("RemoveButton shows Remove label for selected/failed files", () => {
 		const file: FileState = {
-			id: "1",
-			ref: { name: "clip.mp4", size: 1024, type: "video/mp4", uri: "x" },
-			status: "failed",
-			progress: 0,
-			thumbnailUri: null,
-			playbackUrl: null,
-			videoId: null,
 			error: "Error",
+			id: "1",
+			playbackUrl: null,
+			progress: 0,
+			ref: makeRef("clip.mp4", 1024),
+			status: "failed",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
 		};
 
 		render(
@@ -319,15 +330,15 @@ describe("FileList and FileItem", () => {
 
 	it("hides RetryButton when status is not failed and hides RemoveButton for ready files", () => {
 		const ready: FileState = {
-			id: "2",
-			ref: { name: "ready.mp4", size: 1000, type: "video/mp4", uri: "x" },
-			status: "ready",
-			progress: 100,
-			thumbnailUri: null,
-			playbackUrl: "https://example.com",
-			videoId: "v2",
 			error: null,
+			id: "2",
+			playbackUrl: "https://example.com",
+			progress: 100,
+			ref: makeRef("ready.mp4", 1000),
+			status: "ready",
 			statusDetail: null,
+			thumbnailUri: null,
+			videoId: "v2",
 		};
 
 		render(

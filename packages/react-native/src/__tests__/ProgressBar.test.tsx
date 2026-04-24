@@ -1,5 +1,5 @@
 import { render, screen } from "@testing-library/react-native";
-import { ProgressBar } from "../ProgressBar";
+import { ProgressBar } from "../ProgressBar.js";
 
 describe("ProgressBar (native)", () => {
 	it("renders with correct accessibility values", () => {

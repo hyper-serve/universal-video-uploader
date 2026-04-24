@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createThumbnail, revokeThumbnail } from "../platform/thumbnail.js";
 import { revokeFileRef, toFileRef, toFileRefs } from "../platform/fileRef.js";
+import { createThumbnail, revokeThumbnail } from "../platform/thumbnail.js";
 import type { FileRef } from "../types.js";
 
 describe("thumbnail (web)", () => {
@@ -26,24 +26,24 @@ describe("thumbnail (web)", () => {
 		listeners = {};
 		mockCtx = { drawImage: vi.fn() };
 		mockCanvas = {
-			width: 0,
-			height: 0,
 			getContext: vi.fn().mockReturnValue(mockCtx),
+			height: 0,
 			toBlob: vi.fn().mockImplementation((cb: (blob: Blob | null) => void) => {
 				cb(new Blob(["img"], { type: "image/jpeg" }));
 			}),
+			width: 0,
 		};
 		mockVideo = {
-			muted: false,
-			preload: "",
-			src: "",
-			currentTime: 0,
-			videoWidth: 320,
-			videoHeight: 240,
 			addEventListener: (event: string, cb: () => void) => {
 				// biome-ignore lint/suspicious/noAssignInExpressions: intentional compound assignment
 				(listeners[event] ??= []).push(cb);
 			},
+			currentTime: 0,
+			muted: false,
+			preload: "",
+			src: "",
+			videoHeight: 240,
+			videoWidth: 320,
 		};
 
 		vi.spyOn(document, "createElement").mockImplementation((tag: string) => {
@@ -62,8 +62,8 @@ describe("thumbnail (web)", () => {
 	it("extracts a frame and returns an image blob URL", async () => {
 		const blob = new Blob(["x"], { type: "video/mp4" });
 		const ref: FileRef = {
-			platform: "web",
 			name: "test.mp4",
+			platform: "web",
 			raw: new File([blob], "test.mp4", { type: "video/mp4" }),
 			size: 1,
 			type: "video/mp4",
@@ -86,8 +86,8 @@ describe("thumbnail (web)", () => {
 
 	it("returns null for native file ref", async () => {
 		const ref: FileRef = {
-			platform: "native",
 			name: "test.mp4",
+			platform: "native",
 			size: 1024,
 			type: "video/mp4",
 			uri: "file:///tmp/test.mp4",
@@ -102,8 +102,8 @@ describe("thumbnail (web)", () => {
 	it("returns null on video error", async () => {
 		const blob = new Blob(["x"], { type: "video/mp4" });
 		const ref: FileRef = {
-			platform: "web",
 			name: "bad.mp4",
+			platform: "web",
 			raw: new File([blob], "bad.mp4", { type: "video/mp4" }),
 			size: 1,
 			type: "video/mp4",
@@ -142,8 +142,8 @@ describe("fileRef (web)", () => {
 		const ref = toFileRef(file);
 
 		expect(ref).toEqual({
-			platform: "web",
 			name: "video.mp4",
+			platform: "web",
 			raw: file,
 			size: file.size,
 			type: "video/mp4",
@@ -168,8 +168,8 @@ describe("fileRef (web)", () => {
 
 	it("revokeFileRef calls URL.revokeObjectURL with ref.uri", () => {
 		const ref: FileRef = {
-			platform: "native",
 			name: "test.mp4",
+			platform: "native",
 			size: 1024,
 			type: "video/mp4",
 			uri: "blob:abc-123",

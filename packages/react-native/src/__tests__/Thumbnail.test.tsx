@@ -1,24 +1,24 @@
+import type { FileState } from "@hyperserve/upload";
 import { render, screen } from "@testing-library/react-native";
 import { Image } from "react-native";
-import { Thumbnail } from "../Thumbnail";
-import type { FileState } from "@hyperserve/upload";
+import { Thumbnail } from "../Thumbnail.js";
 
 const baseFile: FileState = {
+	error: null,
 	id: "f1",
+	playbackUrl: null,
+	progress: 0,
 	ref: {
-		platform: "native",
 		name: "clip.mp4",
+		platform: "native",
 		size: 1000,
 		type: "video/mp4",
 		uri: "file:///clip.mp4",
 	},
 	status: "selected",
-	progress: 0,
-	thumbnailUri: null,
-	playbackUrl: null,
-	videoId: null,
-	error: null,
 	statusDetail: null,
+	thumbnailUri: null,
+	videoId: null,
 };
 
 describe("Thumbnail (native)", () => {
@@ -46,8 +46,8 @@ describe("Thumbnail (native)", () => {
 	it("supports children render-prop", () => {
 		const file: FileState = {
 			...baseFile,
-			status: "ready",
 			playbackUrl: "https://cdn.example.com/video.mp4",
+			status: "ready",
 			thumbnailUri: "file:///thumb.jpg",
 		};
 

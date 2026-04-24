@@ -3,6 +3,7 @@
 	"references": [
 		{ "path": "packages/core" },
 		{ "path": "packages/react" },
-		{ "path": "packages/react-native" }
+		{ "path": "packages/react-native" },
+		{ "path": "packages/upload-adapter-hyperserve" }
 	]
 }

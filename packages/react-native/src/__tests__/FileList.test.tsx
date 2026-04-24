@@ -1,7 +1,7 @@
-import { Text } from "react-native";
-import { render, screen } from "@testing-library/react-native";
-import { FileList } from "../FileList";
 import type { FileState } from "@hyperserve/upload";
+import { render, screen } from "@testing-library/react-native";
+import { Text } from "react-native";
+import { FileList } from "../FileList.js";
 
 let mockFiles: FileState[] = [];
 
@@ -13,26 +13,26 @@ jest.mock("@hyperserve/upload", () => ({
 }));
 
 jest.mock("../ViewModeContext", () => ({
-	useViewMode: () => ({ viewMode: "list", setViewMode: jest.fn() }),
+	useViewMode: () => ({ setViewMode: jest.fn(), viewMode: "list" }),
 }));
 
 function makeFile(id: string): FileState {
 	return {
+		error: null,
 		id,
+		playbackUrl: null,
+		progress: 0,
 		ref: {
-			platform: "native",
 			name: `${id}.mp4`,
+			platform: "native",
 			size: 1000,
 			type: "video/mp4",
 			uri: `file:///${id}.mp4`,
 		},
 		status: "selected",
-		progress: 0,
-		thumbnailUri: null,
-		playbackUrl: null,
-		videoId: null,
-		error: null,
 		statusDetail: null,
+		thumbnailUri: null,
+		videoId: null,
 	};
 }
 

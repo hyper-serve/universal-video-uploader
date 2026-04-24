@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from "@testing-library/react-native";
-import { FileItem } from "../FileItem";
 import type { FileState } from "@hyperserve/upload";
+import { fireEvent, render, screen } from "@testing-library/react-native";
+import { FileItem } from "../FileItem.js";
 
 const mockRemoveFile = jest.fn();
 const mockRetryFile = jest.fn();
@@ -15,21 +15,21 @@ jest.mock("@hyperserve/upload", () => ({
 
 function makeFile(overrides: Partial<FileState> = {}): FileState {
 	return {
+		error: null,
 		id: "1",
+		playbackUrl: null,
+		progress: 0,
 		ref: {
-			platform: "native",
 			name: "clip.mp4",
+			platform: "native",
 			size: 1024 * 1024,
 			type: "video/mp4",
 			uri: "file:///clip.mp4",
 		},
 		status: "selected",
-		progress: 0,
-		thumbnailUri: null,
-		playbackUrl: null,
-		videoId: null,
-		error: null,
 		statusDetail: null,
+		thumbnailUri: null,
+		videoId: null,
 		...overrides,
 	};
 }
@@ -63,8 +63,8 @@ describe("FileItem (native)", () => {
 			<FileItem
 				file={makeFile({
 					ref: {
-						platform: "native",
 						name: "s.mp4",
+						platform: "native",
 						size: 512,
 						type: "video/mp4",
 						uri: "x",
@@ -95,7 +95,7 @@ describe("FileItem (native)", () => {
 
 	it("RemoveButton calls removeFile and is hidden for ready", () => {
 		const { rerender } = render(
-			<FileItem file={makeFile({ status: "failed", error: "err" })}>
+			<FileItem file={makeFile({ error: "err", status: "failed" })}>
 				<FileItem.RemoveButton />
 			</FileItem>,
 		);
@@ -106,9 +106,9 @@ describe("FileItem (native)", () => {
 		rerender(
 			<FileItem
 				file={makeFile({
-					status: "ready",
-					progress: 100,
 					playbackUrl: "url",
+					progress: 100,
+					status: "ready",
 					videoId: "v1",
 				})}
 			>
@@ -120,7 +120,7 @@ describe("FileItem (native)", () => {
 
 	it("RemoveButton shows Cancel when file is uploading", () => {
 		render(
-			<FileItem file={makeFile({ status: "uploading", progress: 50 })}>
+			<FileItem file={makeFile({ progress: 50, status: "uploading" })}>
 				<FileItem.RemoveButton />
 			</FileItem>,
 		);
@@ -136,7 +136,7 @@ describe("FileItem (native)", () => {
 		expect(screen.queryByLabelText("Retry")).toBeNull();
 
 		rerender(
-			<FileItem file={makeFile({ status: "failed", error: "err" })}>
+			<FileItem file={makeFile({ error: "err", status: "failed" })}>
 				<FileItem.RetryButton />
 			</FileItem>,
 		);
@@ -155,9 +155,9 @@ describe("FileItem (native)", () => {
 		rerender(
 			<FileItem
 				file={makeFile({
-					status: "ready",
-					progress: 100,
 					playbackUrl: "url",
+					progress: 100,
+					status: "ready",
 					videoId: "v1",
 				})}
 			>
@@ -169,7 +169,7 @@ describe("FileItem (native)", () => {
 
 	it("UploadProgress renders only when uploading", () => {
 		const { rerender } = render(
-			<FileItem file={makeFile({ status: "uploading", progress: 50 })}>
+			<FileItem file={makeFile({ progress: 50, status: "uploading" })}>
 				<FileItem.UploadProgress />
 			</FileItem>,
 		);
@@ -186,12 +186,12 @@ describe("FileItem (native)", () => {
 	it("children render-prop receives file state", () => {
 		const childFn = jest.fn(() => <></>);
 		render(
-			<FileItem file={makeFile({ status: "uploading", progress: 77 })}>
+			<FileItem file={makeFile({ progress: 77, status: "uploading" })}>
 				{childFn}
 			</FileItem>,
 		);
 		expect(childFn).toHaveBeenCalledWith(
-			expect.objectContaining({ status: "uploading", progress: 77 }),
+			expect.objectContaining({ progress: 77, status: "uploading" }),
 		);
 	});
 

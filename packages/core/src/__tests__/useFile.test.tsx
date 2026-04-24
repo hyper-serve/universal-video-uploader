@@ -1,10 +1,10 @@
 import { act, renderHook } from "@testing-library/react";
 import type React from "react";
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { UploadProvider } from "../context.js";
 import { useFile } from "../hooks/useFile.js";
 import { useUpload } from "../hooks/useUpload.js";
-import type { FileRef, UploadConfig } from "../types.js";
+import type { FileRef, UploadConfig, UploadResult } from "../types.js";
 
 vi.mock("../platform/thumbnail.js", () => ({
 	createThumbnail: vi.fn().mockResolvedValue(null),
@@ -14,7 +14,7 @@ vi.mock("../platform/thumbnail.js", () => ({
 function makeConfig(): UploadConfig {
 	return {
 		adapter: {
-			upload: vi.fn(() => new Promise(() => {})),
+			upload: vi.fn(() => new Promise<UploadResult>(() => {})),
 		},
 		uploadOptions: { isPublic: true, resolutions: "480p" },
 	};
@@ -53,15 +53,15 @@ describe("useFile", () => {
 
 		const { result, rerender } = renderHook(
 			({ fileId }: { fileId: string }) => ({
-				upload: useUpload(),
 				file: useFile(fileId),
+				upload: useUpload(),
 			}),
-			{ wrapper, initialProps: { fileId: "" } },
+			{ initialProps: { fileId: "" }, wrapper },
 		);
 
 		const ref: FileRef = {
-			platform: "native",
 			name: "test.mp4",
+			platform: "native",
 			size: 1024,
 			type: "video/mp4",
 			uri: "blob:test",
