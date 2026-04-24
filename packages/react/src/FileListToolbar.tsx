@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { useUpload } from "@hyperserve/upload";
 import { GridIcon, ListIcon } from "./icons.js";
 import { colors, radius } from "./theme.js";
@@ -23,7 +23,9 @@ function FileCount({ label, style, className }: FileCountProps) {
 	const { files } = useUpload();
 	const count = files.length;
 	const content =
-		label != null ? label(count) : `${count} file${count !== 1 ? "s" : ""} added`;
+		label != null
+			? label(count)
+			: `${count} file${count !== 1 ? "s" : ""} added`;
 	return (
 		<span
 			className={className}
@@ -37,7 +39,10 @@ function FileCount({ label, style, className }: FileCountProps) {
 export type ViewToggleProps = {
 	style?: React.CSSProperties;
 	className?: string;
-	children?: (state: { viewMode: ViewMode; setViewMode: (mode: ViewMode) => void }) => React.ReactNode;
+	children?: (state: {
+		viewMode: ViewMode;
+		setViewMode: (mode: ViewMode) => void;
+	}) => React.ReactNode;
 };
 
 function ViewToggle({ style, className, children }: ViewToggleProps) {

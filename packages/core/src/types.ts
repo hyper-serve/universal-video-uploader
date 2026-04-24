@@ -53,9 +53,7 @@ export type ErrorMessages = {
 	processingFailed?: string;
 };
 
-export type UploadConfig<
-	TOptions = Record<string, unknown>,
-> = {
+export type UploadConfig<TOptions = Record<string, unknown>> = {
 	adapter: UploadAdapter<TOptions>;
 	statusChecker?: StatusChecker;
 	validate?: (file: FileRef) => ValidationResult | Promise<ValidationResult>;
@@ -72,7 +70,11 @@ export type UploadContextValue = {
 	addFiles: (files: FileRef[]) => void;
 	removeFile: (id: string) => void;
 	retryFile: (id: string) => void;
-	updateFileStatus: (videoId: string, status: "ready" | "failed", playbackUrl?: string) => void;
+	updateFileStatus: (
+		videoId: string,
+		status: "ready" | "failed",
+		playbackUrl?: string,
+	) => void;
 	maxFiles?: number;
 	canAddMore: boolean;
 	isUploading: boolean;
@@ -105,4 +107,3 @@ export interface StatusChecker {
 		signal: AbortSignal;
 	}): void;
 }
-

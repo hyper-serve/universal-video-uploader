@@ -1,4 +1,3 @@
-import React from "react";
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { StatusBadge } from "../StatusBadge.js";
@@ -44,7 +43,10 @@ describe("StatusBadge", () => {
 	});
 
 	it("renders correct labels for all 6 statuses", () => {
-		const statuses: Array<{ status: import("@hyperserve/upload").FileStatus; label: string }> = [
+		const statuses: Array<{
+			status: import("@hyperserve/upload").FileStatus;
+			label: string;
+		}> = [
 			{ status: "selected", label: "Selected" },
 			{ status: "validating", label: "Validating" },
 			{ status: "uploading", label: "Uploading" },
@@ -76,16 +78,23 @@ describe("Thumbnail", () => {
 
 	it("renders placeholder when no thumbnail or playbackUrl", () => {
 		const { container } = render(<Thumbnail file={baseFile} />);
-		const placeholder = container.querySelector('svg');
+		const placeholder = container.querySelector("svg");
 		expect(placeholder).toBeTruthy();
 	});
 
 	it("renders custom placeholder when placeholder prop is provided", () => {
 		render(
-			<Thumbnail file={baseFile} placeholder={<span data-testid="custom-placeholder">No preview</span>} />,
+			<Thumbnail
+				file={baseFile}
+				placeholder={<span data-testid="custom-placeholder">No preview</span>}
+			/>,
 		);
-		expect(screen.getByTestId("custom-placeholder").textContent).toBe("No preview");
-		const { container } = render(<Thumbnail file={baseFile} placeholder={<span>Custom</span>} />);
+		expect(screen.getByTestId("custom-placeholder").textContent).toBe(
+			"No preview",
+		);
+		const { container } = render(
+			<Thumbnail file={baseFile} placeholder={<span>Custom</span>} />,
+		);
 		expect(container.querySelector("svg")).toBeNull();
 	});
 
@@ -140,6 +149,7 @@ describe("Thumbnail", () => {
 		expect(img).not.toBeNull();
 
 		const { fireEvent } = require("@testing-library/react");
+		// biome-ignore lint/style/noNonNullAssertion: img is asserted non-null above
 		fireEvent.error(img!);
 
 		expect(container.querySelector("img")).toBeNull();
@@ -163,12 +173,16 @@ describe("Thumbnail", () => {
 			playbackUrl: "https://cdn.example.com/video.mp4",
 		};
 
-		const { container: c1 } = render(<Thumbnail file={file} playback controls={false} />);
+		const { container: c1 } = render(
+			<Thumbnail file={file} playback controls={false} />,
+		);
 		const video1 = c1.querySelector("video");
 		expect(video1).not.toBeNull();
 		expect(video1?.hasAttribute("controls")).toBe(false);
 
-		const { container: c2 } = render(<Thumbnail file={file} playback controls />);
+		const { container: c2 } = render(
+			<Thumbnail file={file} playback controls />,
+		);
 		const video2 = c2.querySelector("video");
 		expect(video2).not.toBeNull();
 		expect(video2?.hasAttribute("controls")).toBe(true);
@@ -211,4 +225,3 @@ describe("ProgressBar", () => {
 		expect(inner.style.width).toBe("100%");
 	});
 });
-

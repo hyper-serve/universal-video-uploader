@@ -1,8 +1,6 @@
 import type { FileRef } from "../types.js";
 
-export async function createThumbnail(
-	file: FileRef,
-): Promise<string | null> {
+export async function createThumbnail(file: FileRef): Promise<string | null> {
 	if (file.platform === "native") return null;
 
 	const videoUrl = URL.createObjectURL(file.raw);

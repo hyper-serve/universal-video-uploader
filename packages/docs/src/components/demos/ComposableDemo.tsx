@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import type React from "react";
+import { useMemo } from "react";
 import { UploadProvider } from "@hyperserve/upload";
 import {
 	DropZone,
@@ -18,7 +19,10 @@ function UploadUI() {
 		<div style={wrap}>
 			<DropZone supportingText="Simulated upload — real uploads transcode to browser-compatible formats" />
 			<FileListToolbar showViewToggle={false} />
-			<FileList emptyMessage="Drop or browse files to see composable items." mode={viewMode}>
+			<FileList
+				emptyMessage="Drop or browse files to see composable items."
+				mode={viewMode}
+			>
 				{(file) => (
 					<FileItem key={file.id} file={file} layout="column">
 						<Thumbnail file={file} playback />

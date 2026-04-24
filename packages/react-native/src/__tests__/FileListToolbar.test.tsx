@@ -1,4 +1,3 @@
-import React from "react";
 import { Text } from "react-native";
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import { FileListToolbar } from "../FileListToolbar";
@@ -27,7 +26,13 @@ jest.mock("../ViewModeContext", () => ({
 function makeFile(id: string): FileState {
 	return {
 		id,
-		ref: { platform: "native", name: `${id}.mp4`, size: 1000, type: "video/mp4", uri: "x" },
+		ref: {
+			platform: "native",
+			name: `${id}.mp4`,
+			size: 1000,
+			type: "video/mp4",
+			uri: "x",
+		},
 		status: "selected",
 		progress: 0,
 		thumbnailUri: null,

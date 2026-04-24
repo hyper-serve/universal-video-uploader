@@ -1,13 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-	createThumbnail,
-	revokeThumbnail,
-} from "../platform/thumbnail.js";
-import {
-	revokeFileRef,
-	toFileRef,
-	toFileRefs,
-} from "../platform/fileRef.js";
+import { createThumbnail, revokeThumbnail } from "../platform/thumbnail.js";
+import { revokeFileRef, toFileRef, toFileRefs } from "../platform/fileRef.js";
 import type { FileRef } from "../types.js";
 
 describe("thumbnail (web)", () => {
@@ -48,6 +41,7 @@ describe("thumbnail (web)", () => {
 			videoWidth: 320,
 			videoHeight: 240,
 			addEventListener: (event: string, cb: () => void) => {
+				// biome-ignore lint/suspicious/noAssignInExpressions: intentional compound assignment
 				(listeners[event] ??= []).push(cb);
 			},
 		};

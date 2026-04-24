@@ -1,4 +1,8 @@
-import type { ProcessingStatus, StatusChecker, UploadResult } from "@hyperserve/upload";
+import type {
+	ProcessingStatus,
+	StatusChecker,
+	UploadResult,
+} from "@hyperserve/upload";
 import type { VideoStatusResult } from "../types.js";
 import { backoffDelay } from "./backoff.js";
 
@@ -39,7 +43,7 @@ export function pollVideoStatus(options: PollOptions): void {
 
 			onStatusChange("processing", undefined, result.statusDetail);
 			setTimeout(poll, intervalMs);
-		} catch (error) {
+		} catch (_error) {
 			if (signal.aborted) return;
 			consecutiveErrors += 1;
 			setTimeout(poll, backoffDelay(intervalMs, consecutiveErrors));

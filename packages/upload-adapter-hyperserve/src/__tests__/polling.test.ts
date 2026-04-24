@@ -1,8 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-	HyperserveStatusChecker,
-	pollVideoStatus,
-} from "../polling/index.js";
+import { HyperserveStatusChecker, pollVideoStatus } from "../polling/index.js";
 
 describe("pollVideoStatus", () => {
 	beforeEach(() => {
@@ -94,9 +91,7 @@ describe("pollVideoStatus", () => {
 	it("stops polling when signal is aborted", async () => {
 		const onStatusChange = vi.fn();
 		const ac = new AbortController();
-		const getVideoStatus = vi
-			.fn()
-			.mockResolvedValue({ status: "processing" });
+		const getVideoStatus = vi.fn().mockResolvedValue({ status: "processing" });
 
 		pollVideoStatus({
 			getVideoStatus,
@@ -305,7 +300,10 @@ describe("HyperserveStatusChecker", () => {
 		const ac = new AbortController();
 		const getVideoStatus = vi.fn().mockResolvedValue({ status: "failed" });
 
-		const checker = new HyperserveStatusChecker({ getVideoStatus, intervalMs: 2000 });
+		const checker = new HyperserveStatusChecker({
+			getVideoStatus,
+			intervalMs: 2000,
+		});
 
 		checker.checkStatus({
 			onStatusChange,

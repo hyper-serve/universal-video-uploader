@@ -1,4 +1,3 @@
-import React from "react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import type { FileState } from "@hyperserve/upload";
@@ -40,11 +39,7 @@ describe("FileList and FileItem", () => {
 	});
 
 	it("renders emptyMessage when there are no files", () => {
-		render(
-			<FileList emptyMessage="Nothing here yet">
-				{() => null}
-			</FileList>,
-		);
+		render(<FileList emptyMessage="Nothing here yet">{() => null}</FileList>);
 
 		expect(screen.getByText("Nothing here yet")).toBeTruthy();
 	});
@@ -159,7 +154,11 @@ describe("FileList and FileItem", () => {
 
 		render(
 			<FileItem file={file}>
-				{(f) => <span data-testid="status">{f.status}:{f.progress}</span>}
+				{(f) => (
+					<span data-testid="status">
+						{f.status}:{f.progress}
+					</span>
+				)}
 			</FileItem>,
 		);
 
@@ -254,7 +253,11 @@ describe("FileList and FileItem", () => {
 
 		expect(container.querySelector("[role='progressbar']")).toBeTruthy();
 
-		const selected: FileState = { ...uploading, status: "selected", progress: 0 };
+		const selected: FileState = {
+			...uploading,
+			status: "selected",
+			progress: 0,
+		};
 		rerender(
 			<FileItem file={selected}>
 				<FileItem.UploadProgress />
@@ -339,4 +342,3 @@ describe("FileList and FileItem", () => {
 		expect(screen.queryByLabelText("Remove")).toBeNull();
 	});
 });
-

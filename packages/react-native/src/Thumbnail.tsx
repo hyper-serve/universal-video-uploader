@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { Image, StyleSheet, View } from "react-native";
 import type { FileState } from "@hyperserve/upload";
 import type { StyleProp, ViewStyle, ImageStyle } from "react-native";
@@ -53,7 +54,13 @@ export function Thumbnail({
 	}
 
 	return (
-		<View style={[styles.placeholder, placeholderStyle, style as StyleProp<ViewStyle>]}>
+		<View
+			style={[
+				styles.placeholder,
+				placeholderStyle,
+				style as StyleProp<ViewStyle>,
+			]}
+		>
 			{placeholder !== undefined ? (
 				placeholder
 			) : (

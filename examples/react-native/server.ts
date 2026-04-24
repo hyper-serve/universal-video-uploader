@@ -24,18 +24,30 @@ Bun.serve({
 
 		try {
 			if (req.method === "POST" && pathname === "/create-upload") {
-				const { filename, fileSizeBytes, resolutions, isPublic, metadata, thumbnail } =
-					await req.json();
+				const {
+					filename,
+					fileSizeBytes,
+					resolutions,
+					isPublic,
+					metadata,
+					thumbnail,
+				} = await req.json();
 				const result = await client.createVideo({
 					filename,
 					fileSizeBytes,
 					resolutions,
 					isPublic,
 					...(metadata && { customMetadata: metadata }),
-					...(thumbnail && { thumbnailTimestampsSeconds: [thumbnail.timestampMs / 1000] }),
+					...(thumbnail && {
+						thumbnailTimestampsSeconds: [thumbnail.timestampMs / 1000],
+					}),
 				});
 				return Response.json(
-					{ videoId: result.id, uploadUrl: result.uploadUrl, contentType: result.contentType },
+					{
+						videoId: result.id,
+						uploadUrl: result.uploadUrl,
+						contentType: result.contentType,
+					},
 					{ headers: cors },
 				);
 			}

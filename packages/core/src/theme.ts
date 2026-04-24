@@ -50,4 +50,3 @@ export const spacingScale = {
 	cardRowY: 12,
 	cardX: 16,
 } as const;
-

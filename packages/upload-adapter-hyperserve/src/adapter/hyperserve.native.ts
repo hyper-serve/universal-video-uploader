@@ -1,12 +1,17 @@
 import { putVideoToStorage } from "@hyperserve/hyperserve-js/react-native";
 import type { FileRef, UploadAdapter, UploadResult } from "@hyperserve/upload";
-import type { HyperserveAdapterConfig, HyperserveUploadOptions } from "../types.js";
+import type {
+	HyperserveAdapterConfig,
+	HyperserveUploadOptions,
+} from "../types.js";
 import type { BackgroundUploadModule } from "../platform/backgroundUpload.native.js";
 import { getBackgroundUpload } from "../platform/backgroundUpload.native.js";
 
 export type { BackgroundUploadModule };
 
-export class HyperserveAdapter implements UploadAdapter<HyperserveUploadOptions> {
+export class HyperserveAdapter
+	implements UploadAdapter<HyperserveUploadOptions>
+{
 	private bgUpload: BackgroundUploadModule | null;
 
 	constructor(
@@ -114,7 +119,7 @@ export class HyperserveAdapter implements UploadAdapter<HyperserveUploadOptions>
 		file: FileRef,
 		options: HyperserveUploadOptions,
 		callbacks: { onProgress: (pct: number) => void },
-		signal: AbortSignal,
+		_signal: AbortSignal,
 	): Promise<UploadResult> {
 		const { videoId, uploadUrl, contentType } = await this.config.createUpload(
 			file,

@@ -93,7 +93,12 @@ describe("HyperserveAdapter (native) - sdk fallback", () => {
 		const onProgress = vi.fn();
 		const ac = new AbortController();
 
-		await adapter.upload(makeFileRef(), defaultOptions, { onProgress }, ac.signal);
+		await adapter.upload(
+			makeFileRef(),
+			defaultOptions,
+			{ onProgress },
+			ac.signal,
+		);
 
 		expect(putVideoToStorage).toHaveBeenCalledWith(
 			expect.objectContaining({ onProgress }),
@@ -108,7 +113,12 @@ describe("HyperserveAdapter (native) - sdk fallback", () => {
 		const ac = new AbortController();
 
 		await expect(
-			adapter.upload(makeFileRef(), defaultOptions, { onProgress: vi.fn() }, ac.signal),
+			adapter.upload(
+				makeFileRef(),
+				defaultOptions,
+				{ onProgress: vi.fn() },
+				ac.signal,
+			),
 		).rejects.toThrow("Server error");
 
 		expect(putVideoToStorage).not.toHaveBeenCalled();
@@ -123,7 +133,12 @@ describe("HyperserveAdapter (native) - sdk fallback", () => {
 		const ac = new AbortController();
 
 		await expect(
-			adapter.upload(makeFileRef(), defaultOptions, { onProgress: vi.fn() }, ac.signal),
+			adapter.upload(
+				makeFileRef(),
+				defaultOptions,
+				{ onProgress: vi.fn() },
+				ac.signal,
+			),
 		).rejects.toThrow("Upload failed with status 500");
 
 		expect(config.completeUpload).not.toHaveBeenCalled();
@@ -137,7 +152,12 @@ describe("HyperserveAdapter (native) - sdk fallback", () => {
 		const ac = new AbortController();
 
 		await expect(
-			adapter.upload(makeFileRef(), defaultOptions, { onProgress: vi.fn() }, ac.signal),
+			adapter.upload(
+				makeFileRef(),
+				defaultOptions,
+				{ onProgress: vi.fn() },
+				ac.signal,
+			),
 		).rejects.toThrow("Complete failed");
 	});
 });
@@ -203,9 +223,8 @@ describe("HyperserveAdapter (native) - background upload", () => {
 		await vi.waitFor(() => expect(config.createUpload).toHaveBeenCalled());
 		await waitForListeners(bg);
 
-		const startUploadArgs = (
-			bg.module.startUpload as ReturnType<typeof vi.fn>
-		).mock.calls[0][0];
+		const startUploadArgs = (bg.module.startUpload as ReturnType<typeof vi.fn>)
+			.mock.calls[0][0];
 
 		expect(startUploadArgs).toMatchObject({
 			headers: { "Content-Type": "video/mp4" },

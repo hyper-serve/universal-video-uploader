@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import type { FileStatus } from "@hyperserve/upload";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";

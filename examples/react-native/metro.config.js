@@ -4,14 +4,8 @@ const path = require("node:path");
 const config = getDefaultConfig(__dirname);
 
 const repoRoot = path.resolve(__dirname, "../..");
-const corePackageRoot = path.resolve(
-	repoRoot,
-	"packages/core",
-);
-const nativeUiPackageRoot = path.resolve(
-	repoRoot,
-	"packages/react-native",
-);
+const corePackageRoot = path.resolve(repoRoot, "packages/core");
+const nativeUiPackageRoot = path.resolve(repoRoot, "packages/react-native");
 
 config.watchFolders = [
 	corePackageRoot,
@@ -21,9 +15,7 @@ config.watchFolders = [
 
 config.resolver.unstable_enableSymlinks = true;
 
-config.resolver.nodeModulesPaths = [
-	path.resolve(__dirname, "node_modules"),
-];
+config.resolver.nodeModulesPaths = [path.resolve(__dirname, "node_modules")];
 
 const singletonModules = {
 	react: path.resolve(__dirname, "node_modules/react"),

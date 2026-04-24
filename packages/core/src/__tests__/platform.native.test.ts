@@ -50,7 +50,12 @@ describe("fileRef.native", () => {
 	it("toFileRefs converts multiple results", () => {
 		const results = [
 			{ name: "a.mp4", size: 100, type: "video/mp4", uri: "file:///a.mp4" },
-			{ name: "b.mov", size: 200, type: "video/quicktime", uri: "file:///b.mov" },
+			{
+				name: "b.mov",
+				size: 200,
+				type: "video/quicktime",
+				uri: "file:///b.mov",
+			},
 		];
 
 		const refs = toFileRefs(results);

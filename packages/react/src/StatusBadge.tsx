@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import type { FileStatus } from "@hyperserve/upload";
 import { radius } from "./theme.js";
 import { statusConfig } from "./utils.js";
@@ -28,7 +28,7 @@ function mergeConfig(
 	const merged = {
 		bg: override?.bg ?? base.bg,
 		text: override?.text ?? base.text,
-		label: getLabel ? getLabel(status) : override?.label ?? base.label,
+		label: getLabel ? getLabel(status) : (override?.label ?? base.label),
 	};
 	return merged;
 }

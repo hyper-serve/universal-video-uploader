@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import type { FileState } from "@hyperserve/upload";
 import { useUpload } from "@hyperserve/upload";
 import { FileItem } from "./FileItem.js";

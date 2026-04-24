@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useUpload } from "@hyperserve/upload";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
@@ -22,13 +22,18 @@ function FileCount({ label, style }: FileCountProps) {
 	const { files } = useUpload();
 	const count = files.length;
 	const content =
-		label != null ? label(count) : `${count} file${count !== 1 ? "s" : ""} added`;
+		label != null
+			? label(count)
+			: `${count} file${count !== 1 ? "s" : ""} added`;
 	return <Text style={[styles.fileCount, style]}>{content}</Text>;
 }
 
 export type ViewToggleProps = {
 	style?: StyleProp<ViewStyle>;
-	children?: (state: { viewMode: ViewMode; setViewMode: (mode: ViewMode) => void }) => React.ReactNode;
+	children?: (state: {
+		viewMode: ViewMode;
+		setViewMode: (mode: ViewMode) => void;
+	}) => React.ReactNode;
 };
 
 function ViewToggle({ style, children }: ViewToggleProps) {
@@ -40,17 +45,33 @@ function ViewToggle({ style, children }: ViewToggleProps) {
 		<View style={[styles.toggleGroup, style]}>
 			<Pressable
 				onPress={() => setViewMode("list")}
-				style={[styles.toggleButton, viewMode === "list" && styles.toggleActive]}
+				style={[
+					styles.toggleButton,
+					viewMode === "list" && styles.toggleActive,
+				]}
 			>
-				<Text style={[styles.toggleText, viewMode === "list" && styles.toggleTextActive]}>
+				<Text
+					style={[
+						styles.toggleText,
+						viewMode === "list" && styles.toggleTextActive,
+					]}
+				>
 					List
 				</Text>
 			</Pressable>
 			<Pressable
 				onPress={() => setViewMode("grid")}
-				style={[styles.toggleButton, viewMode === "grid" && styles.toggleActive]}
+				style={[
+					styles.toggleButton,
+					viewMode === "grid" && styles.toggleActive,
+				]}
 			>
-				<Text style={[styles.toggleText, viewMode === "grid" && styles.toggleTextActive]}>
+				<Text
+					style={[
+						styles.toggleText,
+						viewMode === "grid" && styles.toggleTextActive,
+					]}
+				>
 					Grid
 				</Text>
 			</Pressable>

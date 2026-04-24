@@ -1,4 +1,3 @@
-import React from "react";
 import { useVideoPlayer, VideoView } from "expo-video";
 import * as DocumentPicker from "expo-document-picker";
 import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
@@ -11,7 +10,8 @@ import {
 	type FileState,
 } from "@hyperserve/upload";
 
-const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_URL ?? "http://localhost:3001";
+const SERVER_URL =
+	process.env.EXPO_PUBLIC_SERVER_URL ?? "http://localhost:3001";
 
 const validate = composeValidators(
 	maxFileSize(500 * 1024 * 1024),
@@ -24,13 +24,19 @@ export const demoConfig = createHyperserveConfig({
 		const r = await fetch(`${SERVER_URL}/create-upload`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ filename: file.name, fileSizeBytes: file.size, ...options }),
+			body: JSON.stringify({
+				filename: file.name,
+				fileSizeBytes: file.size,
+				...options,
+			}),
 		});
 		if (!r.ok) throw new Error(`Upload init failed: ${r.status}`);
 		return r.json();
 	},
 	completeUpload: async (videoId) => {
-		const r = await fetch(`${SERVER_URL}/complete-upload/${videoId}`, { method: "POST" });
+		const r = await fetch(`${SERVER_URL}/complete-upload/${videoId}`, {
+			method: "POST",
+		});
 		if (!r.ok) throw new Error(`Complete upload failed: ${r.status}`);
 	},
 	getVideoStatus: async (videoId) => {
@@ -73,7 +79,12 @@ export function Playback({ file }: { file: FileState }) {
 			player={player}
 			contentFit="contain"
 			nativeControls
-			style={{ backgroundColor: "#000", borderRadius: 8, height: 180, width: "100%" }}
+			style={{
+				backgroundColor: "#000",
+				borderRadius: 8,
+				height: 180,
+				width: "100%",
+			}}
 		/>
 	);
 }

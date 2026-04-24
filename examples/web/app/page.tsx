@@ -2,8 +2,18 @@
 
 import { useMemo } from "react";
 import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
-import { UploadProvider, allowedTypes, composeValidators, maxFileSize } from "@hyperserve/upload";
-import { DropZone, FileList, FileListToolbar, ViewModeProvider } from "@hyperserve/upload-react";
+import {
+	UploadProvider,
+	allowedTypes,
+	composeValidators,
+	maxFileSize,
+} from "@hyperserve/upload";
+import {
+	DropZone,
+	FileList,
+	FileListToolbar,
+	ViewModeProvider,
+} from "@hyperserve/upload-react";
 
 function makeConfig() {
 	return createHyperserveConfig({
@@ -11,13 +21,19 @@ function makeConfig() {
 			const r = await fetch("/api/create-upload", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ filename: file.name, fileSizeBytes: file.size, ...options }),
+				body: JSON.stringify({
+					filename: file.name,
+					fileSizeBytes: file.size,
+					...options,
+				}),
 			});
 			if (!r.ok) throw new Error(`Upload init failed: ${r.status}`);
 			return r.json();
 		},
 		completeUpload: async (videoId) => {
-			const r = await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });
+			const r = await fetch(`/api/complete-upload/${videoId}`, {
+				method: "POST",
+			});
 			if (!r.ok) throw new Error(`Complete upload failed: ${r.status}`);
 		},
 		getVideoStatus: async (videoId) => {

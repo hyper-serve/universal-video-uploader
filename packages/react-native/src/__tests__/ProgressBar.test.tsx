@@ -1,4 +1,3 @@
-import React from "react";
 import { render, screen } from "@testing-library/react-native";
 import { ProgressBar } from "../ProgressBar";
 
@@ -27,11 +26,7 @@ describe("ProgressBar (native)", () => {
 
 	it("supports children render-prop", () => {
 		const childFn = jest.fn((p: number) => <>{p}%</>);
-		render(
-			<ProgressBar progress={75}>
-				{childFn}
-			</ProgressBar>,
-		);
+		render(<ProgressBar progress={75}>{childFn}</ProgressBar>);
 		expect(childFn).toHaveBeenCalledWith(75);
 	});
 });

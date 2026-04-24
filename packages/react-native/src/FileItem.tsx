@@ -1,5 +1,12 @@
-import React, { createContext, useContext } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import type React from "react";
+import { createContext, useContext } from "react";
+import {
+	ActivityIndicator,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
 import type { FileState } from "@hyperserve/upload";
 import { useUpload } from "@hyperserve/upload";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
@@ -28,12 +35,15 @@ export type FileItemProps = {
 	file: FileState;
 	layout?: "row" | "column";
 	style?: StyleProp<ViewStyle>;
-	children?:
-		| React.ReactNode
-		| ((file: FileState) => React.ReactNode);
+	children?: React.ReactNode | ((file: FileState) => React.ReactNode);
 };
 
-export function FileItem({ file, layout = "column", style, children }: FileItemProps) {
+export function FileItem({
+	file,
+	layout = "column",
+	style,
+	children,
+}: FileItemProps) {
 	const isRow = layout === "row";
 	return (
 		<FileItemContext.Provider value={{ file, layout }}>
@@ -67,7 +77,9 @@ function FileSize({ style }: FileSizeProps) {
 	const mb = file.ref.size / (1024 * 1024);
 	return (
 		<Text style={[styles.fileSize, style]}>
-			{mb < 1 ? `${(file.ref.size / 1024).toFixed(0)} KB` : `${mb.toFixed(1)} MB`}
+			{mb < 1
+				? `${(file.ref.size / 1024).toFixed(0)} KB`
+				: `${mb.toFixed(1)} MB`}
 		</Text>
 	);
 }
@@ -100,8 +112,7 @@ function RemoveButton({
 	if (file.status === "processing" || file.status === "ready") {
 		return null;
 	}
-	const isActive =
-		file.status === "uploading" || file.status === "validating";
+	const isActive = file.status === "uploading" || file.status === "validating";
 	const label = isActive ? cancelLabel : "Remove";
 	return (
 		<Pressable
@@ -109,9 +120,7 @@ function RemoveButton({
 			style={style}
 			accessibilityLabel={label}
 		>
-			{children ?? (
-				<Text style={[styles.removeText, textStyle]}>×</Text>
-			)}
+			{children ?? <Text style={[styles.removeText, textStyle]}>×</Text>}
 		</Pressable>
 	);
 }
@@ -127,10 +136,12 @@ function RetryButton({ style, textStyle, children }: RetryButtonProps) {
 	const { retryFile } = useUpload();
 	if (file.status !== "failed") return null;
 	return (
-		<Pressable onPress={() => retryFile(file.id)} style={style} accessibilityLabel="Retry">
-			{children ?? (
-				<Text style={[styles.retryText, textStyle]}>Retry</Text>
-			)}
+		<Pressable
+			onPress={() => retryFile(file.id)}
+			style={style}
+			accessibilityLabel="Retry"
+		>
+			{children ?? <Text style={[styles.retryText, textStyle]}>Retry</Text>}
 		</Pressable>
 	);
 }
@@ -143,7 +154,13 @@ export type StatusIconProps = {
 function StatusIcon({ style, textStyle }: StatusIconProps) {
 	const { file } = useFileItemContext();
 	if (file.status === "processing") {
-		return <ActivityIndicator color={colors.textSecondary} size="small" style={style} />;
+		return (
+			<ActivityIndicator
+				color={colors.textSecondary}
+				size="small"
+				style={style}
+			/>
+		);
 	}
 	if (file.status === "ready") {
 		return (
@@ -161,11 +178,7 @@ export type FileItemMetaProps = {
 };
 
 function Meta({ style, children }: FileItemMetaProps) {
-	return (
-		<View style={[styles.meta, style]}>
-			{children}
-		</View>
-	);
+	return <View style={[styles.meta, style]}>{children}</View>;
 }
 
 export type FileItemActionsProps = {
@@ -174,11 +187,7 @@ export type FileItemActionsProps = {
 };
 
 function Actions({ style, children }: FileItemActionsProps) {
-	return (
-		<View style={[styles.actions, style]}>
-			{children}
-		</View>
-	);
+	return <View style={[styles.actions, style]}>{children}</View>;
 }
 
 export type UploadProgressProps = {
@@ -189,7 +198,13 @@ export type UploadProgressProps = {
 function UploadProgress({ trackStyle, fillStyle }: UploadProgressProps) {
 	const { file } = useFileItemContext();
 	if (file.status !== "uploading") return null;
-	return <ProgressBar fillStyle={fillStyle} progress={file.progress} trackStyle={trackStyle} />;
+	return (
+		<ProgressBar
+			fillStyle={fillStyle}
+			progress={file.progress}
+			trackStyle={trackStyle}
+		/>
+	);
 }
 
 export type PlaybackPreviewProps = {

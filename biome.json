@@ -30,10 +30,10 @@
 			"trailingCommas": "all"
 		}
 	},
+	"files": {
+		"includes": ["**", "!!**/package.json", "!!**/package-lock.json"]
+	},
 	"json": {
-		"files": {
-			"exclude": ["package.json", "package-lock.json"]
-		},
 		"formatter": {
 			"trailingCommas": "none"
 		}

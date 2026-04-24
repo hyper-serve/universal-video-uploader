@@ -7,7 +7,11 @@ export default defineConfig({
 		starlight({
 			title: "Universal Video Uploader",
 			social: [
-				{ icon: "github", label: "GitHub", href: "https://github.com/hyper-serve/upload" },
+				{
+					icon: "github",
+					label: "GitHub",
+					href: "https://github.com/hyper-serve/upload",
+				},
 			],
 			sidebar: [
 				{
@@ -23,7 +27,10 @@ export default defineConfig({
 					items: [
 						{ label: "Upload Provider", slug: "core-concepts/upload-provider" },
 						{ label: "Adapters", slug: "core-concepts/adapters" },
-						{ label: "File State Machine", slug: "core-concepts/file-state-machine" },
+						{
+							label: "File State Machine",
+							slug: "core-concepts/file-state-machine",
+						},
 						{ label: "Validation", slug: "core-concepts/validation" },
 					],
 				},

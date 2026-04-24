@@ -8,9 +8,6 @@ export function backoffDelay(
 	intervalMs: number,
 	consecutiveErrors: number,
 ): number {
-	const delay = Math.min(
-		intervalMs * Math.pow(2, consecutiveErrors),
-		MAX_BACKOFF_MS,
-	);
+	const delay = Math.min(intervalMs * 2 ** consecutiveErrors, MAX_BACKOFF_MS);
 	return withJitter(delay);
 }

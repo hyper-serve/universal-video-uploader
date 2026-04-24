@@ -1,5 +1,9 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
+import {
+	render,
+	screen,
+	fireEvent,
+	waitFor,
+} from "@testing-library/react-native";
 import { FilePicker } from "../FilePicker";
 import type { FileRef } from "@hyperserve/upload";
 
@@ -59,11 +63,7 @@ describe("FilePicker (native)", () => {
 
 	it("renders custom children", () => {
 		const pickFiles = jest.fn().mockResolvedValue([]);
-		render(
-			<FilePicker pickFiles={pickFiles}>
-				<></>
-			</FilePicker>,
-		);
+		render(<FilePicker pickFiles={pickFiles}></FilePicker>);
 		expect(screen.queryByText("Pick Videos")).toBeNull();
 	});
 
