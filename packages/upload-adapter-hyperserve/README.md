@@ -1,0 +1,34 @@
+# @hyperserve/upload-adapter-hyperserve
+
+Official Hyperserve adapter for `@hyperserve/upload`. Handles file upload to Hyperserve-managed storage via signed URLs and polls for processing status.
+
+## Install
+
+```bash
+npm install @hyperserve/upload @hyperserve/upload-adapter-hyperserve
+```
+
+## Usage
+
+```tsx
+import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+
+const config = createHyperserveConfig({
+  createUpload: async (file, options) => {
+    const raw = (file as import("@hyperserve/upload").WebFileRef).raw;
+    return fetch("/api/create-upload", {
+      method: "POST",
+      body: JSON.stringify({ name: raw.name, size: raw.size, ...options }),
+    }).then((r) => r.json());
+  },
+  completeUpload: async (videoId) => {
+    await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });
+  },
+  // optional — omit if you drive status updates via webhook or SSE instead of polling
+  getVideoStatus: async (videoId) =>
+    fetch(`/api/video-status/${videoId}`).then((r) => r.json()),
+  uploadOptions: { isPublic: true, resolutions: ["480p", "1080p"] },
+});
+```
+
+The callbacks call your backend, which proxies to Hyperserve with your API key. See the [full documentation](https://your-docs-url).
