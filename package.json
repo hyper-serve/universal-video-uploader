@@ -23,6 +23,7 @@
 	},
 	"devDependencies": {
 		"@babel/runtime": "^7.28.6",
-		"@biomejs/biome": "2.4.4"
+		"@biomejs/biome": "2.4.4",
+		"lefthook": "latest"
 	}
 }
