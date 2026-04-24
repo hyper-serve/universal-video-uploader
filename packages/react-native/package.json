@@ -27,11 +27,11 @@
 	},
 	"keywords": ["video", "upload", "react-native", "mobile", "components"],
 	"scripts": {
-		"build": "tsc",
-		"build:watch": "tsc --watch",
+		"build": "tsc -p tsconfig.build.json",
+		"build:watch": "tsc -p tsconfig.build.json --watch",
 		"test": "jest",
 		"test:watch": "jest --watch",
-		"typecheck": "tsc --noEmit -p tsconfig.typecheck.json",
+		"typecheck": "tsc --noEmit",
 		"clean": "rm -rf dist",
 		"prepublishOnly": "bun run build"
 	},

@@ -7,7 +7,7 @@
 		"moduleResolution": "NodeNext",
 		"outDir": "dist"
 	},
-	"exclude": ["node_modules", "dist", "src/__tests__"],
+	"exclude": ["node_modules", "dist"],
 	"extends": "../../tsconfig.base.json",
 	"include": ["src/**/*.ts", "src/**/*.tsx"]
 }
