@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import type { FileState } from "@hyperserve/upload";
 import { useUpload } from "@hyperserve/upload";

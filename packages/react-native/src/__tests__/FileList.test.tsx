@@ -1,4 +1,3 @@
-import React from "react";
 import { Text } from "react-native";
 import { render, screen } from "@testing-library/react-native";
 import { FileList } from "../FileList";
@@ -20,7 +19,13 @@ jest.mock("../ViewModeContext", () => ({
 function makeFile(id: string): FileState {
 	return {
 		id,
-		ref: { platform: "native", name: `${id}.mp4`, size: 1000, type: "video/mp4", uri: `file:///${id}.mp4` },
+		ref: {
+			platform: "native",
+			name: `${id}.mp4`,
+			size: 1000,
+			type: "video/mp4",
+			uri: `file:///${id}.mp4`,
+		},
 		status: "selected",
 		progress: 0,
 		thumbnailUri: null,
@@ -43,7 +48,9 @@ describe("FileList (native)", () => {
 
 	it("renders emptyMessage as ReactNode when no files", () => {
 		render(
-			<FileList emptyMessage={<Text testID="custom-empty">Custom Empty</Text>} />,
+			<FileList
+				emptyMessage={<Text testID="custom-empty">Custom Empty</Text>}
+			/>,
 		);
 		expect(screen.getByTestId("custom-empty")).toBeTruthy();
 	});
@@ -52,7 +59,11 @@ describe("FileList (native)", () => {
 		mockFiles = [makeFile("a"), makeFile("b")];
 		render(
 			<FileList>
-				{(file) => <Text key={file.id} testID={`file-${file.id}`}>{file.ref.name}</Text>}
+				{(file) => (
+					<Text key={file.id} testID={`file-${file.id}`}>
+						{file.ref.name}
+					</Text>
+				)}
 			</FileList>,
 		);
 		expect(screen.getByTestId("file-a")).toBeTruthy();

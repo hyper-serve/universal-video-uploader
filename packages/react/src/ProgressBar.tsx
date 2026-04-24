@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import { colors, radius } from "./theme.js";
 
 export type ProgressBarProps = {

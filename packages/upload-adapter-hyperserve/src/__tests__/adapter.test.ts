@@ -28,7 +28,11 @@ const defaultOptions: HyperserveUploadOptions = {
 };
 
 function makeConfig(overrides?: {
-	createUpload?: () => Promise<{ videoId: string; uploadUrl: string; contentType: string }>;
+	createUpload?: () => Promise<{
+		videoId: string;
+		uploadUrl: string;
+		contentType: string;
+	}>;
 	completeUpload?: (videoId: string) => Promise<void>;
 }) {
 	return {
@@ -88,7 +92,12 @@ describe("HyperserveAdapter (web)", () => {
 		const ac = new AbortController();
 		const onProgress = vi.fn();
 
-		await adapter.upload(makeFileRef(), defaultOptions, { onProgress }, ac.signal);
+		await adapter.upload(
+			makeFileRef(),
+			defaultOptions,
+			{ onProgress },
+			ac.signal,
+		);
 
 		expect(putVideoToStorage).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -121,7 +130,12 @@ describe("HyperserveAdapter (web)", () => {
 		const ac = new AbortController();
 
 		await expect(
-			adapter.upload(makeFileRef(), defaultOptions, { onProgress: vi.fn() }, ac.signal),
+			adapter.upload(
+				makeFileRef(),
+				defaultOptions,
+				{ onProgress: vi.fn() },
+				ac.signal,
+			),
 		).rejects.toThrow("Server error");
 
 		expect(putVideoToStorage).not.toHaveBeenCalled();
@@ -136,7 +150,12 @@ describe("HyperserveAdapter (web)", () => {
 		const ac = new AbortController();
 
 		await expect(
-			adapter.upload(makeFileRef(), defaultOptions, { onProgress: vi.fn() }, ac.signal),
+			adapter.upload(
+				makeFileRef(),
+				defaultOptions,
+				{ onProgress: vi.fn() },
+				ac.signal,
+			),
 		).rejects.toThrow("Upload failed with status 403");
 
 		expect(config.completeUpload).not.toHaveBeenCalled();
@@ -150,7 +169,12 @@ describe("HyperserveAdapter (web)", () => {
 		const ac = new AbortController();
 
 		await expect(
-			adapter.upload(makeFileRef(), defaultOptions, { onProgress: vi.fn() }, ac.signal),
+			adapter.upload(
+				makeFileRef(),
+				defaultOptions,
+				{ onProgress: vi.fn() },
+				ac.signal,
+			),
 		).rejects.toThrow("Complete failed");
 	});
 
@@ -160,7 +184,12 @@ describe("HyperserveAdapter (web)", () => {
 		const ac = new AbortController();
 		const fileRef = makeFileRef();
 
-		await adapter.upload(fileRef, defaultOptions, { onProgress: vi.fn() }, ac.signal);
+		await adapter.upload(
+			fileRef,
+			defaultOptions,
+			{ onProgress: vi.fn() },
+			ac.signal,
+		);
 
 		expect(putVideoToStorage).toHaveBeenCalledWith(
 			expect.objectContaining({ file: (fileRef as { raw: File }).raw }),

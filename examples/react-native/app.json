@@ -1,25 +1,20 @@
 {
-  "expo": {
-    "name": "Universal Video Uploader Example",
-    "slug": "hyper-serve-upload-example",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "scheme": "videouploder",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.hyperserve.upload-example"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#ffffff"
-      }
-    },
-    "plugins": [
-      "expo-video"
-    ]
-  }
+	"expo": {
+		"name": "Universal Video Uploader Example",
+		"slug": "hyper-serve-upload-example",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"scheme": "videouploder",
+		"platforms": ["ios", "android"],
+		"ios": {
+			"supportsTablet": true,
+			"bundleIdentifier": "com.hyperserve.upload-example"
+		},
+		"android": {
+			"adaptiveIcon": {
+				"backgroundColor": "#ffffff"
+			}
+		},
+		"plugins": ["expo-video"]
+	}
 }

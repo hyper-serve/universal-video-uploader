@@ -28,9 +28,7 @@ function getVideoThumbnails(): VideoThumbnailsModule | null {
 	return thumbnailModule;
 }
 
-export async function createThumbnail(
-	file: FileRef,
-): Promise<string | null> {
+export async function createThumbnail(file: FileRef): Promise<string | null> {
 	const mod = getVideoThumbnails();
 	if (!mod) return null;
 

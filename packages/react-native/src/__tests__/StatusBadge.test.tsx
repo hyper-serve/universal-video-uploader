@@ -1,4 +1,3 @@
-import React from "react";
 import { Text } from "react-native";
 import { render, screen } from "@testing-library/react-native";
 import { StatusBadge } from "../StatusBadge";
@@ -48,14 +47,11 @@ describe("StatusBadge (native)", () => {
 	});
 
 	it("supports children render-prop", () => {
+		// biome-ignore lint/correctness/noUnusedFunctionParameters: color destructured to verify shape, not used in render
 		const childFn = jest.fn(({ label, color }) => (
 			<Text testID="custom-label">{label}</Text>
 		));
-		render(
-			<StatusBadge status="failed">
-				{childFn}
-			</StatusBadge>,
-		);
+		render(<StatusBadge status="failed">{childFn}</StatusBadge>);
 		expect(childFn).toHaveBeenCalledWith(
 			expect.objectContaining({ label: "Failed" }),
 		);

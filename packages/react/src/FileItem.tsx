@@ -1,4 +1,5 @@
-import React, { createContext, useContext } from "react";
+import type React from "react";
+import { createContext, useContext } from "react";
 import type { FileState } from "@hyperserve/upload";
 import { useUpload } from "@hyperserve/upload";
 import { CheckCircleIcon, RetryIcon, SpinnerIcon } from "./icons.js";
@@ -29,12 +30,16 @@ export type FileItemProps = {
 	layout?: "row" | "column";
 	style?: React.CSSProperties;
 	className?: string;
-	children?:
-	| React.ReactNode
-	| ((file: FileState) => React.ReactNode);
+	children?: React.ReactNode | ((file: FileState) => React.ReactNode);
 };
 
-export function FileItem({ file, layout = "column", style, className, children }: FileItemProps) {
+export function FileItem({
+	file,
+	layout = "column",
+	style,
+	className,
+	children,
+}: FileItemProps) {
 	const isRow = layout === "row";
 	return (
 		<FileItemContext.Provider value={{ file, layout }}>
@@ -137,8 +142,7 @@ function RemoveButton({
 	if (file.status === "processing" || file.status === "ready") {
 		return null;
 	}
-	const isActive =
-		file.status === "uploading" || file.status === "validating";
+	const isActive = file.status === "uploading" || file.status === "validating";
 	const label = isActive ? cancelLabel : "Remove";
 	return (
 		<button
@@ -210,7 +214,16 @@ function StatusIcon({ style, className }: StatusIconProps) {
 	const { file } = useFileItemContext();
 	if (file.status === "processing") {
 		return (
-			<span className={className} style={{ alignItems: "center", color: "#9CA3AF", display: "inline-flex", gap: 4, ...style }}>
+			<span
+				className={className}
+				style={{
+					alignItems: "center",
+					color: "#9CA3AF",
+					display: "inline-flex",
+					gap: 4,
+					...style,
+				}}
+			>
 				<SpinnerIcon />
 				<span style={{ fontSize: "0.8125rem" }}>Processing...</span>
 			</span>
@@ -218,7 +231,10 @@ function StatusIcon({ style, className }: StatusIconProps) {
 	}
 	if (file.status === "ready") {
 		return (
-			<span className={className} style={{ color: "#059669", display: "inline-flex", ...style }}>
+			<span
+				className={className}
+				style={{ color: "#059669", display: "inline-flex", ...style }}
+			>
 				<CheckCircleIcon />
 			</span>
 		);
@@ -253,7 +269,13 @@ function Actions({ style, className, children }: FileItemActionsProps) {
 	return (
 		<div
 			className={className}
-			style={{ alignItems: "flex-end", display: "flex", flexDirection: "column", gap: 4, ...style }}
+			style={{
+				alignItems: "flex-end",
+				display: "flex",
+				flexDirection: "column",
+				gap: 4,
+				...style,
+			}}
 		>
 			{children}
 		</div>
@@ -267,7 +289,12 @@ export type UploadProgressProps = {
 	fillClassName?: string;
 };
 
-function UploadProgress({ trackStyle, trackClassName, fillStyle, fillClassName }: UploadProgressProps) {
+function UploadProgress({
+	trackStyle,
+	trackClassName,
+	fillStyle,
+	fillClassName,
+}: UploadProgressProps) {
 	const { file } = useFileItemContext();
 	if (file.status !== "uploading") return null;
 	return (
@@ -304,8 +331,22 @@ function Content({ style, className }: FileItemContentProps) {
 	if (isRow) {
 		return (
 			<>
-				<Thumbnail file={file} playback style={{ flexShrink: 0, height: 72, width: 128 }} />
-				<div style={{ display: "flex", flex: 1, flexDirection: "column", gap: 2, minWidth: 0, ...style }} className={className}>
+				<Thumbnail
+					file={file}
+					playback
+					style={{ flexShrink: 0, height: 72, width: 128 }}
+				/>
+				<div
+					style={{
+						display: "flex",
+						flex: 1,
+						flexDirection: "column",
+						gap: 2,
+						minWidth: 0,
+						...style,
+					}}
+					className={className}
+				>
 					<FileName />
 					<Meta>
 						<FileSize />
@@ -325,7 +366,14 @@ function Content({ style, className }: FileItemContentProps) {
 	return (
 		<div style={style} className={className}>
 			<Thumbnail file={file} playback />
-			<div style={{ alignItems: "center", display: "flex", justifyContent: "space-between", marginTop: "0.5rem" }}>
+			<div
+				style={{
+					alignItems: "center",
+					display: "flex",
+					justifyContent: "space-between",
+					marginTop: "0.5rem",
+				}}
+			>
 				<FileName />
 				<Actions>
 					<RemoveButton />

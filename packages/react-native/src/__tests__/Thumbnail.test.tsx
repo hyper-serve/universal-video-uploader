@@ -1,12 +1,17 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react-native";
+import { render, screen } from "@testing-library/react-native";
 import { Image } from "react-native";
 import { Thumbnail } from "../Thumbnail";
 import type { FileState } from "@hyperserve/upload";
 
 const baseFile: FileState = {
 	id: "f1",
-	ref: { platform: "native", name: "clip.mp4", size: 1000, type: "video/mp4", uri: "file:///clip.mp4" },
+	ref: {
+		platform: "native",
+		name: "clip.mp4",
+		size: 1000,
+		type: "video/mp4",
+		uri: "file:///clip.mp4",
+	},
 	status: "selected",
 	progress: 0,
 	thumbnailUri: null,
@@ -25,9 +30,8 @@ describe("Thumbnail (native)", () => {
 	});
 
 	it("renders custom placeholder when provided", () => {
-		render(
-			<Thumbnail file={baseFile} placeholder={<></>} />,
-		);
+		// biome-ignore lint/complexity/noUselessFragments: empty fragment is intentional placeholder test
+		render(<Thumbnail file={baseFile} placeholder={<></>} />);
 		const tree = render(<Thumbnail file={baseFile} />);
 		expect(tree.toJSON()).toBeTruthy();
 	});
@@ -47,9 +51,8 @@ describe("Thumbnail (native)", () => {
 			thumbnailUri: "file:///thumb.jpg",
 		};
 
-		const childFn = jest.fn(({ isReady, playbackUrl, thumbnailUri }) => (
-			<></>
-		));
+		// biome-ignore lint/correctness/noUnusedFunctionParameters: destructured to verify shape, values unused
+		const childFn = jest.fn(({ isReady, playbackUrl, thumbnailUri }) => <></>);
 
 		render(<Thumbnail file={file}>{childFn}</Thumbnail>);
 

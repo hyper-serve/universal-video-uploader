@@ -1,6 +1,6 @@
 {
 	"name": "@hyperserve/upload",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"author": "Ryan Trann",
 	"description": "Headless cross-platform video upload component for Hyperserve. Supports custom adapters for Mux, Bunny, and other video platforms.",
 	"license": "MIT",
@@ -17,11 +17,21 @@
 	"files": [
 		"dist"
 	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/hyper-serve/upload.git",
+		"directory": "packages/core"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"keywords": ["video", "upload", "react", "react-native", "headless", "cross-platform"],
 	"scripts": {
 		"build": "tsc",
 		"build:watch": "tsc --watch",
 		"test": "vitest run",
 		"test:watch": "vitest",
+		"typecheck": "tsc --noEmit",
 		"prepublishOnly": "bun run build"
 	},
 	"peerDependencies": {

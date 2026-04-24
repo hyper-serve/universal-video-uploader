@@ -1,6 +1,9 @@
 export function filterFilesByAccept(files: File[], accept: string): File[] {
 	if (!accept.trim()) return files;
-	const tokens = accept.split(",").map((s) => s.trim()).filter(Boolean);
+	const tokens = accept
+		.split(",")
+		.map((s) => s.trim())
+		.filter(Boolean);
 	return files.filter((file) =>
 		tokens.some((token) => matchesAccept(file, token)),
 	);

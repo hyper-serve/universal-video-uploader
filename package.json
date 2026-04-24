@@ -10,6 +10,7 @@
 		"build:watch": "bun run --filter '@hyperserve/*' build:watch",
 		"test": "bun run --filter '@hyperserve/upload' test && bun run --filter '@hyperserve/upload-adapter-hyperserve' test && bun run --filter '@hyperserve/upload-react' test && bun run --filter '@hyperserve/upload-react-native' test",
 		"test:watch": "bun run --filter '@hyperserve/upload' test:watch",
+		"typecheck": "bun run --filter '@hyperserve/*' typecheck",
 		"format:check": "biome format",
 		"format:write": "biome format --write",
 		"lint:check": "biome lint",
@@ -22,6 +23,7 @@
 	},
 	"devDependencies": {
 		"@babel/runtime": "^7.28.6",
-		"@biomejs/biome": "2.4.4"
+		"@biomejs/biome": "2.4.4",
+		"lefthook": "latest"
 	}
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react-native";
 import { FileItem } from "../FileItem";
 import type { FileState } from "@hyperserve/upload";
@@ -17,7 +16,13 @@ jest.mock("@hyperserve/upload", () => ({
 function makeFile(overrides: Partial<FileState> = {}): FileState {
 	return {
 		id: "1",
-		ref: { platform: "native", name: "clip.mp4", size: 1024 * 1024, type: "video/mp4", uri: "file:///clip.mp4" },
+		ref: {
+			platform: "native",
+			name: "clip.mp4",
+			size: 1024 * 1024,
+			type: "video/mp4",
+			uri: "file:///clip.mp4",
+		},
 		status: "selected",
 		progress: 0,
 		thumbnailUri: null,
@@ -55,7 +60,17 @@ describe("FileItem (native)", () => {
 
 	it("renders FileSize as KB for small files", () => {
 		render(
-			<FileItem file={makeFile({ ref: { platform: "native", name: "s.mp4", size: 512, type: "video/mp4", uri: "x" } })}>
+			<FileItem
+				file={makeFile({
+					ref: {
+						platform: "native",
+						name: "s.mp4",
+						size: 512,
+						type: "video/mp4",
+						uri: "x",
+					},
+				})}
+			>
 				<FileItem.FileSize />
 			</FileItem>,
 		);
@@ -89,7 +104,14 @@ describe("FileItem (native)", () => {
 		expect(mockRemoveFile).toHaveBeenCalledWith("1");
 
 		rerender(
-			<FileItem file={makeFile({ status: "ready", progress: 100, playbackUrl: "url", videoId: "v1" })}>
+			<FileItem
+				file={makeFile({
+					status: "ready",
+					progress: 100,
+					playbackUrl: "url",
+					videoId: "v1",
+				})}
+			>
 				<FileItem.RemoveButton />
 			</FileItem>,
 		);
@@ -123,7 +145,7 @@ describe("FileItem (native)", () => {
 	});
 
 	it("StatusIcon renders for processing and ready, nothing for selected", () => {
-		const { rerender, toJSON } = render(
+		const { rerender } = render(
 			<FileItem file={makeFile({ status: "selected" })}>
 				<FileItem.StatusIcon />
 			</FileItem>,
@@ -131,7 +153,14 @@ describe("FileItem (native)", () => {
 		expect(screen.queryByText("✓")).toBeNull();
 
 		rerender(
-			<FileItem file={makeFile({ status: "ready", progress: 100, playbackUrl: "url", videoId: "v1" })}>
+			<FileItem
+				file={makeFile({
+					status: "ready",
+					progress: 100,
+					playbackUrl: "url",
+					videoId: "v1",
+				})}
+			>
 				<FileItem.StatusIcon />
 			</FileItem>,
 		);

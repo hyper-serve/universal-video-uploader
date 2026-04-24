@@ -1,4 +1,3 @@
-import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -22,7 +21,9 @@ export default function App() {
 						<Text style={styles.subtitle}>
 							Upload videos to Hyperserve for transcoding and streaming.
 						</Text>
-						<Text style={styles.serverNote}>Start the server: bun run server</Text>
+						<Text style={styles.serverNote}>
+							Start the server: bun run server
+						</Text>
 						<ViewModeProvider>
 							<View style={styles.controls}>
 								<FilePicker pickFiles={pickVideos} />
@@ -41,7 +42,12 @@ const styles = StyleSheet.create({
 	container: { backgroundColor: "#fff", flex: 1 },
 	controls: { gap: 10, marginBottom: 12 },
 	scroll: { padding: 20, paddingTop: 48 },
-	serverNote: { color: "#94a3b8", fontFamily: "monospace", fontSize: 12, marginBottom: 24 },
+	serverNote: {
+		color: "#94a3b8",
+		fontFamily: "monospace",
+		fontSize: 12,
+		marginBottom: 24,
+	},
 	subtitle: { color: "#64748b", fontSize: 15, marginBottom: 8 },
 	title: { fontSize: 22, fontWeight: "700", marginBottom: 4 },
 });

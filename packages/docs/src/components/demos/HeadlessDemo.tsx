@@ -1,9 +1,6 @@
-import React, { useMemo, useRef, useState } from "react";
-import {
-	UploadProvider,
-	toFileRefs,
-	useUpload,
-} from "@hyperserve/upload";
+import type React from "react";
+import { useMemo, useRef, useState } from "react";
+import { UploadProvider, toFileRefs, useUpload } from "@hyperserve/upload";
 import { createMockConfig } from "./MockAdapter";
 
 function formatSize(bytes: number): string {
@@ -43,6 +40,7 @@ function UploadUI() {
 				type="file"
 			/>
 
+			{/* biome-ignore lint/a11y/noStaticElementInteractions: drag-and-drop drop zone on section is intentional */}
 			<section
 				onDragLeave={() => setDrag(false)}
 				onDragOver={(e) => {
@@ -216,8 +214,17 @@ const fileName: React.CSSProperties = {
 };
 
 const meta: React.CSSProperties = { color: "#94a3b8", fontSize: "0.75rem" };
-const track: React.CSSProperties = { background: "#e2e8f0", borderRadius: 4, height: 4, overflow: "hidden" };
-const fill: React.CSSProperties = { background: "#0f766e", height: "100%", transition: "width 0.2s" };
+const track: React.CSSProperties = {
+	background: "#e2e8f0",
+	borderRadius: 4,
+	height: 4,
+	overflow: "hidden",
+};
+const fill: React.CSSProperties = {
+	background: "#0f766e",
+	height: "100%",
+	transition: "width 0.2s",
+};
 const warn: React.CSSProperties = { color: "#b45309", fontSize: "0.8125rem" };
 const err: React.CSSProperties = { color: "#b91c1c", fontSize: "0.8125rem" };
 

@@ -27,7 +27,7 @@ import { DropZone } from "@hyperserve/upload-react";
 | `activeStyle` | `CSSProperties` | — | Merged during drag hover |
 | `className` | `string` | — | Base class |
 | `activeClassName` | `string` | — | Appended during drag hover |
-| `children` | `ReactNode \| (state) => ReactNode` | — | Custom content or render function |
+| `children` | `ReactNode \| ((state: DropZoneRenderProps) => ReactNode)` | — | Custom content or render function |
 
 ## Render function
 
@@ -42,6 +42,17 @@ For full control over the drop zone content:
     </div>
   )}
 </DropZone>
+```
+
+### `DropZoneRenderProps`
+
+```typescript
+import type { DropZoneRenderProps } from "@hyperserve/upload-react";
+
+type DropZoneRenderProps = {
+  isDragging: boolean;
+  openPicker: () => void;
+};
 ```
 
 ## Styling

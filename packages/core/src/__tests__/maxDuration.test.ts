@@ -41,12 +41,14 @@ function createMockVideo(duration: number, shouldError = false) {
 
 describe("maxDuration (web)", () => {
 	beforeEach(() => {
-		vi.spyOn(document, "createElement").mockImplementation((tagName: string) => {
-			if (tagName === "video") {
-				return createMockVideo(30) as unknown as HTMLVideoElement;
-			}
-			return document.createElement(tagName);
-		});
+		vi.spyOn(document, "createElement").mockImplementation(
+			(tagName: string) => {
+				if (tagName === "video") {
+					return createMockVideo(30) as unknown as HTMLVideoElement;
+				}
+				return document.createElement(tagName);
+			},
+		);
 	});
 
 	afterEach(() => {
@@ -109,7 +111,9 @@ describe("maxDuration (web)", () => {
 		const result = await validator(makeFileRef());
 
 		expect(result).toMatchObject({ valid: false });
-		expect((result as { reason: string }).reason).toContain("exceeds maximum duration");
+		expect((result as { reason: string }).reason).toContain(
+			"exceeds maximum duration",
+		);
 		expect((result as { reason: string }).reason).toContain("60s");
 		expect((result as { reason: string }).reason).toContain("120");
 	});
@@ -129,7 +133,9 @@ describe("maxDuration (web)", () => {
 	});
 
 	it("revokes object URL after metadata load", async () => {
-		const revokeSpy = vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
+		const revokeSpy = vi
+			.spyOn(URL, "revokeObjectURL")
+			.mockImplementation(() => {});
 		vi.mocked(document.createElement).mockImplementation((tagName: string) => {
 			if (tagName === "video") {
 				return createMockVideo(30) as unknown as HTMLVideoElement;

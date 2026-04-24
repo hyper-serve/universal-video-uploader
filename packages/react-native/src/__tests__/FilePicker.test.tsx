@@ -1,5 +1,9 @@
-import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
+import {
+	render,
+	screen,
+	fireEvent,
+	waitFor,
+} from "@testing-library/react-native";
 import { FilePicker } from "../FilePicker";
 import type { FileRef } from "@hyperserve/upload";
 

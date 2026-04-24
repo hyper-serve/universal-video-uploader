@@ -1,4 +1,3 @@
-import React from "react";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { DropZone } from "../DropZone.js";
@@ -79,7 +78,9 @@ describe("DropZone", () => {
 
 	it("adds files via file input change event", () => {
 		const { container } = render(<DropZone />);
-		const input = container.querySelector("input[type='file']") as HTMLInputElement;
+		const input = container.querySelector(
+			"input[type='file']",
+		) as HTMLInputElement;
 		const videoFile = createFile("video.mp4", "video/mp4");
 
 		Object.defineProperty(input, "files", {
@@ -111,7 +112,9 @@ describe("DropZone", () => {
 		const childFn = vi.fn(({ isDragging, openPicker }) => (
 			<div>
 				<span data-testid="dragging">{isDragging.toString()}</span>
-				<button onClick={openPicker} data-testid="pick-btn">Pick</button>
+				<button onClick={openPicker} data-testid="pick-btn" type="button">
+					Pick
+				</button>
 			</div>
 		));
 
@@ -156,4 +159,3 @@ describe("DropZone", () => {
 		expect(zone.getAttribute("tabindex")).toBe("-1");
 	});
 });
-

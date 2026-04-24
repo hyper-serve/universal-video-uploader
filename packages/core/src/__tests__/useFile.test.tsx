@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react";
-import React from "react";
+import type React from "react";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 import { UploadProvider } from "../context.js";
 import { useFile } from "../hooks/useFile.js";

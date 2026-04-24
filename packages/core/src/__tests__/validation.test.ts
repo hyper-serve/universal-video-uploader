@@ -6,7 +6,9 @@ import {
 	maxFileSize,
 } from "../validation/index.js";
 
-function makeFileRef(overrides: { size?: number; type?: string; name?: string } = {}): FileRef {
+function makeFileRef(
+	overrides: { size?: number; type?: string; name?: string } = {},
+): FileRef {
 	return {
 		platform: "native",
 		name: "test.mp4",
@@ -118,9 +120,14 @@ describe("composeValidators", () => {
 	it("handles async validators correctly", async () => {
 		const asyncValidator = async (file: FileRef) => {
 			await new Promise((r) => setTimeout(r, 10));
-			return file.size > 500 ? { valid: false as const, reason: "too big" } : { valid: true as const };
+			return file.size > 500
+				? { valid: false as const, reason: "too big" }
+				: { valid: true as const };
 		};
-		const validator = composeValidators(asyncValidator, allowedTypes(["video/mp4"]));
+		const validator = composeValidators(
+			asyncValidator,
+			allowedTypes(["video/mp4"]),
+		);
 		const result = await validator(makeFileRef({ size: 1000 }));
 		expect(result).toEqual({ valid: false, reason: "too big" });
 	});

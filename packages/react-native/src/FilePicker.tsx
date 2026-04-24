@@ -1,5 +1,6 @@
-import React, { useCallback } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import type React from "react";
+import { useCallback } from "react";
+import { Pressable, StyleSheet, Text } from "react-native";
 import { useUpload } from "@hyperserve/upload";
 import type { FileRef } from "@hyperserve/upload";
 import type { StyleProp, ViewStyle, TextStyle } from "react-native";
@@ -35,9 +36,7 @@ export function FilePicker({
 
 	return (
 		<Pressable onPress={pick} style={[styles.button, style]}>
-			{children ?? (
-				<Text style={[styles.text, textStyle]}>Pick Videos</Text>
-			)}
+			{children ?? <Text style={[styles.text, textStyle]}>Pick Videos</Text>}
 		</Pressable>
 	);
 }

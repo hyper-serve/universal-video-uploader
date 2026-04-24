@@ -1,11 +1,14 @@
-import React, { useCallback, useRef, useState } from "react";
-import {
-	toFileRefs,
-	useUpload,
-} from "@hyperserve/upload";
+import type React from "react";
+import { useCallback, useRef, useState } from "react";
+import { toFileRefs, useUpload } from "@hyperserve/upload";
 import { filterFilesByAccept } from "./acceptFilter.js";
 import { UploadIcon } from "./icons.js";
 import { colors, radius } from "./theme.js";
+
+export type DropZoneRenderProps = {
+	isDragging: boolean;
+	openPicker: () => void;
+};
 
 export type DropZoneProps = {
 	accept?: string;
@@ -18,7 +21,7 @@ export type DropZoneProps = {
 	supportingText?: React.ReactNode;
 	children?:
 		| React.ReactNode
-		| ((state: { isDragging: boolean; openPicker: () => void }) => React.ReactNode);
+		| ((state: DropZoneRenderProps) => React.ReactNode);
 };
 
 export function DropZone({
@@ -55,9 +58,9 @@ export function DropZone({
 
 	const handleDragOver = useCallback(
 		(e: React.DragEvent) => {
-		e.preventDefault();
-		if (isDisabled) return;
-		setIsDragging(true);
+			e.preventDefault();
+			if (isDisabled) return;
+			setIsDragging(true);
 		},
 		[isDisabled],
 	);
@@ -102,9 +105,10 @@ export function DropZone({
 		[handleFiles],
 	);
 
-	const resolvedClassName = isDragging && activeClassName
-		? `${className ?? ""} ${activeClassName}`.trim()
-		: className;
+	const resolvedClassName =
+		isDragging && activeClassName
+			? `${className ?? ""} ${activeClassName}`.trim()
+			: className;
 
 	const resolvedStyle: React.CSSProperties = {
 		alignItems: "center",
@@ -123,11 +127,16 @@ export function DropZone({
 		transition: "border-color 0.2s ease, background-color 0.2s ease",
 		...style,
 		...(isDragging
-			? { backgroundColor: colors.dropZoneActiveBg, borderColor: colors.dropZoneActiveBorder, ...activeStyle }
+			? {
+					backgroundColor: colors.dropZoneActiveBg,
+					borderColor: colors.dropZoneActiveBorder,
+					...activeStyle,
+				}
 			: {}),
 	};
 
 	return (
+		// biome-ignore lint/a11y/useSemanticElements: div contains a file <input> so cannot be a <button>
 		<div
 			aria-disabled={isDisabled}
 			className={resolvedClassName}
@@ -150,13 +159,23 @@ export function DropZone({
 			/>
 			{typeof children === "function"
 				? children({ isDragging, openPicker })
-				: children ?? (
+				: (children ?? (
 						<>
-							<div style={{ color: colors.accent, lineHeight: 1 }}><UploadIcon /></div>
-							<div style={{ color: colors.textPrimary, fontSize: "0.9375rem", fontWeight: 600 }}>
+							<div style={{ color: colors.accent, lineHeight: 1 }}>
+								<UploadIcon />
+							</div>
+							<div
+								style={{
+									color: colors.textPrimary,
+									fontSize: "0.9375rem",
+									fontWeight: 600,
+								}}
+							>
 								{isDragging ? "Drop your videos here" : "Drop videos here or "}
 								{!isDragging && (
-									<span style={{ color: colors.accent, fontWeight: 600 }}>browse</span>
+									<span style={{ color: colors.accent, fontWeight: 600 }}>
+										browse
+									</span>
 								)}
 							</div>
 							{supportingText != null && (
@@ -165,7 +184,7 @@ export function DropZone({
 								</div>
 							)}
 						</>
-					)}
+					))}
 		</div>
 	);
 }

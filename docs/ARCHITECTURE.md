@@ -82,7 +82,7 @@ interface StatusChecker {
 }
 ```
 
-If no `statusChecker` is provided, the file stays in `"processing"` after upload — the consumer can drive status updates externally.
+If no `statusChecker` is provided, the file stays in `"processing"` after upload. Call `updateFileStatus(videoId, status, playbackUrl?)` from `useUpload()` to transition it externally — use this when your backend notifies you via webhook, SSE, or WebSocket instead of polling.
 
 If the adapter returns a `playbackUrl` in the `UploadResult`, the status checker is skipped entirely and the file transitions directly to `"ready"`.
 
@@ -198,6 +198,42 @@ type FileState = {
 ### Thumbnail Lifecycle
 
 Thumbnails are created eagerly when a file is added via `addFiles`. The blob URL is stored in `thumbnailUrisRef` (separate from React state) and written into `FileState.thumbnailUri` via a dispatch. When a file transitions to `ready`, the blob URL is revoked and `thumbnailUri` is set to `null` (the playback URL takes over). On provider unmount, all remaining blob URLs are revoked.
+
+## Utility Functions
+
+Helper functions exported from `@hyperserve/upload` for working with files.
+
+### `toFileRef` / `toFileRefs`
+
+Convert a browser `File` (or array / `FileList`) to a `WebFileRef`, or a React Native `DocumentPickerResult` (or array) to a `NativeFileRef`. These create the object URL (`uri`) used throughout the upload flow.
+
+```typescript
+import { toFileRef, toFileRefs } from "@hyperserve/upload";
+
+// Web
+const ref = toFileRef(file);           // File → WebFileRef
+const refs = toFileRefs(fileList);     // FileList | File[] → WebFileRef[]
+
+// React Native
+const ref = toFileRef(pickerResult);   // DocumentPickerResult → NativeFileRef
+```
+
+### `revokeFileRef`
+
+Revokes the object URL on a `WebFileRef` when you no longer need it. No-op on native.
+
+```typescript
+revokeFileRef(ref);
+```
+
+### `revokeThumbnail`
+
+Manually revokes a thumbnail blob URL. The `UploadProvider` handles this automatically on file transition and unmount — only call this if you're managing thumbnails outside the provider.
+
+```typescript
+import { revokeThumbnail } from "@hyperserve/upload";
+revokeThumbnail(file.thumbnailUri);
+```
 
 ## Platform Split
 

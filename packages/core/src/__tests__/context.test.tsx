@@ -60,7 +60,13 @@ function createMockAdapter(
 }
 
 function createMockStatusChecker(
-	onCheckStatus?: (invoke: (status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void) => void,
+	onCheckStatus?: (
+		invoke: (
+			status: "processing" | "ready" | "failed",
+			playbackUrl?: string,
+			statusDetail?: string,
+		) => void,
+	) => void,
 ): StatusChecker {
 	return {
 		checkStatus: vi.fn((options) => {
@@ -218,10 +224,7 @@ describe("UploadProvider + useUpload", () => {
 	});
 
 	it("handles upload failure", async () => {
-		const adapter = createMockAdapter(
-			undefined,
-			new Error("Network error"),
-		);
+		const adapter = createMockAdapter(undefined, new Error("Network error"));
 		const config = makeConfig({ adapter });
 
 		const { result } = renderHook(() => useUpload(), {
@@ -351,9 +354,7 @@ describe("UploadProvider + useUpload", () => {
 		};
 
 		const { result } = renderHook(() => useUpload(), {
-			wrapper: makeWrapper(
-				makeConfig({ adapter, maxConcurrentUploads: 2 }),
-			),
+			wrapper: makeWrapper(makeConfig({ adapter, maxConcurrentUploads: 2 })),
 		});
 
 		act(() => {
@@ -458,7 +459,11 @@ describe("UploadProvider + useUpload", () => {
 	});
 
 	it("runs statusChecker when adapter returns without playbackUrl", async () => {
-		let invokeStatusChange: (status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void;
+		let invokeStatusChange: (
+			status: "processing" | "ready" | "failed",
+			playbackUrl?: string,
+			statusDetail?: string,
+		) => void;
 		const statusChecker = createMockStatusChecker((invoke) => {
 			invokeStatusChange = invoke;
 		});
@@ -484,20 +489,26 @@ describe("UploadProvider + useUpload", () => {
 		expect(result.current.files[0].status).toBe("processing");
 
 		act(() => {
-			invokeStatusChange!("processing", undefined, "480p: pending");
+			invokeStatusChange?.("processing", undefined, "480p: pending");
 		});
 		expect(result.current.files[0].statusDetail).toBe("480p: pending");
 
 		act(() => {
-			invokeStatusChange!("ready", "https://cdn.example.com/video.mp4");
+			invokeStatusChange?.("ready", "https://cdn.example.com/video.mp4");
 		});
 		expect(result.current.files[0].status).toBe("ready");
-		expect(result.current.files[0].playbackUrl).toBe("https://cdn.example.com/video.mp4");
+		expect(result.current.files[0].playbackUrl).toBe(
+			"https://cdn.example.com/video.mp4",
+		);
 		expect(result.current.files[0].error).toBeNull();
 	});
 
 	it("transitions to failed when statusChecker reports failed", async () => {
-		let invokeStatusChange: (status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void;
+		let invokeStatusChange: (
+			status: "processing" | "ready" | "failed",
+			playbackUrl?: string,
+			statusDetail?: string,
+		) => void;
 		const statusChecker = createMockStatusChecker((invoke) => {
 			invokeStatusChange = invoke;
 		});
@@ -520,7 +531,7 @@ describe("UploadProvider + useUpload", () => {
 		});
 
 		act(() => {
-			invokeStatusChange!("failed");
+			invokeStatusChange?.("failed");
 		});
 		expect(result.current.files[0].status).toBe("failed");
 		expect(result.current.files[0].error).toBe("Processing failed");
@@ -623,7 +634,7 @@ describe("UploadProvider + useUpload", () => {
 
 		unmount();
 
-		expect(capturedSignal!.aborted).toBe(true);
+		expect(capturedSignal?.aborted).toBe(true);
 	});
 
 	it("exposes canAddMore and maxFiles from context", () => {
@@ -641,9 +652,7 @@ describe("UploadProvider + useUpload", () => {
 			videoId: "v1",
 		});
 		const { result } = renderHook(() => useUpload(), {
-			wrapper: makeWrapper(
-				makeConfig({ adapter, maxFiles: 2 }),
-			),
+			wrapper: makeWrapper(makeConfig({ adapter, maxFiles: 2 })),
 		});
 
 		expect(result.current.canAddMore).toBe(true);
@@ -702,10 +711,7 @@ describe("UploadProvider + useUpload", () => {
 	});
 
 	it("calls onUploadFailed when file transitions to failed", async () => {
-		const adapter = createMockAdapter(
-			undefined,
-			new Error("Upload failed"),
-		);
+		const adapter = createMockAdapter(undefined, new Error("Upload failed"));
 		const onUploadFailed = vi.fn();
 		const config = makeConfig({ adapter, onUploadFailed });
 
@@ -789,7 +795,10 @@ describe("UploadProvider + useUpload", () => {
 		const statusChecker = createMockStatusChecker((invoke) => {
 			invokeStatusChange = invoke;
 		});
-		const adapter = createMockAdapter({ metadata: { isPublic: true }, videoId: "v1" });
+		const adapter = createMockAdapter({
+			metadata: { isPublic: true },
+			videoId: "v1",
+		});
 		const config = makeConfig({
 			adapter,
 			statusChecker,
@@ -809,7 +818,7 @@ describe("UploadProvider + useUpload", () => {
 		});
 
 		act(() => {
-			invokeStatusChange!("failed");
+			invokeStatusChange?.("failed");
 		});
 
 		expect(result.current.files[0].status).toBe("failed");
@@ -935,7 +944,10 @@ describe("UploadProvider + useUpload", () => {
 	});
 
 	it("calls onFileReady when statusChecker transitions file to ready", async () => {
-		let invokeStatusChange: (status: "processing" | "ready" | "failed", playbackUrl?: string) => void;
+		let invokeStatusChange: (
+			status: "processing" | "ready" | "failed",
+			playbackUrl?: string,
+		) => void;
 		const statusChecker = createMockStatusChecker((invoke) => {
 			invokeStatusChange = invoke;
 		});
@@ -962,7 +974,7 @@ describe("UploadProvider + useUpload", () => {
 		expect(onFileReady).not.toHaveBeenCalled();
 
 		act(() => {
-			invokeStatusChange!("ready", "https://cdn.example.com/video.mp4");
+			invokeStatusChange?.("ready", "https://cdn.example.com/video.mp4");
 		});
 
 		expect(result.current.files[0].status).toBe("ready");
@@ -976,7 +988,11 @@ describe("UploadProvider + useUpload", () => {
 	});
 
 	it("clears statusDetail when file transitions to ready via statusChecker", async () => {
-		let invokeStatusChange: (status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void;
+		let invokeStatusChange: (
+			status: "processing" | "ready" | "failed",
+			playbackUrl?: string,
+			statusDetail?: string,
+		) => void;
 		const statusChecker = createMockStatusChecker((invoke) => {
 			invokeStatusChange = invoke;
 		});
@@ -998,18 +1014,22 @@ describe("UploadProvider + useUpload", () => {
 		});
 
 		act(() => {
-			invokeStatusChange!("processing", undefined, "480p: transcoding");
+			invokeStatusChange?.("processing", undefined, "480p: transcoding");
 		});
 		expect(result.current.files[0].statusDetail).toBe("480p: transcoding");
 
 		act(() => {
-			invokeStatusChange!("ready", "https://cdn.example.com/video.mp4");
+			invokeStatusChange?.("ready", "https://cdn.example.com/video.mp4");
 		});
 		expect(result.current.files[0].statusDetail).toBeNull();
 	});
 
 	it("clears statusDetail when file transitions to failed via statusChecker", async () => {
-		let invokeStatusChange: (status: "processing" | "ready" | "failed", playbackUrl?: string, statusDetail?: string) => void;
+		let invokeStatusChange: (
+			status: "processing" | "ready" | "failed",
+			playbackUrl?: string,
+			statusDetail?: string,
+		) => void;
 		const statusChecker = createMockStatusChecker((invoke) => {
 			invokeStatusChange = invoke;
 		});
@@ -1031,18 +1051,18 @@ describe("UploadProvider + useUpload", () => {
 		});
 
 		act(() => {
-			invokeStatusChange!("processing", undefined, "480p: transcoding");
+			invokeStatusChange?.("processing", undefined, "480p: transcoding");
 		});
 		expect(result.current.files[0].statusDetail).toBe("480p: transcoding");
 
 		act(() => {
-			invokeStatusChange!("failed");
+			invokeStatusChange?.("failed");
 		});
 		expect(result.current.files[0].statusDetail).toBeNull();
 	});
 
 	it("reports progress updates during upload", async () => {
-		const progressValues: number[] = [];
+		const _progressValues: number[] = [];
 		const adapter: UploadAdapter = {
 			upload: vi.fn(async (_file, _options, callbacks) => {
 				callbacks.onProgress(25);
@@ -1154,5 +1174,123 @@ describe("UploadProvider + useUpload", () => {
 		expect(adapter.upload).toHaveBeenCalledTimes(1);
 		expect(result.current.files).toHaveLength(1);
 		expect(result.current.files[0].status).toBe("ready");
+	});
+
+	it("updateFileStatus transitions processing file to ready with playbackUrl", async () => {
+		const adapter = createMockAdapter();
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter })),
+		});
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+		expect(result.current.files[0].status).toBe("processing");
+		act(() => {
+			result.current.updateFileStatus(
+				"video-123",
+				"ready",
+				"https://cdn.example.com/v.mp4",
+			);
+		});
+		expect(result.current.files[0].status).toBe("ready");
+		expect(result.current.files[0].playbackUrl).toBe(
+			"https://cdn.example.com/v.mp4",
+		);
+	});
+
+	it("updateFileStatus transitions processing file to failed", async () => {
+		const adapter = createMockAdapter();
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter })),
+		});
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+		expect(result.current.files[0].status).toBe("processing");
+		act(() => {
+			result.current.updateFileStatus("video-123", "failed");
+		});
+		expect(result.current.files[0].status).toBe("failed");
+		expect(result.current.files[0].error).toBe("Processing failed");
+	});
+
+	it("updateFileStatus is no-op for unknown videoId", async () => {
+		const adapter = createMockAdapter();
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter })),
+		});
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+		expect(result.current.files[0].status).toBe("processing");
+		act(() => {
+			result.current.updateFileStatus("nonexistent-id", "ready");
+		});
+		expect(result.current.files[0].status).toBe("processing");
+	});
+
+	it("updateFileStatus is no-op when file is not processing", async () => {
+		const adapter = createMockAdapter({
+			videoId: "video-123",
+			playbackUrl: "https://cdn.example.com/v.mp4",
+		});
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter })),
+		});
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+		expect(result.current.files[0].status).toBe("ready");
+		act(() => {
+			result.current.updateFileStatus("video-123", "failed");
+		});
+		expect(result.current.files[0].status).toBe("ready");
+	});
+
+	it("updateFileStatus clears statusDetail on terminal transition", async () => {
+		let invokeStatusChange:
+			| ((
+					status: "processing" | "ready" | "failed",
+					playbackUrl?: string,
+					statusDetail?: string,
+			  ) => void)
+			| undefined;
+		const statusChecker = createMockStatusChecker((invoke) => {
+			invokeStatusChange = invoke;
+		});
+		const adapter = createMockAdapter({ videoId: "video-123" });
+		const { result } = renderHook(() => useUpload(), {
+			wrapper: makeWrapper(makeConfig({ adapter, statusChecker })),
+		});
+		act(() => {
+			result.current.addFiles([makeFileRef()]);
+		});
+		await act(async () => {
+			await vi.advanceTimersByTimeAsync(0);
+		});
+		act(() => {
+			invokeStatusChange?.("processing", undefined, "480p: transcoding");
+		});
+		expect(result.current.files[0].statusDetail).toBe("480p: transcoding");
+		act(() => {
+			result.current.updateFileStatus(
+				"video-123",
+				"ready",
+				"https://cdn.example.com/v.mp4",
+			);
+		});
+		expect(result.current.files[0].statusDetail).toBeNull();
 	});
 });
