@@ -9,8 +9,8 @@ export type DocumentPickerResult = {
 
 export function toFileRef(result: DocumentPickerResult): NativeFileRef {
 	return {
-		platform: "native",
 		name: result.name,
+		platform: "native",
 		size: result.size,
 		type: result.type,
 		uri: result.uri,

@@ -1,9 +1,9 @@
-import type React from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useUpload } from "@hyperserve/upload";
-import type { StyleProp, ViewStyle, TextStyle } from "react-native";
+import type React from "react";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors, radius } from "./theme.js";
-import { type ViewMode, useViewMode } from "./ViewModeContext.js";
+import { useViewMode, type ViewMode } from "./ViewModeContext.js";
 
 export type FileListToolbarProps = {
 	left?: React.ReactNode | null;
@@ -39,7 +39,7 @@ export type ViewToggleProps = {
 function ViewToggle({ style, children }: ViewToggleProps) {
 	const { viewMode, setViewMode } = useViewMode();
 	if (children) {
-		return <>{children({ viewMode, setViewMode })}</>;
+		return <>{children({ setViewMode, viewMode })}</>;
 	}
 	return (
 		<View style={[styles.toggleGroup, style]}>
@@ -103,13 +103,9 @@ FileListToolbar.FileCount = FileCount;
 FileListToolbar.ViewToggle = ViewToggle;
 
 const styles = StyleSheet.create({
-	toolbar: {
-		alignItems: "center",
-		alignSelf: "stretch",
-		flexDirection: "row",
-		justifyContent: "space-between",
-	},
 	fileCount: { color: colors.textPrimary, fontSize: 14 },
+	toggleActive: { backgroundColor: colors.bgSubtle },
+	toggleButton: { paddingHorizontal: 10, paddingVertical: 8 },
 	toggleGroup: {
 		borderColor: colors.border,
 		borderRadius: radius.md,
@@ -117,8 +113,12 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		overflow: "hidden",
 	},
-	toggleButton: { paddingHorizontal: 10, paddingVertical: 8 },
-	toggleActive: { backgroundColor: colors.bgSubtle },
 	toggleText: { color: colors.textMuted, fontSize: 13, fontWeight: "500" },
 	toggleTextActive: { color: colors.textPrimary },
+	toolbar: {
+		alignItems: "center",
+		alignSelf: "stretch",
+		flexDirection: "row",
+		justifyContent: "space-between",
+	},
 });

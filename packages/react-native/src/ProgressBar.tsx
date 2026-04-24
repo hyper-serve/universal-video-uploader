@@ -1,6 +1,6 @@
 import type React from "react";
-import { StyleSheet, View } from "react-native";
 import type { StyleProp, ViewStyle } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { colors, radius } from "./theme.js";
 
 export type ProgressBarProps = {
@@ -22,9 +22,9 @@ export function ProgressBar({
 
 	return (
 		<View
-			accessible
 			accessibilityRole="progressbar"
 			accessibilityValue={{ max: 100, min: 0, now: progress }}
+			accessible
 			style={[styles.track, trackStyle]}
 		>
 			<View style={[styles.fill, { width: `${progress}%` }, fillStyle]} />

@@ -1,8 +1,8 @@
+import type { FileState } from "@hyperserve/upload";
 import type React from "react";
 import { useEffect, useState } from "react";
+import type { ImageStyle, StyleProp, ViewStyle } from "react-native";
 import { Image, StyleSheet, View } from "react-native";
-import type { FileState } from "@hyperserve/upload";
-import type { StyleProp, ViewStyle, ImageStyle } from "react-native";
 import { colors, radius } from "./theme.js";
 
 export type ThumbnailProps = {
@@ -74,6 +74,12 @@ export function Thumbnail({
 }
 
 const styles = StyleSheet.create({
+	filmSegment: {
+		backgroundColor: colors.iconMuted,
+		borderRadius: 2,
+		height: 32,
+		width: 10,
+	},
 	image: {
 		borderRadius: radius.md,
 		height: 100,
@@ -82,9 +88,9 @@ const styles = StyleSheet.create({
 	placeholder: {
 		alignItems: "center",
 		backgroundColor: colors.bgPlaceholder,
+		borderColor: colors.borderPlaceholder,
 		borderRadius: radius.md,
 		borderWidth: 1,
-		borderColor: colors.borderPlaceholder,
 		height: 100,
 		justifyContent: "center",
 	},
@@ -93,11 +99,5 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		gap: 6,
 		justifyContent: "center",
-	},
-	filmSegment: {
-		backgroundColor: colors.iconMuted,
-		borderRadius: 2,
-		height: 32,
-		width: 10,
 	},
 });

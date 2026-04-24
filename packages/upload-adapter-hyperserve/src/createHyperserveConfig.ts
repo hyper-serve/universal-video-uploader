@@ -5,13 +5,13 @@ import type {
 	UploadConfig,
 	ValidationResult,
 } from "@hyperserve/upload";
+import { HyperserveAdapter } from "./adapter/hyperserve.js";
+import { HyperserveStatusChecker } from "./polling/index.js";
 import type {
 	HyperserveAdapterConfig,
 	HyperserveUploadOptions,
 	VideoStatusResult,
 } from "./types.js";
-import { HyperserveAdapter } from "./adapter/hyperserve.js";
-import { HyperserveStatusChecker } from "./polling/index.js";
 
 export type HyperserveConfig = HyperserveAdapterConfig & {
 	getVideoStatus?: (videoId: string) => Promise<VideoStatusResult>;

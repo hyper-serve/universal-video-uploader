@@ -4,19 +4,19 @@ export function ListIcon() {
 	return (
 		<svg
 			aria-hidden="true"
-			width="18"
-			height="18"
-			viewBox="0 0 24 24"
 			fill="none"
+			height="18"
 			stroke="currentColor"
 			strokeWidth="2"
+			viewBox="0 0 24 24"
+			width="18"
 		>
-			<line x1="8" y1="6" x2="21" y2="6" />
-			<line x1="8" y1="12" x2="21" y2="12" />
-			<line x1="8" y1="18" x2="21" y2="18" />
-			<line x1="3" y1="6" x2="3.01" y2="6" />
-			<line x1="3" y1="12" x2="3.01" y2="12" />
-			<line x1="3" y1="18" x2="3.01" y2="18" />
+			<line x1="8" x2="21" y1="6" y2="6" />
+			<line x1="8" x2="21" y1="12" y2="12" />
+			<line x1="8" x2="21" y1="18" y2="18" />
+			<line x1="3" x2="3.01" y1="6" y2="6" />
+			<line x1="3" x2="3.01" y1="12" y2="12" />
+			<line x1="3" x2="3.01" y1="18" y2="18" />
 		</svg>
 	);
 }
@@ -25,17 +25,17 @@ export function GridIcon() {
 	return (
 		<svg
 			aria-hidden="true"
-			width="18"
-			height="18"
-			viewBox="0 0 24 24"
 			fill="none"
+			height="18"
 			stroke="currentColor"
 			strokeWidth="2"
+			viewBox="0 0 24 24"
+			width="18"
 		>
-			<rect x="3" y="3" width="7" height="7" rx="1" />
-			<rect x="14" y="3" width="7" height="7" rx="1" />
-			<rect x="3" y="14" width="7" height="7" rx="1" />
-			<rect x="14" y="14" width="7" height="7" rx="1" />
+			<rect height="7" rx="1" width="7" x="3" y="3" />
+			<rect height="7" rx="1" width="7" x="14" y="3" />
+			<rect height="7" rx="1" width="7" x="3" y="14" />
+			<rect height="7" rx="1" width="7" x="14" y="14" />
 		</svg>
 	);
 }
@@ -44,16 +44,16 @@ export function ThumbnailPlaceholderIcon() {
 	return (
 		<svg
 			aria-hidden="true"
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
 			fill="none"
+			height="24"
 			stroke={colors.iconMuted}
-			strokeWidth="2"
 			strokeLinecap="round"
 			strokeLinejoin="round"
+			strokeWidth="2"
+			viewBox="0 0 24 24"
+			width="24"
 		>
-			<rect width="18" height="18" x="3" y="3" rx="2" />
+			<rect height="18" rx="2" width="18" x="3" y="3" />
 			<path d="M7 3v18" />
 			<path d="M3 7.5h4" />
 			<path d="M3 12h18" />
@@ -154,19 +154,19 @@ export function UploadIcon() {
 	return (
 		<svg
 			aria-hidden="true"
-			width="40"
-			height="40"
-			viewBox="0 0 24 24"
 			fill="none"
+			height="40"
 			stroke="currentColor"
-			strokeWidth="2"
 			strokeLinecap="round"
 			strokeLinejoin="round"
+			strokeWidth="2"
 			style={{ display: "block" }}
+			viewBox="0 0 24 24"
+			width="40"
 		>
 			<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
 			<polyline points="17 8 12 3 7 8" />
-			<line x1="12" y1="3" x2="12" y2="15" />
+			<line x1="12" x2="12" y1="3" y2="15" />
 		</svg>
 	);
 }

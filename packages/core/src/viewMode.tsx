@@ -21,7 +21,7 @@ export function ViewModeProvider({
 }: ViewModeProviderProps) {
 	const [viewMode, setViewMode] = useState<ViewMode>(defaultMode);
 	return (
-		<ViewModeContext.Provider value={{ viewMode, setViewMode }}>
+		<ViewModeContext.Provider value={{ setViewMode, viewMode }}>
 			{children}
 		</ViewModeContext.Provider>
 	);
@@ -30,7 +30,7 @@ export function ViewModeProvider({
 export function useViewMode(): ViewModeContextValue {
 	const ctx = useContext(ViewModeContext);
 	if (!ctx) {
-		return { viewMode: "list", setViewMode: () => {} };
+		return { setViewMode: () => {}, viewMode: "list" };
 	}
 	return ctx;
 }

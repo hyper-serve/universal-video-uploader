@@ -1,5 +1,3 @@
-import type React from "react";
-import { useMemo } from "react";
 import { UploadProvider } from "@hyperserve/upload";
 import {
 	DropZone,
@@ -7,6 +5,8 @@ import {
 	FileListToolbar,
 	ViewModeProvider,
 } from "@hyperserve/upload-react";
+import type React from "react";
+import { useMemo } from "react";
 import { createMockConfig } from "./MockAdapter";
 
 function UploadUI() {
@@ -34,10 +34,10 @@ export default function DefaultDemo() {
 }
 
 const container: React.CSSProperties = {
+	background: "var(--sl-color-bg)",
 	border: "1px solid var(--sl-color-gray-5)",
 	borderRadius: 8,
 	padding: "1.5rem",
-	background: "var(--sl-color-bg)",
 };
 
 const wrap: React.CSSProperties = {

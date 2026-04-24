@@ -20,7 +20,7 @@ export async function GET(
 			(r) => r?.status === "ready" && r?.videoUrl,
 		);
 
-		return NextResponse.json({ status, playbackUrl: readyRes?.videoUrl });
+		return NextResponse.json({ playbackUrl: readyRes?.videoUrl, status });
 	} catch (err) {
 		const message = err instanceof Error ? err.message : "Internal error";
 		return NextResponse.json({ error: message }, { status: 500 });

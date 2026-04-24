@@ -15,8 +15,8 @@ export async function POST(req: Request) {
 		const result = await hyperserve.createVideo({
 			filename,
 			fileSizeBytes,
-			resolutions,
 			isPublic,
+			resolutions,
 			...(metadata && { customMetadata: metadata }),
 			...(thumbnail && {
 				thumbnailTimestampsSeconds: [thumbnail.timestampMs / 1000],
@@ -24,9 +24,9 @@ export async function POST(req: Request) {
 		});
 
 		return NextResponse.json({
-			videoId: result.id,
-			uploadUrl: result.uploadUrl,
 			contentType: result.contentType,
+			uploadUrl: result.uploadUrl,
+			videoId: result.id,
 		});
 	} catch (err) {
 		const message = err instanceof Error ? err.message : "Internal error";

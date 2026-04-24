@@ -1,11 +1,11 @@
-import type React from "react";
-import { createContext, useContext } from "react";
 import type { FileState } from "@hyperserve/upload";
 import { useUpload } from "@hyperserve/upload";
+import type React from "react";
+import { createContext, useContext } from "react";
+import { formatFileSize } from "./fileFormatters.js";
 import { CheckCircleIcon, RetryIcon, SpinnerIcon } from "./icons.js";
 import { ProgressBar } from "./ProgressBar.js";
 import { Thumbnail } from "./Thumbnail.js";
-import { formatFileSize } from "./fileFormatters.js";
 import { colors, radius } from "./theme.js";
 
 type FileItemContextValue = {
@@ -337,6 +337,7 @@ function Content({ style, className }: FileItemContentProps) {
 					style={{ flexShrink: 0, height: 72, width: 128 }}
 				/>
 				<div
+					className={className}
 					style={{
 						display: "flex",
 						flex: 1,
@@ -345,7 +346,6 @@ function Content({ style, className }: FileItemContentProps) {
 						minWidth: 0,
 						...style,
 					}}
-					className={className}
 				>
 					<FileName />
 					<Meta>
@@ -364,7 +364,7 @@ function Content({ style, className }: FileItemContentProps) {
 	}
 
 	return (
-		<div style={style} className={className}>
+		<div className={className} style={style}>
 			<Thumbnail file={file} playback />
 			<div
 				style={{

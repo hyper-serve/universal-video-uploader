@@ -63,11 +63,7 @@ describe("FilePicker (native)", () => {
 
 	it("renders custom children", () => {
 		const pickFiles = jest.fn().mockResolvedValue([]);
-		render(
-			<FilePicker pickFiles={pickFiles}>
-				<></>
-			</FilePicker>,
-		);
+		render(<FilePicker pickFiles={pickFiles}></FilePicker>);
 		expect(screen.queryByText("Pick Videos")).toBeNull();
 	});
 

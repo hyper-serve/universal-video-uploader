@@ -1,6 +1,6 @@
+import type { FileState } from "@hyperserve/upload";
 import type React from "react";
 import { useEffect, useState } from "react";
-import type { FileState } from "@hyperserve/upload";
 import { ThumbnailPlaceholderIcon } from "./icons.js";
 import { colors, radius, thumbnailShadow } from "./theme.js";
 

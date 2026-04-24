@@ -8,18 +8,17 @@ const client = new HyperserveClient({
 const PORT = 3001;
 
 const cors = {
-	"Access-Control-Allow-Origin": "*",
-	"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 	"Access-Control-Allow-Headers": "Content-Type",
+	"Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+	"Access-Control-Allow-Origin": "*",
 };
 
 Bun.serve({
-	port: PORT,
 	async fetch(req) {
 		const { pathname } = new URL(req.url);
 
 		if (req.method === "OPTIONS") {
-			return new Response(null, { status: 204, headers: cors });
+			return new Response(null, { headers: cors, status: 204 });
 		}
 
 		try {
@@ -35,8 +34,8 @@ Bun.serve({
 				const result = await client.createVideo({
 					filename,
 					fileSizeBytes,
-					resolutions,
 					isPublic,
+					resolutions,
 					...(metadata && { customMetadata: metadata }),
 					...(thumbnail && {
 						thumbnailTimestampsSeconds: [thumbnail.timestampMs / 1000],
@@ -44,9 +43,9 @@ Bun.serve({
 				});
 				return Response.json(
 					{
-						videoId: result.id,
-						uploadUrl: result.uploadUrl,
 						contentType: result.contentType,
+						uploadUrl: result.uploadUrl,
+						videoId: result.id,
 					},
 					{ headers: cors },
 				);
@@ -55,7 +54,7 @@ Bun.serve({
 			const completeMatch = pathname.match(/^\/complete-upload\/(.+)$/);
 			if (req.method === "POST" && completeMatch) {
 				await client.completeUpload(completeMatch[1]);
-				return new Response(null, { status: 204, headers: cors });
+				return new Response(null, { headers: cors, status: 204 });
 			}
 
 			const statusMatch = pathname.match(/^\/video-status\/(.+)$/);
@@ -71,17 +70,18 @@ Bun.serve({
 					(r) => r?.status === "ready" && r?.videoUrl,
 				);
 				return Response.json(
-					{ status, playbackUrl: readyRes?.videoUrl },
+					{ playbackUrl: readyRes?.videoUrl, status },
 					{ headers: cors },
 				);
 			}
 
-			return new Response("Not found", { status: 404, headers: cors });
+			return new Response("Not found", { headers: cors, status: 404 });
 		} catch (err) {
 			const message = err instanceof Error ? err.message : "Internal error";
-			return Response.json({ error: message }, { status: 500, headers: cors });
+			return Response.json({ error: message }, { headers: cors, status: 500 });
 		}
 	},
+	port: PORT,
 });
 
 console.log(`Server running at http://localhost:${PORT}`);

@@ -34,6 +34,6 @@ export class HyperserveAdapter
 
 		await this.config.completeUpload(videoId);
 
-		return { videoId, metadata: { isPublic: options.isPublic } };
+		return { metadata: { isPublic: options.isPublic }, videoId };
 	}
 }

@@ -1,5 +1,8 @@
+import type { FileState } from "@hyperserve/upload";
+import { useUpload } from "@hyperserve/upload";
 import type React from "react";
 import { createContext, useContext } from "react";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import {
 	ActivityIndicator,
 	Pressable,
@@ -7,9 +10,6 @@ import {
 	Text,
 	View,
 } from "react-native";
-import type { FileState } from "@hyperserve/upload";
-import { useUpload } from "@hyperserve/upload";
-import type { StyleProp, ViewStyle, TextStyle } from "react-native";
 import { ProgressBar } from "./ProgressBar.js";
 import { Thumbnail } from "./Thumbnail.js";
 import { colors, radius } from "./theme.js";
@@ -116,9 +116,9 @@ function RemoveButton({
 	const label = isActive ? cancelLabel : "Remove";
 	return (
 		<Pressable
+			accessibilityLabel={label}
 			onPress={() => removeFile(file.id)}
 			style={style}
-			accessibilityLabel={label}
 		>
 			{children ?? <Text style={[styles.removeText, textStyle]}>×</Text>}
 		</Pressable>
@@ -137,9 +137,9 @@ function RetryButton({ style, textStyle, children }: RetryButtonProps) {
 	if (file.status !== "failed") return null;
 	return (
 		<Pressable
+			accessibilityLabel="Retry"
 			onPress={() => retryFile(file.id)}
 			style={style}
-			accessibilityLabel="Retry"
 		>
 			{children ?? <Text style={[styles.retryText, textStyle]}>Retry</Text>}
 		</Pressable>

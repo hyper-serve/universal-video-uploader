@@ -1,5 +1,3 @@
-import type React from "react";
-import { useMemo } from "react";
 import { UploadProvider } from "@hyperserve/upload";
 import {
 	DropZone,
@@ -7,9 +5,11 @@ import {
 	FileList,
 	FileListToolbar,
 	Thumbnail,
-	ViewModeProvider,
 	useViewMode,
+	ViewModeProvider,
 } from "@hyperserve/upload-react";
+import type React from "react";
+import { useMemo } from "react";
 import { createMockConfig } from "./MockAdapter";
 
 function UploadUI() {
@@ -24,7 +24,7 @@ function UploadUI() {
 				mode={viewMode}
 			>
 				{(file) => (
-					<FileItem key={file.id} file={file} layout="column">
+					<FileItem file={file} key={file.id} layout="column">
 						<Thumbnail file={file} playback />
 						<FileItem.FileName />
 						<FileItem.Meta>
@@ -59,10 +59,10 @@ export default function ComposableDemo() {
 }
 
 const container: React.CSSProperties = {
+	background: "var(--sl-color-bg)",
 	border: "1px solid var(--sl-color-gray-5)",
 	borderRadius: 8,
 	padding: "1.5rem",
-	background: "var(--sl-color-bg)",
 };
 
 const wrap: React.CSSProperties = {

@@ -28,7 +28,7 @@ const originalResolveRequest = config.resolver.resolveRequest;
 config.resolver.resolveRequest = (context, moduleName, platform) => {
 	const match = singletonModules[moduleName];
 	if (match) {
-		return { type: "sourceFile", filePath: require.resolve(match) };
+		return { filePath: require.resolve(match), type: "sourceFile" };
 	}
 	if (originalResolveRequest) {
 		return originalResolveRequest(context, moduleName, platform);

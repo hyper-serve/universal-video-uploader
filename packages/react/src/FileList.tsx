@@ -1,9 +1,9 @@
-import type React from "react";
 import type { FileState } from "@hyperserve/upload";
 import { useUpload } from "@hyperserve/upload";
+import type React from "react";
 import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";
-import { type ViewMode, useViewMode } from "./ViewModeContext.js";
+import { useViewMode, type ViewMode } from "./ViewModeContext.js";
 
 export type FileListProps = {
 	mode?: ViewMode;
@@ -84,8 +84,8 @@ function makeDefaultRenderItem(resolvedMode: ViewMode) {
 	return function renderItem(file: FileState) {
 		return (
 			<FileItem
-				key={file.id}
 				file={file}
+				key={file.id}
 				layout={isGrid ? "column" : "row"}
 				style={isGrid ? { height: "100%", position: "relative" } : undefined}
 			>

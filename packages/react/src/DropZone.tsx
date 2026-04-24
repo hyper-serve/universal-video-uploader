@@ -1,6 +1,6 @@
+import { toFileRefs, useUpload } from "@hyperserve/upload";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
-import { toFileRefs, useUpload } from "@hyperserve/upload";
 import { filterFilesByAccept } from "./acceptFilter.js";
 import { UploadIcon } from "./icons.js";
 import { colors, radius } from "./theme.js";

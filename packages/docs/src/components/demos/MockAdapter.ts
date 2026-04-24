@@ -6,9 +6,9 @@ import type {
 	UploadResult,
 } from "@hyperserve/upload";
 import {
+	allowedTypes,
 	composeValidators,
 	maxFileSize,
-	allowedTypes,
 } from "@hyperserve/upload";
 
 type MockOptions = Record<string, never>;
@@ -87,12 +87,12 @@ const mockAdapter = new MockUploadAdapter();
 export function createMockConfig(): UploadConfig<MockOptions> {
 	return {
 		adapter: mockAdapter,
-		uploadOptions: {} as MockOptions,
+		maxConcurrentUploads: 3,
 		statusChecker: new MockStatusChecker(),
+		uploadOptions: {} as MockOptions,
 		validate: composeValidators(
 			maxFileSize(500 * 1024 * 1024),
 			allowedTypes(["video/*"]),
 		),
-		maxConcurrentUploads: 3,
 	};
 }

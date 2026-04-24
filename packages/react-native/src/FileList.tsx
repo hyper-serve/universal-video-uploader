@@ -1,11 +1,11 @@
-import type React from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
 import type { FileState } from "@hyperserve/upload";
 import { useUpload } from "@hyperserve/upload";
+import type React from "react";
 import type { StyleProp, ViewStyle } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";
-import { type ViewMode, useViewMode } from "./ViewModeContext.js";
+import { useViewMode, type ViewMode } from "./ViewModeContext.js";
 
 export type FileListProps = {
 	mode?: ViewMode;
@@ -60,8 +60,8 @@ function makeDefaultRenderItem(resolvedMode: ViewMode) {
 	return function renderItem(file: FileState): React.ReactElement {
 		return (
 			<FileItem
-				key={file.id}
 				file={file}
+				key={file.id}
 				layout={resolvedMode === "list" ? "row" : "column"}
 			>
 				<FileItem.Content />

@@ -1,22 +1,5 @@
-export { ViewModeProvider, useViewMode } from "./ViewModeContext.js";
-export type { ViewMode, ViewModeProviderProps } from "./ViewModeContext.js";
-
-export { DropZone } from "./DropZone.js";
 export type { DropZoneProps, DropZoneRenderProps } from "./DropZone.js";
-
-export {
-	CheckCircleIcon,
-	GridIcon,
-	ListIcon,
-	RetryIcon,
-	SpinnerIcon,
-	ThumbnailPlaceholderIcon,
-	UploadIcon,
-} from "./icons.js";
-
-export { formatFileSize, getFileDisplayName } from "./fileFormatters.js";
-
-export { FileItem } from "./FileItem.js";
+export { DropZone } from "./DropZone.js";
 export type {
 	ErrorMessageProps,
 	FileItemActionsProps,
@@ -31,25 +14,33 @@ export type {
 	StatusIconProps,
 	UploadProgressProps,
 } from "./FileItem.js";
-
-export { FileList } from "./FileList.js";
+export { FileItem } from "./FileItem.js";
 export type { FileListProps } from "./FileList.js";
-
-export { FileListToolbar } from "./FileListToolbar.js";
+export { FileList } from "./FileList.js";
 export type {
 	FileCountProps,
 	FileListToolbarProps,
 	ViewToggleProps,
 } from "./FileListToolbar.js";
-
-export { ProgressBar } from "./ProgressBar.js";
+export { FileListToolbar } from "./FileListToolbar.js";
+export { formatFileSize, getFileDisplayName } from "./fileFormatters.js";
+export {
+	CheckCircleIcon,
+	GridIcon,
+	ListIcon,
+	RetryIcon,
+	SpinnerIcon,
+	ThumbnailPlaceholderIcon,
+	UploadIcon,
+} from "./icons.js";
 export type { ProgressBarProps } from "./ProgressBar.js";
-
-export { StatusBadge } from "./StatusBadge.js";
+export { ProgressBar } from "./ProgressBar.js";
 export type {
 	StatusBadgeProps,
 	StatusConfigEntry,
 } from "./StatusBadge.js";
-
-export { Thumbnail } from "./Thumbnail.js";
+export { StatusBadge } from "./StatusBadge.js";
 export type { ThumbnailProps } from "./Thumbnail.js";
+export { Thumbnail } from "./Thumbnail.js";
+export type { ViewMode, ViewModeProviderProps } from "./ViewModeContext.js";
+export { useViewMode, ViewModeProvider } from "./ViewModeContext.js";

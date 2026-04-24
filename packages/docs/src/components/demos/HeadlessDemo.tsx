@@ -1,6 +1,6 @@
+import { toFileRefs, UploadProvider, useUpload } from "@hyperserve/upload";
 import type React from "react";
 import { useMemo, useRef, useState } from "react";
-import { UploadProvider, toFileRefs, useUpload } from "@hyperserve/upload";
 import { createMockConfig } from "./MockAdapter";
 
 function formatSize(bytes: number): string {
@@ -127,10 +127,10 @@ export default function HeadlessDemo() {
 }
 
 const container: React.CSSProperties = {
+	background: "var(--sl-color-bg)",
 	border: "1px solid var(--sl-color-gray-5)",
 	borderRadius: 8,
 	padding: "1.5rem",
-	background: "var(--sl-color-bg)",
 };
 
 const layout: React.CSSProperties = {
@@ -199,10 +199,10 @@ const row: React.CSSProperties = {
 };
 
 const rowMain: React.CSSProperties = {
-	display: "flex",
-	justifyContent: "space-between",
 	alignItems: "baseline",
+	display: "flex",
 	gap: "0.5rem",
+	justifyContent: "space-between",
 };
 
 const fileName: React.CSSProperties = {

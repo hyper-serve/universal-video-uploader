@@ -1,9 +1,9 @@
+import type { FileRef } from "@hyperserve/upload";
+import { useUpload } from "@hyperserve/upload";
 import type React from "react";
 import { useCallback } from "react";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Pressable, StyleSheet, Text } from "react-native";
-import { useUpload } from "@hyperserve/upload";
-import type { FileRef } from "@hyperserve/upload";
-import type { StyleProp, ViewStyle, TextStyle } from "react-native";
 import { colors, radius } from "./theme.js";
 
 export type FilePickerProps = {

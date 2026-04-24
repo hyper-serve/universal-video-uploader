@@ -2,8 +2,8 @@ import type { FileRef, WebFileRef } from "../types.js";
 
 export function toFileRef(file: File): WebFileRef {
 	return {
-		platform: "web",
 		name: file.name,
+		platform: "web",
 		raw: file,
 		size: file.size,
 		type: file.type,
