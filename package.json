@@ -19,7 +19,8 @@
 		"start:react-native": "bun run --filter '@hyperserve/upload-example-react-native' start",
 		"docs:dev": "bun run --filter '@hyperserve/upload-docs' dev",
 		"docs:build": "bun run --filter '@hyperserve/upload-docs' build",
-		"docs:preview": "bun run --filter '@hyperserve/upload-docs' preview"
+		"docs:preview": "bun run --filter '@hyperserve/upload-docs' preview",
+		"docs:deploy": "fly deploy --config packages/docs/fly.toml"
 	},
 	"devDependencies": {
 		"@babel/runtime": "^7.28.6",

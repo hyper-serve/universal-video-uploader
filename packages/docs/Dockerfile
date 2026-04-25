@@ -1,31 +1,35 @@
-FROM node:22-slim AS build
+FROM oven/bun:1.3.10 AS build
 
 WORKDIR /app
 
-COPY package.json ./
-COPY packages/universal-video-uploader/package.json packages/universal-video-uploader/
-COPY packages/universal-video-uploader-react/package.json packages/universal-video-uploader-react/
-COPY packages/universal-video-uploader-native/package.json packages/universal-video-uploader-native/
+COPY package.json bun.lock bunfig.toml ./
+COPY packages/core/package.json packages/core/
+COPY packages/react/package.json packages/react/
+COPY packages/react-native/package.json packages/react-native/
+COPY packages/upload-adapter-hyperserve/package.json packages/upload-adapter-hyperserve/
 COPY packages/docs/package.json packages/docs/
+COPY examples/web/package.json examples/web/
+COPY examples/react-native/package.json examples/react-native/
 
-RUN npm install --workspaces --include-workspace-root
+RUN bun install --frozen-lockfile
 
-COPY packages/universal-video-uploader/ packages/universal-video-uploader/
-COPY packages/universal-video-uploader-react/ packages/universal-video-uploader-react/
-COPY packages/universal-video-uploader-native/ packages/universal-video-uploader-native/
+COPY tsconfig.base.json ./
+COPY packages/core/ packages/core/
+COPY packages/react/ packages/react/
 COPY packages/docs/ packages/docs/
-COPY tsconfig.json tsconfig.base.json ./
 
-RUN npm run build --workspace=packages/universal-video-uploader && \
-    npm run build --workspace=packages/universal-video-uploader-react && \
-    npm run build --workspace=packages/docs
+RUN bun run --filter '@hyperserve/upload' build && \
+    bun run --filter '@hyperserve/upload-react' build && \
+    bun run --filter '@hyperserve/upload-docs' build
 
-FROM node:22-slim
+COPY packages/docs/nginx.conf /app/packages/docs/
 
-RUN npm install -g serve@14
+FROM nginx:alpine as serve
 
-COPY --from=build /app/packages/docs/dist /srv
+WORKDIR /app
 
+COPY --from=build /app/packages/docs/dist /usr/share/nginx/html
+COPY --from=build /app/packages/docs/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 8080
 
-CMD ["serve", "/srv", "-l", "8080", "-s"]
+CMD ["nginx", "-g", "daemon off;"]
