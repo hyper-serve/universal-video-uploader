@@ -34,8 +34,8 @@ export default function DefaultDemo() {
 }
 
 const container: React.CSSProperties = {
-	background: "var(--sl-color-bg)",
-	border: "1px solid var(--sl-color-gray-5)",
+	background: "#fff",
+	border: "1px solid #e2e8f0",
 	borderRadius: 8,
 	padding: "1.5rem",
 };
