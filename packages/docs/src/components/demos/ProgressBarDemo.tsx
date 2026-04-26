@@ -5,6 +5,7 @@ const values = [0, 33, 67, 100];
 export default function ProgressBarDemo() {
 	return (
 		<div
+			className="not-content"
 			style={{
 				background: "#fff",
 				border: "1px solid #e2e8f0",

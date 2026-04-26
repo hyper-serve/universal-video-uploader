@@ -40,6 +40,7 @@ const label: React.CSSProperties = {
 export default function ThumbnailDemo() {
 	return (
 		<div
+			className="not-content"
 			style={{
 				background: "#fff",
 				border: "1px solid #e2e8f0",

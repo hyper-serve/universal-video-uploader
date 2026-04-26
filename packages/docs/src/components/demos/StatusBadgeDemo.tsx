@@ -13,6 +13,7 @@ const statuses: FileStatus[] = [
 export default function StatusBadgeDemo() {
 	return (
 		<div
+			className="not-content"
 			style={{
 				alignItems: "center",
 				background: "#fff",

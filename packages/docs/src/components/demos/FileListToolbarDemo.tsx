@@ -7,6 +7,7 @@ const mockFiles = [uploadingFile, processingFile, failedFile];
 export default function FileListToolbarDemo() {
 	return (
 		<div
+			className="not-content"
 			style={{
 				background: "#fff",
 				border: "1px solid #e2e8f0",

@@ -37,6 +37,7 @@ export default function FileItemDemo() {
 	return (
 		<UploadProvider config={config}>
 			<div
+				className="not-content"
 				style={{
 					background: "#fff",
 					border: "1px solid #e2e8f0",
