@@ -1,4 +1,12 @@
 import type React from "react";
+import { DropZone, FileList, FileListToolbar } from "@hyperserve/upload-react";
+import { MockFilesProvider } from "./demos/MockFilesProvider";
+import { mockFile, mockRef } from "./demos/mockFileState";
+
+const heroFiles = [
+	mockFile({ id: "hero-1", progress: 65, ref: { ...mockRef, name: "intro.mp4" }, status: "uploading" }),
+	mockFile({ id: "hero-2", ref: { ...mockRef, name: "demo.mov" }, status: "ready" }),
+];
 
 export default function HeroSplit() {
 	return (
@@ -71,33 +79,13 @@ export default function HeroSplit() {
 				</div>
 				<div style={previewPane}>
 					<p style={previewPaneLabel}>What you get</p>
-					<div style={dropZoneMock}>
-						<div style={arrow}>⬆</div>
-						<p style={dz1}>Drop video files here</p>
-						<p style={dz2}>MP4, WebM, MOV — up to 500 MB</p>
-					</div>
-					<div style={fileListMock}>
-						<div style={fileRow}>
-							<div style={thumbnail} />
-							<div style={fileData}>
-								<p style={fileName}>intro.mp4</p>
-								<div style={track}>
-									<div style={{ ...bar, width: "65%" }} />
-								</div>
-							</div>
-							<span style={{ ...pill, ...pillUploading }}>65%</span>
+					<MockFilesProvider files={heroFiles}>
+						<div style={previewStack}>
+							<DropZone />
+							<FileListToolbar right={<FileListToolbar.ViewToggle />} />
+							<FileList />
 						</div>
-						<div style={fileRow}>
-							<div style={thumbnail} />
-							<div style={fileData}>
-								<p style={fileName}>demo.mov</p>
-								<div style={track}>
-									<div style={{ ...bar, width: "100%", background: "#22c55e" }} />
-								</div>
-							</div>
-							<span style={{ ...pill, ...pillDone }}>Done ✓</span>
-						</div>
-					</div>
+					</MockFilesProvider>
 				</div>
 			</div>
 		</div>
@@ -171,6 +159,14 @@ const punct: React.CSSProperties = { color: "#94a3b8" };
 const previewPane: React.CSSProperties = {
 	background: "#f8fafc",
 	padding: "1.25rem 1.5rem",
+	pointerEvents: "none",
+	userSelect: "none",
+};
+
+const previewStack: React.CSSProperties = {
+	display: "flex",
+	flexDirection: "column",
+	gap: "0.75rem",
 };
 
 const previewPaneLabel: React.CSSProperties = {
@@ -182,93 +178,3 @@ const previewPaneLabel: React.CSSProperties = {
 	textTransform: "uppercase",
 };
 
-const dropZoneMock: React.CSSProperties = {
-	border: "2px dashed #cbd5e1",
-	borderRadius: 6,
-	color: "#64748b",
-	marginBottom: "0.6rem",
-	padding: "1rem",
-	textAlign: "center",
-};
-
-const arrow: React.CSSProperties = {
-	fontSize: "1.25rem",
-	marginBottom: "0.2rem",
-};
-
-const dz1: React.CSSProperties = {
-	color: "#475569",
-	fontSize: "0.78rem",
-	fontWeight: 600,
-	margin: "0 0 0.15rem",
-};
-
-const dz2: React.CSSProperties = {
-	color: "#94a3b8",
-	fontSize: "0.7rem",
-	margin: 0,
-};
-
-const fileListMock: React.CSSProperties = {
-	display: "flex",
-	flexDirection: "column",
-	gap: "0.4rem",
-};
-
-const fileRow: React.CSSProperties = {
-	alignItems: "center",
-	background: "#fff",
-	border: "1px solid #e2e8f0",
-	borderRadius: 5,
-	display: "flex",
-	gap: "0.6rem",
-	padding: "0.5rem 0.6rem",
-};
-
-const thumbnail: React.CSSProperties = {
-	background: "#f1f5f9",
-	borderRadius: 3,
-	flexShrink: 0,
-	height: 30,
-	width: 30,
-};
-
-const fileData: React.CSSProperties = {
-	flex: 1,
-};
-
-const fileName: React.CSSProperties = {
-	color: "#1e293b",
-	fontSize: "0.72rem",
-	fontWeight: 600,
-	margin: "0 0 3px",
-};
-
-const track: React.CSSProperties = {
-	background: "#e2e8f0",
-	borderRadius: 2,
-	height: 3,
-};
-
-const bar: React.CSSProperties = {
-	background: "#6366f1",
-	borderRadius: 2,
-	height: "100%",
-};
-
-const pill: React.CSSProperties = {
-	borderRadius: 99,
-	fontSize: "0.65rem",
-	fontWeight: 600,
-	padding: "1px 6px",
-};
-
-const pillUploading: React.CSSProperties = {
-	background: "#eef2ff",
-	color: "#6366f1",
-};
-
-const pillDone: React.CSSProperties = {
-	background: "#f0fdf4",
-	color: "#16a34a",
-};
