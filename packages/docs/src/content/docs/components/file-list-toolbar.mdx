@@ -3,6 +3,12 @@ title: FileListToolbar
 description: Toolbar with configurable slots for file count and view toggle.
 ---
 
+import FileListToolbarDemo from "../../../components/demos/FileListToolbarDemo";
+
+FileListToolbar is a two-slot bar (left and right) for showing file count and a list/grid view toggle. Both slots are fully replaceable — pass `null` to hide a slot or a custom `ReactNode` to override the default sub-component.
+
+<FileListToolbarDemo client:load />
+
 ## Usage
 
 ```tsx
