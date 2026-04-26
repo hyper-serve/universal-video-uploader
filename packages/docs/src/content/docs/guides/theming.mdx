@@ -3,6 +3,12 @@ title: Theming
 description: Customize colors, spacing, and status appearance using the shared theme system.
 ---
 
+import ThemedDemo from "../../../components/demos/ThemedDemo";
+
+All components accept `style`, `className`, and sub-component style props — enough to build a completely custom look without replacing anything. The demo below uses a dark slate theme applied entirely through props.
+
+<ThemedDemo client:load />
+
 ## Theme tokens
 
 The core package exports design tokens consumed by both UI packages:
@@ -46,19 +52,32 @@ Components like `StatusBadge` accept per-status overrides:
 
 ## Styling components
 
-All UI components accept `style` and `className` props. For deeper customization, use the render function / children pattern:
+All UI components accept `style` and `className` props. `FileItem` sub-components each accept their own `style`/`className` as well — so you can restyle individual elements without rebuilding the tree:
 
 ```tsx
 <DropZone
-  style={{ borderColor: "#e2e8f0", borderRadius: 12 }}
-  activeStyle={{ borderColor: "#3b82f6", background: "#eff6ff" }}
-/>
-
-<FileItem file={file}>
-  {(file) => (
-    <div className="my-custom-file-row">
-      {/* fully custom layout */}
+  style={{ background: "#1e293b", border: "1px dashed #334155" }}
+  activeStyle={{ background: "#1e1b4b", borderColor: "#818cf8" }}
+>
+  {({ isDragging, openPicker }) => (
+    <div>
+      <span style={{ color: "#94a3b8" }}>
+        {isDragging ? "Release to add" : "Drag files here"}
+      </span>
+      <button onClick={openPicker} style={{ color: "#818cf8" }}>browse</button>
     </div>
   )}
+</DropZone>
+
+<FileItem file={file} style={{ background: "#1e293b", border: "1px solid #334155" }}>
+  <FileItem.FileName style={{ color: "#f1f5f9" }} />
+  <FileItem.FileSize style={{ color: "#64748b" }} />
+  <FileItem.StatusIcon style={{ color: "#818cf8" }} />
+  <FileItem.UploadProgress
+    fillStyle={{ background: "linear-gradient(90deg, #818cf8, #a78bfa)" }}
+  />
+  <FileItem.ErrorMessage style={{ color: "#f87171" }} />
 </FileItem>
 ```
+
+For complete layout control on individual cards, see [Composable Layout](/guides/composable-layout/).

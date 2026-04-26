@@ -1,0 +1,63 @@
+---
+title: ViewModeProvider
+description: Context provider for list/grid view mode state used by FileList and FileListToolbar.
+---
+
+`ViewModeProvider` holds the current view mode (`"list"` or `"grid"`) and makes it available to `FileList` and `FileListToolbar.ViewToggle`. Wrap your upload UI in it when you want view switching — it's optional if you're using `FileList` in a fixed mode.
+
+## Usage
+
+```tsx
+import { ViewModeProvider } from "@hyperserve/upload-react";
+import { UploadProvider } from "@hyperserve/upload";
+
+function App() {
+  return (
+    <UploadProvider config={config}>
+      <ViewModeProvider>
+        <DropZone />
+        <FileListToolbar right={<FileListToolbar.ViewToggle />} />
+        <FileList />
+      </ViewModeProvider>
+    </UploadProvider>
+  );
+}
+```
+
+`ViewModeProvider` must be a descendant of `UploadProvider`. On web, it also wraps its children in a `flex column` layout with a `1rem` gap — useful for the standard vertical stack layout.
+
+## Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `ReactNode` | **required** | — |
+| `defaultMode` | `"list" \| "grid"` | `"list"` | Initial view mode |
+| `style` | `CSSProperties` | — | Styles for the layout wrapper (web only) |
+| `className` | `string` | — | Class for the layout wrapper (web only) |
+
+## useViewMode
+
+Access and update view mode from any component inside a `ViewModeProvider`:
+
+```tsx
+import { useViewMode } from "@hyperserve/upload-react";
+
+function MyViewToggle() {
+  const { viewMode, setViewMode } = useViewMode();
+  return (
+    <button onClick={() => setViewMode(viewMode === "list" ? "grid" : "list")}>
+      {viewMode === "list" ? "Switch to grid" : "Switch to list"}
+    </button>
+  );
+}
+```
+
+`useViewMode` returns `{ viewMode: "list", setViewMode: () => {} }` as a safe fallback outside a provider, so components using it don't throw.
+
+## React Native
+
+On React Native, `ViewModeProvider` is a plain context provider with no layout wrapper. Import from `@hyperserve/upload-react-native` or directly from `@hyperserve/upload`.
+
+```tsx
+import { ViewModeProvider } from "@hyperserve/upload-react-native";
+```

@@ -1,0 +1,80 @@
+---
+title: Composable Layout
+description: Build a custom card grid with thumbnail previews using FileList's render function and FileItem sub-components.
+---
+
+import ComposableDemo from "../../../components/demos/ComposableDemo";
+
+The default `FileList` renders a compact row per file. Passing a render function as `children` gives you full control over each card's layout — including where the thumbnail goes, how sub-components are arranged, and what the grid looks like.
+
+<ComposableDemo client:load />
+
+## How it works
+
+Pass a function to `FileList.children`. It receives each `FileState` and returns a `FileItem`:
+
+```tsx
+import {
+  DropZone,
+  FileItem,
+  FileList,
+  Thumbnail,
+  ViewModeProvider,
+} from "@hyperserve/upload-react";
+import { UploadProvider } from "@hyperserve/upload";
+
+function App() {
+  return (
+    <UploadProvider config={config}>
+      <ViewModeProvider defaultMode="grid">
+        <DropZone />
+        <FileList>
+          {(file) => (
+            <FileItem file={file} key={file.id} layout="column">
+              <Thumbnail file={file} playback />
+              <FileItem.FileName />
+              <FileItem.Meta>
+                <FileItem.FileSize />
+                <FileItem.StatusIcon />
+              </FileItem.Meta>
+              <FileItem.UploadProgress />
+              <FileItem.ErrorMessage />
+              <FileItem.Actions>
+                <FileItem.RemoveButton />
+                <FileItem.RetryButton />
+              </FileItem.Actions>
+            </FileItem>
+          )}
+        </FileList>
+      </ViewModeProvider>
+    </UploadProvider>
+  );
+}
+```
+
+`FileList` reads the view mode from `ViewModeProvider` context and switches between list and grid CSS layout automatically. Each card is a `FileItem` — a compound component whose named sub-components (`FileName`, `Meta`, `UploadProgress`, etc.) read their state from the parent `FileItem` context, so you never pass `file` down manually.
+
+## Customizing the grid
+
+Control the grid column sizing with the `columns` prop:
+
+```tsx
+<FileList columns="repeat(2, 1fr)">
+  {(file) => <FileItem file={file} key={file.id} layout="column">...</FileItem>}
+</FileList>
+```
+
+## What each sub-component does
+
+| Sub-component | When it renders |
+|---------------|-----------------|
+| `Thumbnail` | Thumbnail image while uploading; `<video>` when `playback` is set and file is ready |
+| `FileItem.FileName` | Always |
+| `FileItem.FileSize` | Always |
+| `FileItem.StatusIcon` | Spinner during `processing`, check when `ready` |
+| `FileItem.UploadProgress` | Only during `uploading` |
+| `FileItem.ErrorMessage` | Only when `file.error` is set |
+| `FileItem.RemoveButton` | Hidden during `processing` and `ready` |
+| `FileItem.RetryButton` | Only when `failed` |
+
+See the [FileItem](/components/file-item/) and [FileList](/components/file-list/) reference pages for the full prop API.

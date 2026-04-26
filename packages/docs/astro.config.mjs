@@ -21,18 +21,19 @@ export default defineConfig({
 				},
 				{
 					items: [
-						{ label: "Upload Provider", slug: "core-concepts/upload-provider" },
-						{ label: "Adapters", slug: "core-concepts/adapters" },
 						{
 							label: "File State Machine",
 							slug: "core-concepts/file-state-machine",
 						},
 						{ label: "Validation", slug: "core-concepts/validation" },
+						{ label: "Adapters", slug: "core-concepts/adapters" },
+						{ label: "Upload Provider", slug: "core-concepts/upload-provider" },
 					],
 					label: "Core Concepts",
 				},
 				{
 					items: [
+						{ label: "ViewModeProvider", slug: "components/view-mode-provider" },
 						{ label: "DropZone", slug: "components/drop-zone" },
 						{ label: "FileList", slug: "components/file-list" },
 						{ label: "FileItem", slug: "components/file-item" },
@@ -45,10 +46,11 @@ export default defineConfig({
 				},
 				{
 					items: [
-						{ label: "Headless Usage", slug: "guides/headless" },
 						{ label: "Custom Backend", slug: "guides/custom-backend" },
 						{ label: "React Native", slug: "guides/react-native" },
+						{ label: "Composable Layout", slug: "guides/composable-layout" },
 						{ label: "Theming", slug: "guides/theming" },
+						{ label: "Headless Usage", slug: "guides/headless" },
 					],
 					label: "Guides",
 				},

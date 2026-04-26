@@ -1,52 +1,101 @@
 ---
 title: Custom Backend
-description: Implement your own adapter for Mux, Bunny, api.video, or any video service.
+description: Implement your own adapter to upload to any video backend.
 ---
+
+## Overview
+
+An adapter is a class that handles uploading a file to your backend. You implement the `UploadAdapter` interface, write the upload logic, and wire it into an `UploadConfig`. The library handles everything else — queueing, concurrency, retries, and UI state.
 
 ## Implementing an adapter
 
-Create a class that implements `UploadAdapter<YourOptions>`:
+Create a class that implements `UploadAdapter<YourOptions>`. The generic type parameter lets you define whatever options your backend needs.
 
 ```typescript
-import type { UploadAdapter, FileRef, UploadResult } from "@hyperserve/upload";
+import type {
+  FileRef,
+  UploadAdapter,
+  UploadResult,
+  WebFileRef,
+} from "@hyperserve/upload";
 
-type MuxOptions = {
-  playbackPolicy: "public" | "signed";
+type MyUploadOptions = {
+  folderId?: string;
 };
 
-class MuxAdapter implements UploadAdapter<MuxOptions> {
-  constructor(private tokenEndpoint: string) {}
+class MyAdapter implements UploadAdapter<MyUploadOptions> {
+  constructor(private uploadEndpoint: string) {}
 
   async upload(
     file: FileRef,
-    options: MuxOptions,
+    options: MyUploadOptions,
     callbacks: { onProgress: (pct: number) => void },
     signal: AbortSignal,
   ): Promise<UploadResult> {
-    // 1. Get an upload URL from your backend
-    const { uploadUrl, videoId } = await fetch(this.tokenEndpoint, {
+    // 1. Ask your backend for a pre-signed upload URL
+    const { uploadUrl, videoId } = await fetch(this.uploadEndpoint, {
       method: "POST",
-      body: JSON.stringify({ playbackPolicy: options.playbackPolicy }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: file.name,
+        size: file.size,
+        folderId: options.folderId,
+      }),
       signal,
     }).then((r) => r.json());
 
-    // 2. Upload the file with progress tracking
-    await uploadWithProgress(uploadUrl, file, callbacks, signal);
+    // 2. Upload the file directly to storage with progress tracking
+    await uploadWithProgress(
+      uploadUrl,
+      (file as WebFileRef).raw,
+      callbacks.onProgress,
+      signal,
+    );
 
-    // 3. Return the result
+    // 3. Return the video ID — the library records it on the file state
     return { videoId };
   }
 }
+
+function uploadWithProgress(
+  url: string,
+  file: File,
+  onProgress: (pct: number) => void,
+  signal: AbortSignal,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        onProgress(Math.round((e.loaded / e.total) * 100));
+      }
+    };
+    xhr.onload = () =>
+      xhr.status < 400
+        ? resolve()
+        : reject(new Error(`Upload failed: ${xhr.status}`));
+    xhr.onerror = () => reject(new Error("Upload failed"));
+    signal.addEventListener("abort", () => xhr.abort());
+    xhr.open("PUT", url);
+    xhr.send(file);
+  });
+}
+```
+
+If your backend returns a `playbackUrl` in `UploadResult`, the file transitions directly to `"ready"` — no status checker needed.
+
+```typescript
+return { videoId, playbackUrl };
 ```
 
 ## Adding a status checker
 
-If your backend needs time to process after upload, implement `StatusChecker`:
+If your backend needs time to process after upload (transcoding, thumbnail generation, etc.), implement `StatusChecker`. The library calls it after each successful upload.
 
 ```typescript
 import type { StatusChecker } from "@hyperserve/upload";
 
-class MuxStatusChecker implements StatusChecker {
+class MyStatusChecker implements StatusChecker {
   constructor(private statusEndpoint: string) {}
 
   checkStatus({ uploadResult, onStatusChange, signal }) {
@@ -61,10 +110,12 @@ class MuxStatusChecker implements StatusChecker {
           onStatusChange("ready", res.playbackUrl);
           return;
         }
-        if (res.status === "errored") {
+        if (res.status === "failed") {
           onStatusChange("failed");
           return;
         }
+
+        // Still processing — pass along any sub-status your backend provides
         onStatusChange("processing", undefined, res.statusDetail);
         await new Promise((r) => setTimeout(r, 3000));
       }
@@ -74,21 +125,38 @@ class MuxStatusChecker implements StatusChecker {
 }
 ```
 
+`statusDetail` is optional — surface it when your backend provides it (e.g. `"Transcoding 1080p"`). The library exposes it as `file.statusDetail` during processing.
+
 ## Wiring it together
 
 ```typescript
 import type { UploadConfig } from "@hyperserve/upload";
 
-const config: UploadConfig<MuxOptions> = {
-  adapter: new MuxAdapter("/api/mux-upload-url"),
-  uploadOptions: { playbackPolicy: "public" },
-  statusChecker: new MuxStatusChecker("/api/mux-status"),
+const config: UploadConfig<MyUploadOptions> = {
+  adapter: new MyAdapter("/api/upload-url"),
+  uploadOptions: { folderId: "my-folder" },
+  statusChecker: new MyStatusChecker("/api/video-status"),
   maxConcurrentUploads: 2,
+  onFileReady: (file) => {
+    console.log("Ready:", file.videoId, file.playbackUrl);
+  },
 };
 ```
 
-The generic parameter on `UploadConfig<MuxOptions>` ensures type safety — `uploadOptions` must match the adapter's expected type.
+The generic on `UploadConfig<MyUploadOptions>` ensures `uploadOptions` is type-checked against your adapter.
 
-## Skipping the status checker
+## Driving status from a webhook or SSE
 
-If your adapter returns a `playbackUrl` in `UploadResult`, the status checker is skipped entirely and the file transitions directly to `"ready"`. This is useful for backends that return the playback URL immediately after upload.
+If you prefer to push status updates rather than poll, skip the `StatusChecker` entirely and call `updateFileStatus` from `useUpload()` when your server sends an event.
+
+```tsx
+const { updateFileStatus } = useUpload();
+
+// Inside a WebSocket or SSE message handler
+socket.onmessage = (event) => {
+  const { videoId, status, playbackUrl } = JSON.parse(event.data);
+  updateFileStatus(videoId, status, playbackUrl);
+};
+```
+
+Without a `StatusChecker`, files stay in `"processing"` after upload until `updateFileStatus` is called.
