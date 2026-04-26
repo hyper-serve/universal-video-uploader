@@ -72,7 +72,8 @@ function ViewToggle({ style, className, children }: ViewToggleProps) {
 					cursor: "pointer",
 					display: "flex",
 					justifyContent: "center",
-					padding: "0.5rem 0.65rem",
+					lineHeight: 0,
+					padding: "0.375rem 0.5rem",
 				}}
 				type="button"
 			>
@@ -89,7 +90,8 @@ function ViewToggle({ style, className, children }: ViewToggleProps) {
 					cursor: "pointer",
 					display: "flex",
 					justifyContent: "center",
-					padding: "0.5rem 0.65rem",
+					lineHeight: 0,
+					padding: "0.375rem 0.5rem",
 				}}
 				type="button"
 			>

@@ -1,11 +1,6 @@
 import { FileListToolbar } from "@hyperserve/upload-react";
-import type React from "react";
-import {
-	failedFile,
-	processingFile,
-	uploadingFile,
-} from "./mockFileState";
 import { MockFilesProvider } from "./MockFilesProvider";
+import { failedFile, processingFile, uploadingFile } from "./mockFileState";
 
 const mockFiles = [uploadingFile, processingFile, failedFile];
 

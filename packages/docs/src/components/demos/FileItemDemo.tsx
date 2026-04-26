@@ -1,6 +1,5 @@
 import { UploadProvider } from "@hyperserve/upload";
 import { FileItem } from "@hyperserve/upload-react";
-import type React from "react";
 import { useMemo } from "react";
 import { createMockConfig } from "./MockAdapter";
 import { mockFile, mockRef } from "./mockFileState";
@@ -8,27 +7,27 @@ import { mockFile, mockRef } from "./mockFileState";
 const files = [
 	mockFile({
 		id: "fi-1",
-		status: "uploading",
 		progress: 55,
 		ref: { ...mockRef, name: "vacation-2024.mp4" },
+		status: "uploading",
 	}),
 	mockFile({
 		id: "fi-2",
+		ref: { ...mockRef, name: "interview-raw.mp4" },
 		status: "processing",
 		statusDetail: "Transcoding 60%",
-		ref: { ...mockRef, name: "interview-raw.mp4" },
 	}),
 	mockFile({
 		id: "fi-3",
-		status: "ready",
 		playbackUrl: "https://example.com/video.mp4",
 		ref: { ...mockRef, name: "product-demo.mp4" },
+		status: "ready",
 	}),
 	mockFile({
-		id: "fi-4",
-		status: "failed",
 		error: "Upload failed. Check your connection.",
+		id: "fi-4",
 		ref: { ...mockRef, name: "conference-talk.mp4" },
+		status: "failed",
 	}),
 ];
 
@@ -49,7 +48,7 @@ export default function FileItemDemo() {
 				}}
 			>
 				{files.map((file) => (
-					<FileItem key={file.id} file={file} layout="row">
+					<FileItem file={file} key={file.id} layout="row">
 						<FileItem.Content />
 					</FileItem>
 				))}

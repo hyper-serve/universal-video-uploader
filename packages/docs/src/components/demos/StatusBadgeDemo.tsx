@@ -1,5 +1,5 @@
-import { StatusBadge } from "@hyperserve/upload-react";
 import type { FileStatus } from "@hyperserve/upload";
+import { StatusBadge } from "@hyperserve/upload-react";
 
 const statuses: FileStatus[] = [
 	"selected",

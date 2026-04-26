@@ -1,8 +1,8 @@
 import {
-	UploadContext,
-	ViewModeProvider,
 	type FileState,
+	UploadContext,
 	type UploadContextValue,
+	ViewModeProvider,
 } from "@hyperserve/upload";
 import type React from "react";
 import { useMemo } from "react";
@@ -20,20 +20,20 @@ export function MockFilesProvider({
 }: MockFilesProviderProps) {
 	const value: UploadContextValue = useMemo(
 		() => ({
-			files,
 			addFiles: () => {},
-			removeFile: () => {},
-			retryFile: () => {},
-			updateFileStatus: () => {},
-			canAddMore: true,
-			isUploading: files.some((f) => f.status === "uploading"),
-			hasErrors: files.some((f) => f.status === "failed"),
 			allReady: files.length > 0 && files.every((f) => f.status === "ready"),
 			allSettled:
 				files.length > 0 &&
 				files.every((f) => f.status === "ready" || f.status === "failed"),
-			readyCount: files.filter((f) => f.status === "ready").length,
+			canAddMore: true,
 			failedCount: files.filter((f) => f.status === "failed").length,
+			files,
+			hasErrors: files.some((f) => f.status === "failed"),
+			isUploading: files.some((f) => f.status === "uploading"),
+			readyCount: files.filter((f) => f.status === "ready").length,
+			removeFile: () => {},
+			retryFile: () => {},
+			updateFileStatus: () => {},
 		}),
 		[files],
 	);

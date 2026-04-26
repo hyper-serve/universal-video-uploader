@@ -1,24 +1,24 @@
 import type { FileState } from "@hyperserve/upload";
 
 export const mockRef = {
-	platform: "web" as const,
 	name: "sample-video.mp4",
+	platform: "web" as const,
+	raw: null as unknown as File,
 	size: 52428800,
 	type: "video/mp4",
 	uri: "",
-	raw: null as unknown as File,
 };
 
 const base: FileState = {
+	error: null,
 	id: "mock",
+	playbackUrl: null,
+	progress: 0,
 	ref: mockRef,
 	status: "selected",
-	progress: 0,
-	thumbnailUri: null,
-	playbackUrl: null,
-	videoId: null,
-	error: null,
 	statusDetail: null,
+	thumbnailUri: null,
+	videoId: null,
 };
 
 export function mockFile(overrides: Partial<FileState> = {}): FileState {
@@ -34,8 +34,8 @@ export const selectedFile: FileState = {
 export const uploadingFile: FileState = {
 	...base,
 	id: "mock-uploading",
-	status: "uploading",
 	progress: 55,
+	status: "uploading",
 };
 
 export const processingFile: FileState = {
@@ -48,13 +48,13 @@ export const processingFile: FileState = {
 export const readyFile: FileState = {
 	...base,
 	id: "mock-ready",
-	status: "ready",
 	playbackUrl: "https://example.com/video.mp4",
+	status: "ready",
 };
 
 export const failedFile: FileState = {
 	...base,
+	error: "Upload failed. Check your connection.",
 	id: "mock-failed",
 	status: "failed",
-	error: "Upload failed. Check your connection.",
 };

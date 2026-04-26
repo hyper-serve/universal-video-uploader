@@ -7,16 +7,20 @@ const THUMB_SVG =
 
 const cases: { label: string; file: ReturnType<typeof mockFile> }[] = [
 	{
-		label: "Placeholder",
 		file: mockFile({ id: "thumb-1", status: "uploading" }),
+		label: "Placeholder",
 	},
 	{
+		file: mockFile({
+			id: "thumb-2",
+			status: "uploading",
+			thumbnailUri: THUMB_SVG,
+		}),
 		label: "Image",
-		file: mockFile({ id: "thumb-2", status: "uploading", thumbnailUri: THUMB_SVG }),
 	},
 	{
-		label: "Ready (no playback URL)",
 		file: mockFile({ id: "thumb-3", status: "ready" }),
+		label: "Ready (no playback URL)",
 	},
 ];
 

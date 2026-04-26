@@ -1,5 +1,4 @@
 import { ProgressBar } from "@hyperserve/upload-react";
-import type React from "react";
 
 const values = [0, 33, 67, 100];
 

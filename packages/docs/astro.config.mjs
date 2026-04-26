@@ -6,9 +6,10 @@ export default defineConfig({
 	integrations: [
 		starlight({
 			components: {
+				// ThemeProvider: "./src/components/ThemeProvider.astro",
 				ThemeSelect: "./src/components/ThemeSelect.astro",
 			},
-			defaultTheme: "light",
+			customCss: ["./src/styles/custom.css"],
 			sidebar: [
 				{
 					items: [
