@@ -3,7 +3,11 @@ title: DropZone
 description: Drag-and-drop and file picker component for adding files.
 ---
 
-import DefaultDemo from "../../../components/demos/DefaultDemo";
+import DropZoneDemo from "../../../components/demos/DropZoneDemo";
+
+DropZone provides a drag-and-drop target and file-picker button for adding video files. It reads `canAddMore` from `UploadProvider` context and disables itself automatically when the file limit is reached.
+
+<DropZoneDemo client:load />
 
 ## Usage
 
@@ -12,8 +16,6 @@ import { DropZone } from "@hyperserve/upload-react";
 
 <DropZone supportingText="MP4, WebM, MOV — up to 500 MB" />
 ```
-
-<DefaultDemo client:load />
 
 ## Props
 
