@@ -3,6 +3,12 @@ title: FileList
 description: Renders the list of files with support for list and grid view modes.
 ---
 
+import FileListDemo from "../../../components/demos/FileListDemo";
+
+FileList renders all files in the upload queue in list or grid layout, reading file state from `UploadProvider` context. Pass a render function as `children` to use a custom item renderer — otherwise it renders `FileItem.Content` per file.
+
+<FileListDemo client:load />
+
 ## Usage
 
 ```tsx
