@@ -3,6 +3,12 @@ title: Thumbnail
 description: Renders a file thumbnail with optional playback mode.
 ---
 
+import ThumbnailDemo from "../../../components/demos/ThumbnailDemo";
+
+Thumbnail renders a file's visual preview — a browser-generated image thumbnail on web, or a placeholder icon when none is available. Set `playback` to render a `<video>` element when the file status is `"ready"` and a `playbackUrl` exists.
+
+<ThumbnailDemo client:load />
+
 ## Usage
 
 ```tsx
