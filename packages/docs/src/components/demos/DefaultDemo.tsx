@@ -23,7 +23,7 @@ export default function DefaultDemo() {
 	const config = useMemo(() => createMockConfig(), []);
 
 	return (
-		<div style={container}>
+		<div className="not-content" style={container}>
 			<UploadProvider config={config}>
 				<ViewModeProvider>
 					<UploadUI />

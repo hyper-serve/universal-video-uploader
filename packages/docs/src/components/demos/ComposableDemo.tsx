@@ -48,7 +48,7 @@ export default function ComposableDemo() {
 	const config = useMemo(() => createMockConfig(), []);
 
 	return (
-		<div style={container}>
+		<div className="not-content" style={container}>
 			<UploadProvider config={config}>
 				<ViewModeProvider defaultMode="grid">
 					<UploadUI />

@@ -1,0 +1,4 @@
+/* Remove the divider after the social icons (was separating them from the theme toggle) */
+.social-icons::after {
+	display: none;
+}
