@@ -1,10 +1,7 @@
 import { FileList } from "@hyperserve/upload-react";
 import type React from "react";
 import { MockFilesProvider } from "./MockFilesProvider";
-import { mockFile, mockRef } from "./mockFileState";
-
-const THUMB_SVG =
-	"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='90'%3E%3Crect width='160' height='90' fill='%23cbd5e1'/%3E%3Ctext x='80' y='48' text-anchor='middle' dominant-baseline='middle' fill='%2394a3b8' font-size='11' font-family='sans-serif'%3Eproduct-demo.mp4%3C/text%3E%3C/svg%3E";
+import { THUMB_SVG, VIDEO_URL, mockFile, mockRef } from "./mockFileState";
 
 const mockFiles = [
 	mockFile({
@@ -21,6 +18,7 @@ const mockFiles = [
 	}),
 	mockFile({
 		id: "fl-3",
+		playbackUrl: VIDEO_URL,
 		ref: { ...mockRef, name: "product-demo.mp4" },
 		status: "ready",
 		thumbnailUri: THUMB_SVG,
