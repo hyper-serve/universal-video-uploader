@@ -4,6 +4,8 @@ description: Renders a file thumbnail with optional playback mode.
 ---
 
 import ThumbnailDemo from "../../../components/demos/ThumbnailDemo";
+import ThumbnailBasicDemo from "../../../components/demos/ThumbnailBasicDemo";
+import ThumbnailPlaybackDemo from "../../../components/demos/ThumbnailPlaybackDemo";
 
 Thumbnail renders a file's visual preview, a browser-generated image thumbnail on web, or a placeholder icon when none is available. Set `playback` to render a `<video>` element when the file status is `"ready"` and a `playbackUrl` exists.
 
@@ -14,12 +16,17 @@ Thumbnail renders a file's visual preview, a browser-generated image thumbnail o
 ```tsx
 import { Thumbnail } from "@hyperserve/upload-react";
 
-// Thumbnail image
 <Thumbnail file={file} />
+```
 
-// Playback mode: renders <video> when ready
+<ThumbnailBasicDemo client:load />
+
+```tsx
+// Renders a <video> element when file.status is "ready" and playbackUrl is set
 <Thumbnail file={file} playback />
 ```
+
+<ThumbnailPlaybackDemo client:load />
 
 ## Props
 
@@ -27,8 +34,13 @@ import { Thumbnail } from "@hyperserve/upload-react";
 |------|------|---------|-------------|
 | `file` | `FileState` | **required** | The file state object |
 | `playback` | `boolean` | `false` | Render a `<video>` element when `file.playbackUrl` is available |
+| `controls` | `boolean` | `true` | Show native video controls (only applies in playback mode) |
 | `style` | `CSSProperties` | none | Container styles |
 | `className` | `string` | none | Container class |
+| `placeholderStyle` | `CSSProperties` | none | Styles for the placeholder container |
+| `placeholderClassName` | `string` | none | Class for the placeholder container |
+| `placeholder` | `ReactNode` | none | Custom placeholder content (replaces the default icon) |
+| `children` | `(info) => ReactNode` | none | Render function receiving `{ thumbnailUri, playbackUrl, isReady }` |
 
 ## Behavior
 
