@@ -4,6 +4,7 @@ description: Compound component for rendering individual file upload states.
 ---
 
 import FileItemDemo from "../../../components/demos/FileItemDemo";
+import FileItemColumnDemo from "../../../components/demos/FileItemColumnDemo";
 
 FileItem is a compound component that renders a single file's upload state. Compose its named sub-components (`FileItem.FileName`, `FileItem.UploadProgress`, `FileItem.Actions`, etc.) to build custom layouts, or omit `children` entirely to use the built-in `FileItem.Content` default.
 
@@ -31,6 +32,8 @@ import { FileItem, Thumbnail } from "@hyperserve/upload-react";
   </FileItem.Actions>
 </FileItem>
 ```
+
+<FileItemColumnDemo client:load />
 
 ## Props
 
