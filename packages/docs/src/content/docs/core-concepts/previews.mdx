@@ -1,0 +1,38 @@
+---
+title: Previews
+description: How the library handles visual previews before and after upload.
+---
+
+## Thumbnails
+
+When a file is added, the library immediately attempts to generate a thumbnail from the video. This is best-effort. Whether a thumbnail can be produced depends on the file's container format and the browser's codec support. When generation fails or the format isn't supported, the `Thumbnail` component falls back to a placeholder icon automatically.
+
+The thumbnail is stored as a blob URL in `FileState.thumbnailUri` and is available for rendering as soon as the file enters `selected` status.
+
+## Post-upload playback
+
+Once a file reaches `ready`, `FileState.playbackUrl` is populated with the URL returned by your adapter. At that point `thumbnailUri` is cleared. The blob URL is revoked and the field is set to `null`.
+
+Use the `Thumbnail` component's `playback` prop to switch from thumbnail to video player automatically:
+
+```tsx
+<Thumbnail file={file} playback />
+```
+
+With `playback` set, the component renders a thumbnail image during upload and transitions to a `<video>` element once the file is ready and a `playbackUrl` is available.
+
+## Lifecycle
+
+| Phase | `thumbnailUri` | `playbackUrl` |
+|-------|---------------|---------------|
+| File added → uploading | blob URL (or `null` if unsupported) | `null` |
+| `ready` | `null` (revoked) | backend URL |
+| Provider unmounts | all remaining blob URLs revoked | — |
+
+## Platform support
+
+Thumbnail generation is web-only. On React Native, `thumbnailUri` is always `null` and a placeholder is shown until the file is ready.
+
+## See also
+
+- [`Thumbnail` component](/components/thumbnail/) — API reference and interactive demo

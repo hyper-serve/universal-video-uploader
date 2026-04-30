@@ -1,11 +1,42 @@
 ---
-title: Custom Backend
+title: Custom Adapter
 description: Implement your own adapter to upload to any video backend.
 ---
 
 ## Overview
 
 An adapter is a class that handles uploading a file to your backend. You implement the `UploadAdapter` interface, write the upload logic, and wire it into an `UploadConfig`. The library handles everything else — queueing, concurrency, retries, and UI state.
+
+## Interfaces
+
+```typescript
+interface UploadAdapter<TOptions = Record<string, unknown>> {
+  upload(
+    file: FileRef,
+    options: TOptions,
+    callbacks: { onProgress: (pct: number) => void },
+    signal: AbortSignal,
+  ): Promise<UploadResult>;
+}
+
+type UploadResult = {
+  videoId: string;
+  playbackUrl?: string;
+  metadata?: Record<string, unknown>;
+};
+
+interface StatusChecker {
+  checkStatus(options: {
+    uploadResult: UploadResult;
+    onStatusChange: (
+      status: "processing" | "ready" | "failed",
+      playbackUrl?: string,
+      statusDetail?: string,
+    ) => void;
+    signal: AbortSignal;
+  }): void;
+}
+```
 
 ## Implementing an adapter
 

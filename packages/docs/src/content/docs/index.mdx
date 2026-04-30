@@ -2,19 +2,21 @@
 title: Universal Video Uploader
 description: Cross-platform React library for uploading videos to any backend.
 template: splash
+banner:
+  content: Built and maintained by <a href="https://hyperserve.io">Hyperserve</a> — video infrastructure for developers
 hero:
-  tagline: Headless upload logic + composable UI for React and React Native.
+  tagline: Multi-video uploads for React and React Native. Drop zone, file list, progress tracking, retries, and validation — out of the box.
   actions:
     - text: Get Started
       link: /getting-started/installation/
       icon: right-arrow
       variant: primary
     - text: View on GitHub
-      link: https://github.com/hyper-serve/upload
-      icon: external
+      link: https://github.com/hyper-serve/universal-video-uploader
+      icon: github
 ---
 
-import { Card, CardGrid } from "@astrojs/starlight/components";
+import { Card, CardGrid, Code, Tabs, TabItem, LinkCard } from "@astrojs/starlight/components";
 import DefaultDemo from "../../components/demos/DefaultDemo";
 import HeroSplit from "../../components/HeroSplit";
 
@@ -28,9 +30,15 @@ Drop a video file into the demo below — uploads are fully simulated, nothing l
 
 ## Everything you need to ship video uploads
 
-<CardGrid stagger>
-  <Card title="Any Backend" icon="puzzle">
-    Built on a simple adapter interface. Ships with Hyperserve support; bring your own Mux, Bunny, api.video, or custom backend.
+<CardGrid>
+  <Card title="Single/Multi Video Upload" icon="list-format">
+    Allow N uploads in a session, automatically batched for efficiency.
+  </Card>
+  <Card title="Validation">
+    Ensure videos uploaded meet size and format requirements.
+  </Card>
+  <Card title="Previews">
+    Preview videos as thumbnails pre upload, or fallback to placeholder, and full video play back post upload.
   </Card>
   <Card title="Cross-Platform" icon="laptop">
     Same core logic for React (web) and React Native. Platform-specific UI packages with identical APIs.
@@ -38,8 +46,14 @@ Drop a video file into the demo below — uploads are fully simulated, nothing l
   <Card title="Composable UI" icon="setting">
     Pre-built compound components you can assemble, rearrange, or replace. Or go fully headless and build your own.
   </Card>
+  <Card title="Customizable Theme" icon="pencil">
+    Fully customize every aspect of the provided components by passing style or className.
+  </Card>
   <Card title="Production Ready" icon="approve-check">
     Concurrency control, abort/retry, progress tracking, client-side validation, post-upload status monitoring.
+  </Card>
+  <Card title="Any Backend" icon="puzzle">
+    Built on an adapter interface, bring your own third party or custom backend. Ships with Hyperserve support.
   </Card>
 </CardGrid>
 
@@ -48,15 +62,4 @@ Drop a video file into the demo below — uploads are fully simulated, nothing l
   <p style={{fontSize:"1.25rem",fontWeight:700,color:"#1e293b",margin:"0 0 0.5rem"}}>Hyperserve</p>
   <p style={{fontSize:"0.9rem",color:"#64748b",margin:"0 0 1rem"}}>The rapid deployment video backend for modern devs.</p>
   <a href="https://hyperserve.io" target="_blank" rel="noopener noreferrer" style={{color:"#6366f1",textDecoration:"underline",fontSize:"0.9rem"}}>Visit hyperserve.io →</a>
-</div>
-
-## Get started in seconds
-
-<div className="not-content" style={{textAlign:"center",padding:"1rem 0 2.5rem"}}>
-  {/* pre and code must stay on one line — MDX wraps whitespace between tags in <p> nodes */}
-  <pre style={{display:"inline-block",background:"#0f172a",color:"#e2e8f0",padding:"0.875rem 1.5rem",borderRadius:8,fontSize:"0.875rem",margin:"0 0 1.5rem",textAlign:"left"}}><code>npm install @hyperserve/upload @hyperserve/upload-react</code></pre>
-  <div style={{display:"flex",gap:"1rem",justifyContent:"center",flexWrap:"wrap"}}>
-    <a href="/getting-started/installation/" style={{background:"#6366f1",color:"#fff",padding:"0.5rem 1.25rem",borderRadius:6,textDecoration:"none",fontWeight:600,fontSize:"0.875rem"}}>Get Started →</a>
-    <a href="/getting-started/quick-start/" style={{border:"1px solid #cbd5e1",color:"#475569",padding:"0.5rem 1.25rem",borderRadius:6,textDecoration:"none",fontWeight:600,fontSize:"0.875rem"}}>Read the Docs →</a>
-  </div>
 </div>

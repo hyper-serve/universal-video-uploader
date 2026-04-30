@@ -11,18 +11,6 @@ const heroFiles = [
 export default function HeroSplit() {
 	return (
 		<div className="not-content" style={wrapper}>
-			<div style={strip}>
-				Built and maintained by{" "}
-				<a
-					href="https://hyperserve.io"
-					rel="noopener noreferrer"
-					style={stripLink}
-					target="_blank"
-				>
-					Hyperserve
-				</a>{" "}
-				— video infrastructure for developers
-			</div>
 			<div style={split}>
 				<div style={codePane}>
 					<p style={codePaneLabel}>5 lines to get started</p>

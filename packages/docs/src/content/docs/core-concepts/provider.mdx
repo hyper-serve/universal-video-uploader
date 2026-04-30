@@ -1,0 +1,57 @@
+---
+title: Provider
+description: UploadProvider wraps your upload UI and supplies upload context to all child components.
+---
+
+## Setup
+
+`UploadProvider` is a React context provider that manages the entire upload lifecycle, file queue, validation, upload execution, concurrency, progress tracking, and post-upload status monitoring.
+
+```tsx
+import { UploadProvider } from "@hyperserve/upload";
+
+<UploadProvider config={config}>
+  {/* children can use useUpload() and useFile() */}
+</UploadProvider>
+```
+
+## UploadConfig
+
+The `config` prop accepts an `UploadConfig<TOptions>` object. The generic parameter ensures type safety between your adapter and its options.
+
+```typescript
+type UploadConfig<TOptions> = {
+  adapter: UploadAdapter<TOptions>;
+  uploadOptions: TOptions;
+  statusChecker?: StatusChecker;
+  validate?: (file: FileRef) => ValidationResult | Promise<ValidationResult>;
+  maxConcurrentUploads?: number;  // default: 3
+  maxFiles?: number;
+  errorMessages?: ErrorMessages;
+  onFileReady?: (file: FileState) => void;
+  onUploadFailed?: (file: FileState) => void;
+};
+```
+
+### Callbacks
+
+`onFileReady` and `onUploadFailed` fire exactly once per file per status transition. Use them to connect upload outcomes to your app state, for example persisting a `videoId` to your database after a file becomes ready.
+
+### Error messages
+
+Override user-facing strings with `errorMessages`:
+
+```typescript
+const config = {
+  // ...
+  errorMessages: {
+    validationError: "This file can't be uploaded.",
+    uploadFailed: "Upload failed. Please try again.",
+    processingFailed: "Video processing failed.",
+  },
+};
+```
+
+## Config identity
+
+The config is read via a ref (`configRef.current = config`) so swapping config values mid-session is safe. The next queued file picks up the latest config. Create your config outside the render function or wrap it in `useMemo` to avoid unnecessary object churn.

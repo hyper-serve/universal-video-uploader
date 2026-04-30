@@ -21,13 +21,12 @@ export default defineConfig({
 				},
 				{
 					items: [
-						{
-							label: "File State Machine",
-							slug: "core-concepts/file-state-machine",
-						},
-						{ label: "Validation", slug: "core-concepts/validation" },
+						{ label: "Lifecycle", slug: "core-concepts/lifecycle" },
 						{ label: "Adapters", slug: "core-concepts/adapters" },
-						{ label: "Upload Provider", slug: "core-concepts/upload-provider" },
+						{ label: "Validation", slug: "core-concepts/validation" },
+						{ label: "Previews", slug: "core-concepts/previews" },
+						{ label: "Provider", slug: "core-concepts/provider" },
+						{ label: "Hooks", slug: "core-concepts/hooks" },
 					],
 					label: "Core Concepts",
 				},
@@ -46,7 +45,7 @@ export default defineConfig({
 				},
 				{
 					items: [
-						{ label: "Custom Backend", slug: "guides/custom-backend" },
+						{ label: "Custom Adapter", slug: "guides/custom-adapter" },
 						{ label: "React Native", slug: "guides/react-native" },
 						{ label: "Composable Layout", slug: "guides/composable-layout" },
 						{ label: "Theming", slug: "guides/theming" },
@@ -56,6 +55,11 @@ export default defineConfig({
 				},
 			],
 			social: [
+				{
+					href: "https://hyperserve.io",
+					icon: "external",
+					label: "Hyperserve",
+				},
 				{
 					href: "https://github.com/hyper-serve/upload",
 					icon: "github",

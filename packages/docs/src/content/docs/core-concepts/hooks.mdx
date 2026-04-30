@@ -1,0 +1,52 @@
+---
+title: Hooks
+description: React hooks for reading upload state and driving file actions.
+---
+
+## useUpload
+
+The primary hook for reading upload state and triggering actions. Must be called within an `UploadProvider`.
+
+```typescript
+const {
+  files,              // FileState[]
+  addFiles,           // (files: FileRef[]) => void
+  removeFile,         // (id: string) => void
+  retryFile,          // (id: string) => void
+  updateFileStatus,   // (videoId, status, playbackUrl?) => void
+  canAddMore,         // boolean — false when files.length >= maxFiles
+  maxFiles,           // number | undefined
+  isUploading,        // true if any file is validating or uploading
+  hasErrors,          // true if any file is failed
+  allReady,           // true when all files are ready (and list non-empty)
+  allSettled,         // true when all files are ready or failed (and list non-empty)
+  readyCount,         // number of files with status "ready"
+  failedCount,        // number of files with status "failed"
+} = useUpload();
+```
+
+### updateFileStatus
+
+Manually transition a `processing` file to `ready` or `failed` by `videoId`. Use this when you drive status updates via a webhook or SSE connection instead of a `StatusChecker`.
+
+```typescript
+const { updateFileStatus } = useUpload();
+
+updateFileStatus(videoId, "ready", playbackUrl);
+updateFileStatus(videoId, "failed");
+```
+
+Only files currently in `"processing"` are affected. Calls for unknown or non-processing video IDs are no-ops.
+
+## useFile
+
+Per-file hook for use inside custom `FileItem` render functions. Provides the `FileState` for the current file context without needing to pass it as a prop.
+
+```tsx
+import { useFile } from "@hyperserve/upload";
+
+function CustomFileRow() {
+  const file = useFile();
+  return <div>{file.ref.name} — {file.status}</div>;
+}
+```

@@ -3,7 +3,7 @@ title: ViewModeProvider
 description: Context provider for list/grid view mode state used by FileList and FileListToolbar.
 ---
 
-`ViewModeProvider` holds the current view mode (`"list"` or `"grid"`) and makes it available to `FileList` and `FileListToolbar.ViewToggle`. Wrap your upload UI in it when you want view switching — it's optional if you're using `FileList` in a fixed mode.
+`ViewModeProvider` holds the current view mode (`"list"` or `"grid"`) and makes it available to `FileList` and `FileListToolbar.ViewToggle`. Wrap your upload UI in it when you want view switching, it's optional if you're using `FileList` in a fixed mode.
 
 ## Usage
 
@@ -24,7 +24,7 @@ function App() {
 }
 ```
 
-`ViewModeProvider` must be a descendant of `UploadProvider`. On web, it also wraps its children in a `flex column` layout with a `1rem` gap — useful for the standard vertical stack layout.
+`ViewModeProvider` must be a descendant of `UploadProvider`. On web, it also wraps its children in a `flex column` layout with a `1rem` gap, useful for the standard vertical stack layout.
 
 ## Props
 
