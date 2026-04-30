@@ -1,0 +1,85 @@
+---
+title: Hyperserve Adapter
+description: Official adapter for the Hyperserve video API.
+---
+
+import {Tabs, TabItem} from "@astrojs/starlight/components";
+
+The first-party adapter for the [Hyperserve](https://hyperserve.io) video API.
+
+<Tabs>
+  <TabItem label="npm">
+    ```bash
+    npm install @hyperserve/upload-adapter-hyperserve
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add  @hyperserve/upload-adapter-hyperserve
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add @hyperserve/upload-adapter-hyperserve
+    ```
+  </TabItem>
+  <TabItem label="bun">
+    ```bash
+    bun add  @hyperserve/upload-adapter-hyperserve
+    ```
+  </TabItem>
+</Tabs>
+
+Use `createHyperserveConfig` to produce a ready-to-use `UploadConfig`:
+
+```typescript
+import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+import { composeValidators, maxFileSize } from "@hyperserve/upload";
+
+const config = createHyperserveConfig({
+  createUpload: async (file, options) =>
+    fetch("/api/create-upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: file.name, size: file.size, ...options }),
+    }).then((r) => r.json()),
+  completeUpload: async (videoId) => {
+    await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });
+  },
+  getVideoStatus: async (videoId) =>
+    fetch(`/api/video-status/${videoId}`).then((r) => r.json()),
+  uploadOptions: {
+    resolutions: ["480p", "1080p"],
+    isPublic: true,
+  },
+  validate: composeValidators(maxFileSize(500 * 1024 * 1024)),
+});
+```
+
+The three callbacks call your backend, which proxies to Hyperserve using your API key; credentials never touch the browser.
+
+## Upload options
+
+```typescript
+type HyperserveUploadOptions = {
+  resolutions: string[];
+  isPublic: boolean;
+  thumbnail?: { timestampMs: number };
+  metadata?: Record<string, unknown>;
+};
+```
+
+`metadata` is forwarded on the create-video request and included in webhook payloads when processing completes. Use it to associate uploads with your app's entities (post ID, product ID, etc.).
+
+## Status polling
+
+After upload, the Hyperserve adapter polls your backend until the video finishes transcoding. The polling interval defaults to 3 seconds. Override it:
+
+```typescript
+const config = createHyperserveConfig({
+  // ...
+  pollingIntervalMs: 5000,
+});
+```
+
+Prefer push updates via webhook or SSE? Skip the status checker and call `updateFileStatus` from `useUpload()`. See [Hooks](/core-concepts/hooks/).

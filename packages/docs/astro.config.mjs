@@ -45,7 +45,13 @@ export default defineConfig({
 				},
 				{
 					items: [
+						{ label: "Hyperserve", slug: "core-concepts/hyperserve-adapter" },
 						{ label: "Custom Adapter", slug: "guides/custom-adapter" },
+					],
+					label: "Adapters",
+				},
+				{
+					items: [
 						{ label: "React Native", slug: "guides/react-native" },
 						{ label: "Composable Layout", slug: "guides/composable-layout" },
 						{ label: "Theming", slug: "guides/theming" },
