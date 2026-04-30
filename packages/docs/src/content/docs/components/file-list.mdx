@@ -4,6 +4,10 @@ description: Renders the list of files with support for list and grid view modes
 ---
 
 import FileListDemo from "../../../components/demos/FileListDemo";
+import FileListDefaultDemo from "../../../components/demos/FileListDefaultDemo";
+import FileListEmptyDemo from "../../../components/demos/FileListEmptyDemo";
+import FileListGridColumnsDemo from "../../../components/demos/FileListGridColumnsDemo";
+import FileListCustomItemDemo from "../../../components/demos/FileListCustomItemDemo";
 
 FileList renders all files in the upload queue in list or grid layout, reading file state from `UploadProvider` context. Pass a render function as `children` to use a custom item renderer; otherwise it renders `FileItem.Content` per file.
 
@@ -14,15 +18,22 @@ FileList renders all files in the upload queue in list or grid layout, reading f
 ```tsx
 import { FileList } from "@hyperserve/upload-react";
 
-// Default rendering
 <FileList />
+```
 
-// With empty state
+<FileListDefaultDemo client:load />
+
+```tsx
 <FileList emptyMessage="No files selected yet." />
+```
 
-// Grid mode
+<FileListEmptyDemo client:load />
+
+```tsx
 <FileList mode="grid" columns="repeat(3, 1fr)" />
 ```
+
+<FileListGridColumnsDemo client:load />
 
 ## Props
 
@@ -57,6 +68,8 @@ When `children` is omitted, `FileList` renders a default `FileItem` per file. Pr
   )}
 </FileList>
 ```
+
+<FileListCustomItemDemo client:load />
 
 ## View mode
 
