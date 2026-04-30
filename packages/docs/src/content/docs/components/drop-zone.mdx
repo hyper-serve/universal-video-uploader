@@ -14,7 +14,7 @@ DropZone provides a drag-and-drop target and file-picker button for adding video
 ```tsx
 import { DropZone } from "@hyperserve/upload-react";
 
-<DropZone supportingText="MP4, WebM, MOV — up to 500 MB" />
+<DropZone supportingText="MP4, WebM, MOV, up to 500 MB" />
 ```
 
 ## Props
@@ -24,12 +24,12 @@ import { DropZone } from "@hyperserve/upload-react";
 | `accept` | `string` | `"video/*"` | MIME type filter for the file input |
 | `multiple` | `boolean` | `true` | Allow multiple files |
 | `disabled` | `boolean` | `false` | Disable the drop zone (also disables when `canAddMore` is false) |
-| `supportingText` | `ReactNode` | — | Help text below the main label |
-| `style` | `CSSProperties` | — | Base styles |
-| `activeStyle` | `CSSProperties` | — | Merged during drag hover |
-| `className` | `string` | — | Base class |
-| `activeClassName` | `string` | — | Appended during drag hover |
-| `children` | `ReactNode \| ((state: DropZoneRenderProps) => ReactNode)` | — | Custom content or render function |
+| `supportingText` | `ReactNode` | none | Help text below the main label |
+| `style` | `CSSProperties` | none | Base styles |
+| `activeStyle` | `CSSProperties` | none | Merged during drag hover |
+| `className` | `string` | none | Base class |
+| `activeClassName` | `string` | none | Appended during drag hover |
+| `children` | `ReactNode \| ((state: DropZoneRenderProps) => ReactNode)` | none | Custom content or render function |
 
 ## Render function
 

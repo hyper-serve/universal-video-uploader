@@ -41,7 +41,7 @@ type FileState = {
 
 ## Immutability rules
 
-- Files in `processing` or `ready` cannot be removed — they're committed to the server. `removeFile` on these statuses is a no-op.
+- Files in `processing` or `ready` cannot be removed; they're committed to the server. `removeFile` on these statuses is a no-op.
 - The file list is an append-only record of uploads in the current session.
 - `retry` resets a `failed` file back to `selected`, re-entering the flow.
 

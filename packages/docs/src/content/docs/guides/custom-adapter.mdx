@@ -5,7 +5,7 @@ description: Implement your own adapter to upload to any video backend.
 
 ## Overview
 
-An adapter is a class that handles uploading a file to your backend. You implement the `UploadAdapter` interface, write the upload logic, and wire it into an `UploadConfig`. The library handles everything else — queueing, concurrency, retries, and UI state.
+An adapter is a class that handles uploading a file to your backend. You implement the `UploadAdapter` interface, write the upload logic, and wire it into an `UploadConfig`. The library handles everything else: queueing, concurrency, retries, and UI state.
 
 ## Interfaces
 
@@ -83,7 +83,7 @@ class MyAdapter implements UploadAdapter<MyUploadOptions> {
       signal,
     );
 
-    // 3. Return the video ID — the library records it on the file state
+    // 3. Return the video ID; the library records it on the file state
     return { videoId };
   }
 }
@@ -113,7 +113,7 @@ function uploadWithProgress(
 }
 ```
 
-If your backend returns a `playbackUrl` in `UploadResult`, the file transitions directly to `"ready"` — no status checker needed.
+If your backend returns a `playbackUrl` in `UploadResult`, the file transitions directly to `"ready"`. No status checker needed.
 
 ```typescript
 return { videoId, playbackUrl };
@@ -146,7 +146,7 @@ class MyStatusChecker implements StatusChecker {
           return;
         }
 
-        // Still processing — pass along any sub-status your backend provides
+        // Still processing; pass along any sub-status your backend provides
         onStatusChange("processing", undefined, res.statusDetail);
         await new Promise((r) => setTimeout(r, 3000));
       }
@@ -156,7 +156,7 @@ class MyStatusChecker implements StatusChecker {
 }
 ```
 
-`statusDetail` is optional — surface it when your backend provides it (e.g. `"Transcoding 1080p"`). The library exposes it as `file.statusDetail` during processing.
+`statusDetail` is optional; surface it when your backend provides it (e.g. `"Transcoding 1080p"`). The library exposes it as `file.statusDetail` during processing.
 
 ## Wiring it together
 

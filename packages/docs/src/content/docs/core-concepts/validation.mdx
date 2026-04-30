@@ -53,7 +53,7 @@ type ValidationResult =
   | { valid: false; reason: string };
 ```
 
-Example — check minimum file size:
+Example: minimum file size
 
 ```typescript
 const minFileSize = (bytes: number): Validator => (file) => {

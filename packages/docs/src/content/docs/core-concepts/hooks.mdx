@@ -14,7 +14,7 @@ const {
   removeFile,         // (id: string) => void
   retryFile,          // (id: string) => void
   updateFileStatus,   // (videoId, status, playbackUrl?) => void
-  canAddMore,         // boolean — false when files.length >= maxFiles
+  canAddMore,         // boolean: false when files.length >= maxFiles
   maxFiles,           // number | undefined
   isUploading,        // true if any file is validating or uploading
   hasErrors,          // true if any file is failed
@@ -47,6 +47,6 @@ import { useFile } from "@hyperserve/upload";
 
 function CustomFileRow() {
   const file = useFile();
-  return <div>{file.ref.name} — {file.status}</div>;
+  return <div>{file.ref.name}: {file.status}</div>;
 }
 ```

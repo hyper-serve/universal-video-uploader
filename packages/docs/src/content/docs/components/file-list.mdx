@@ -5,7 +5,7 @@ description: Renders the list of files with support for list and grid view modes
 
 import FileListDemo from "../../../components/demos/FileListDemo";
 
-FileList renders all files in the upload queue in list or grid layout, reading file state from `UploadProvider` context. Pass a render function as `children` to use a custom item renderer — otherwise it renders `FileItem.Content` per file.
+FileList renders all files in the upload queue in list or grid layout, reading file state from `UploadProvider` context. Pass a render function as `children` to use a custom item renderer; otherwise it renders `FileItem.Content` per file.
 
 <FileListDemo client:load />
 
@@ -30,13 +30,13 @@ import { FileList } from "@hyperserve/upload-react";
 |------|------|---------|-------------|
 | `mode` | `"list" \| "grid"` | From `ViewModeProvider` or `"list"` | Layout mode |
 | `columns` | `string` | `"repeat(auto-fill, minmax(180px, 1fr))"` | CSS `grid-template-columns` for grid mode |
-| `emptyMessage` | `ReactNode` | — | Shown when no files |
-| `emptyClassName` | `string` | — | Class for empty state container |
-| `emptyStyle` | `CSSProperties` | — | Styles for empty state container |
-| `renderEmpty` | `() => ReactNode` | — | Custom empty state renderer (overrides `emptyMessage`) |
-| `children` | `(file, index) => ReactNode` | — | Custom item renderer |
-| `style` | `CSSProperties` | — | Container styles |
-| `className` | `string` | — | Container class |
+| `emptyMessage` | `ReactNode` | none | Shown when no files |
+| `emptyClassName` | `string` | none | Class for empty state container |
+| `emptyStyle` | `CSSProperties` | none | Styles for empty state container |
+| `renderEmpty` | `() => ReactNode` | none | Custom empty state renderer (overrides `emptyMessage`) |
+| `children` | `(file, index) => ReactNode` | none | Custom item renderer |
+| `style` | `CSSProperties` | none | Container styles |
+| `className` | `string` | none | Container class |
 
 ## Custom item rendering
 

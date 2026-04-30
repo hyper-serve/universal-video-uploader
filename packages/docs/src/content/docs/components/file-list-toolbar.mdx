@@ -5,7 +5,7 @@ description: Toolbar with configurable slots for file count and view toggle.
 
 import FileListToolbarDemo from "../../../components/demos/FileListToolbarDemo";
 
-FileListToolbar is a two-slot bar (left and right) for showing file count and a list/grid view toggle. Both slots are fully replaceable — pass `null` to hide a slot or a custom `ReactNode` to override the default sub-component.
+FileListToolbar is a two-slot bar (left and right) for showing file count and a list/grid view toggle. Both slots are fully replaceable: pass `null` to hide a slot or a custom `ReactNode` to override the default sub-component.
 
 <FileListToolbarDemo client:load />
 
@@ -14,7 +14,7 @@ FileListToolbar is a two-slot bar (left and right) for showing file count and a 
 ```tsx
 import { FileListToolbar } from "@hyperserve/upload-react";
 
-// Default — file count on left, view toggle on right
+// Default: file count on left, view toggle on right
 <FileListToolbar />
 
 // Custom right slot
@@ -32,8 +32,8 @@ import { FileListToolbar } from "@hyperserve/upload-react";
 | `right` | `ReactNode \| null` | `ViewToggle` | Right slot content |
 | `showFileCount` | `boolean` | `true` | Show default file count in left slot |
 | `showViewToggle` | `boolean` | `true` | Show default view toggle in right slot |
-| `style` | `CSSProperties` | — | Container styles |
-| `className` | `string` | — | Container class |
+| `style` | `CSSProperties` | none | Container styles |
+| `className` | `string` | none | Container class |
 
 ## Sub-components
 

@@ -5,7 +5,7 @@ description: Customize colors, spacing, and status appearance using the shared t
 
 import ThemedDemo from "../../../components/demos/ThemedDemo";
 
-All components accept `style`, `className`, and sub-component style props — enough to build a completely custom look without replacing anything. The demo below uses a dark slate theme applied entirely through props.
+All components accept `style`, `className`, and sub-component style props, enough to build a completely custom look without replacing anything. The demo below uses a dark slate theme applied entirely through props.
 
 <ThemedDemo client:load />
 
@@ -22,7 +22,7 @@ import {
 } from "@hyperserve/upload";
 ```
 
-These are plain objects — use them in inline styles, CSS-in-JS, or reference them when building your own components.
+These are plain objects; use them in inline styles, CSS-in-JS, or reference them when building your own components.
 
 ## Status config
 
@@ -52,7 +52,7 @@ Components like `StatusBadge` accept per-status overrides:
 
 ## Styling components
 
-All UI components accept `style` and `className` props. `FileItem` sub-components each accept their own `style`/`className` as well — so you can restyle individual elements without rebuilding the tree:
+All UI components accept `style` and `className` props. `FileItem` sub-components each accept their own `style`/`className` as well, so you can restyle individual elements without rebuilding the tree:
 
 ```tsx
 <DropZone

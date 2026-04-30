@@ -5,7 +5,7 @@ description: Compound component for rendering individual file upload states.
 
 import FileItemDemo from "../../../components/demos/FileItemDemo";
 
-FileItem is a compound component that renders a single file's upload state. Compose its named sub-components (`FileItem.FileName`, `FileItem.UploadProgress`, `FileItem.Actions`, etc.) to build custom layouts — or omit `children` entirely to use the built-in `FileItem.Content` default.
+FileItem is a compound component that renders a single file's upload state. Compose its named sub-components (`FileItem.FileName`, `FileItem.UploadProgress`, `FileItem.Actions`, etc.) to build custom layouts, or omit `children` entirely to use the built-in `FileItem.Content` default.
 
 <FileItemDemo client:only="react" />
 
@@ -38,9 +38,9 @@ import { FileItem, Thumbnail } from "@hyperserve/upload-react";
 |------|------|---------|-------------|
 | `file` | `FileState` | **required** | The file state object |
 | `layout` | `"row" \| "column"` | `"column"` | Layout direction |
-| `style` | `CSSProperties` | — | Container styles |
-| `className` | `string` | — | Container class |
-| `children` | `ReactNode \| (file) => ReactNode` | — | Sub-components or render function |
+| `style` | `CSSProperties` | none | Container styles |
+| `className` | `string` | none | Container class |
+| `children` | `ReactNode \| (file) => ReactNode` | none | Sub-components or render function |
 
 ## Sub-components
 
@@ -62,4 +62,4 @@ All sub-components read from the parent `FileItem` context. They don't need expl
 
 ## Default rendering
 
-When `children` is omitted on `FileItem`, it renders `FileItem.Content` — which assembles all sub-components in a sensible default layout that adapts to the `layout` prop.
+When `children` is omitted on `FileItem`, it renders `FileItem.Content`, which assembles all sub-components in a sensible default layout that adapts to the `layout` prop.

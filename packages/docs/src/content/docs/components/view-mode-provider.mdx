@@ -30,10 +30,10 @@ function App() {
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `children` | `ReactNode` | **required** | — |
+| `children` | `ReactNode` | **required** | |
 | `defaultMode` | `"list" \| "grid"` | `"list"` | Initial view mode |
-| `style` | `CSSProperties` | — | Styles for the layout wrapper (web only) |
-| `className` | `string` | — | Class for the layout wrapper (web only) |
+| `style` | `CSSProperties` | none | Styles for the layout wrapper. Web only. See [React Native](#react-native). |
+| `className` | `string` | none | Class for the layout wrapper. Web only. See [React Native](#react-native). |
 
 ## useViewMode
 
@@ -56,8 +56,15 @@ function MyViewToggle() {
 
 ## React Native
 
-On React Native, `ViewModeProvider` is a plain context provider with no layout wrapper. Import from `@hyperserve/upload-react-native` or directly from `@hyperserve/upload`.
+On React Native, `ViewModeProvider` is a pure context provider; it renders no layout wrapper. This is intentional: React Native views already default to `flexDirection: "column"`, so children stack vertically without any wrapping element. Because there's no wrapper, there's nothing to apply `style` or `className` to. To style the container, wrap `ViewModeProvider` in your own `<View>`.
 
 ```tsx
 import { ViewModeProvider } from "@hyperserve/upload-react-native";
+
+<View style={{ gap: 12 }}>
+  <ViewModeProvider>
+    <FileListToolbar />
+    <FileList />
+  </ViewModeProvider>
+</View>
 ```

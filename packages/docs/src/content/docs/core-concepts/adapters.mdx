@@ -60,7 +60,7 @@ const config = createHyperserveConfig({
 });
 ```
 
-The three callbacks call your backend, which proxies to Hyperserve using your API key — credentials never touch the browser.
+The three callbacks call your backend, which proxies to Hyperserve using your API key; credentials never touch the browser.
 
 ### Upload options
 
@@ -86,7 +86,7 @@ const config = createHyperserveConfig({
 });
 ```
 
-Prefer push updates via webhook or SSE? Skip the status checker and call `updateFileStatus` from `useUpload()` — see [Hooks](/core-concepts/hooks/).
+Prefer push updates via webhook or SSE? Skip the status checker and call `updateFileStatus` from `useUpload()`. See [Hooks](/core-concepts/hooks/).
 
 ## Building your own
 
