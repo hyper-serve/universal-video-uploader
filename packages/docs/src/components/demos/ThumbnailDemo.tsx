@@ -1,9 +1,6 @@
 import { Thumbnail } from "@hyperserve/upload-react";
 import type React from "react";
-import { mockFile } from "./mockFileState";
-
-const THUMB_SVG =
-	"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='90'%3E%3Crect width='160' height='90' fill='%23cbd5e1'/%3E%3Ctext x='80' y='48' text-anchor='middle' dominant-baseline='middle' fill='%2394a3b8' font-size='11' font-family='sans-serif'%3Evideo.mp4%3C/text%3E%3C/svg%3E";
+import { THUMB_SVG, VIDEO_URL, mockFile } from "./mockFileState";
 
 const cases: { label: string; file: ReturnType<typeof mockFile> }[] = [
 	{
@@ -20,7 +17,16 @@ const cases: { label: string; file: ReturnType<typeof mockFile> }[] = [
 	},
 	{
 		file: mockFile({ id: "thumb-3", status: "ready" }),
-		label: "Ready (no playback URL)",
+		label: "Ready (no URL)",
+	},
+	{
+		file: mockFile({
+			id: "thumb-4",
+			playbackUrl: VIDEO_URL,
+			status: "ready",
+			thumbnailUri: THUMB_SVG,
+		}),
+		label: "Playback",
 	},
 ];
 
@@ -30,7 +36,7 @@ const col: React.CSSProperties = {
 	gap: "0.5rem",
 };
 
-const label: React.CSSProperties = {
+const labelStyle: React.CSSProperties = {
 	color: "#64748b",
 	fontSize: "0.75rem",
 	fontWeight: 500,
@@ -51,10 +57,10 @@ export default function ThumbnailDemo() {
 				padding: "1.5rem",
 			}}
 		>
-			{cases.map(({ label: l, file }) => (
+			{cases.map(({ label, file }) => (
 				<div key={file.id} style={col}>
 					<Thumbnail file={file} playback style={{ width: 160 }} />
-					<span style={label}>{l}</span>
+					<span style={labelStyle}>{label}</span>
 				</div>
 			))}
 		</div>
