@@ -2,7 +2,7 @@ import { UploadProvider } from "@hyperserve/upload";
 import { FileItem } from "@hyperserve/upload-react";
 import { useMemo } from "react";
 import { createMockConfig } from "./MockAdapter";
-import { mockFile, mockRef } from "./mockFileState";
+import { THUMB_SVG, VIDEO_URL, mockFile, mockRef } from "./mockFileState";
 
 const files = [
 	mockFile({
@@ -19,9 +19,10 @@ const files = [
 	}),
 	mockFile({
 		id: "fi-3",
-		playbackUrl: "https://example.com/video.mp4",
+		playbackUrl: VIDEO_URL,
 		ref: { ...mockRef, name: "product-demo.mp4" },
 		status: "ready",
+		thumbnailUri: THUMB_SVG,
 	}),
 	mockFile({
 		error: "Upload failed. Check your connection.",
