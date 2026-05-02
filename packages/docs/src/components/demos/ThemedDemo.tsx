@@ -1,9 +1,5 @@
 import { UploadProvider } from "@hyperserve/video-uploader";
-import {
-	DropZone,
-	FileItem,
-	FileList,
-} from "@hyperserve/video-uploader-react";
+import { DropZone, FileItem, FileList } from "@hyperserve/video-uploader-react";
 import type React from "react";
 import { useMemo } from "react";
 import { createMockConfig } from "./MockAdapter";
@@ -11,10 +7,15 @@ import { createMockConfig } from "./MockAdapter";
 function UploadUI() {
 	return (
 		<div style={wrap}>
-			<DropZone style={dropZoneStyle} activeStyle={dropZoneActive}>
+			<DropZone activeStyle={dropZoneActive} style={dropZoneStyle}>
 				{({ isDragging, openPicker }) => (
 					<div style={dropContent}>
-						<span style={{ color: isDragging ? "#a5b4fc" : "#94a3b8", fontSize: "0.875rem" }}>
+						<span
+							style={{
+								color: isDragging ? "#a5b4fc" : "#94a3b8",
+								fontSize: "0.875rem",
+							}}
+						>
 							{isDragging ? "Release to add" : "Drag videos here or "}
 						</span>
 						{!isDragging && (
@@ -44,7 +45,9 @@ function UploadUI() {
 							<FileItem.StatusIcon style={{ color: "#818cf8" }} />
 						</FileItem.Meta>
 						<FileItem.UploadProgress
-							fillStyle={{ background: "linear-gradient(90deg, #818cf8, #a78bfa)" }}
+							fillStyle={{
+								background: "linear-gradient(90deg, #818cf8, #a78bfa)",
+							}}
 						/>
 						<FileItem.ErrorMessage style={{ color: "#f87171" }} />
 						<FileItem.RetryButton style={{ color: "#fb923c" }} />

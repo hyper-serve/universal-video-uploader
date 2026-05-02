@@ -1,11 +1,11 @@
 import { StatusBadge } from "@hyperserve/video-uploader-react";
 
 const statusConfig = {
-	selected: { bg: "#fef9c3", text: "#713f12", label: "Queued" },
-	uploading: { bg: "#dbeafe", text: "#1e40af", label: "In Progress" },
-	processing: { bg: "#ede9fe", text: "#5b21b6", label: "Encoding" },
-	ready: { bg: "#d1fae5", text: "#065f46", label: "Published" },
-	failed: { bg: "#fee2e2", text: "#991b1b", label: "Failed" },
+	failed: { bg: "#fee2e2", label: "Failed", text: "#991b1b" },
+	processing: { bg: "#ede9fe", label: "Encoding", text: "#5b21b6" },
+	ready: { bg: "#d1fae5", label: "Published", text: "#065f46" },
+	selected: { bg: "#fef9c3", label: "Queued", text: "#713f12" },
+	uploading: { bg: "#dbeafe", label: "In Progress", text: "#1e40af" },
 };
 
 export default function StatusBadgeCustomizationDemo() {

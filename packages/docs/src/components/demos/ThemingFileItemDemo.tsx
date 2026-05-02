@@ -1,6 +1,6 @@
 import { FileItem } from "@hyperserve/video-uploader-react";
 import { MockFilesProvider } from "./MockFilesProvider";
-import { uploadingFile, failedFile } from "./mockFileState";
+import { failedFile, uploadingFile } from "./mockFileState";
 
 const files = [uploadingFile, failedFile];
 
@@ -29,7 +29,9 @@ export default function ThemingFileItemDemo() {
 						<FileItem.FileSize style={{ color: "#64748b" }} />
 						<FileItem.StatusIcon style={{ color: "#818cf8" }} />
 						<FileItem.UploadProgress
-							fillStyle={{ background: "linear-gradient(90deg, #818cf8, #a78bfa)" }}
+							fillStyle={{
+								background: "linear-gradient(90deg, #818cf8, #a78bfa)",
+							}}
 						/>
 						<FileItem.ErrorMessage style={{ color: "#f87171" }} />
 					</FileItem>

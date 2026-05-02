@@ -7,7 +7,8 @@ import { ViewModeProvider } from "../ViewModeContext.js";
 let mockFiles: FileState[] = [];
 
 vi.mock("@hyperserve/video-uploader", async (importOriginal) => {
-	const actual = await importOriginal<typeof import("@hyperserve/video-uploader")>();
+	const actual =
+		await importOriginal<typeof import("@hyperserve/video-uploader")>();
 	return {
 		...actual,
 		useUpload: () => ({

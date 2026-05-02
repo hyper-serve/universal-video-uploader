@@ -29,14 +29,20 @@ export default defineConfig({
 						{ label: "Provider", slug: "core-concepts/provider" },
 						{ label: "Hooks", slug: "core-concepts/hooks" },
 						{ label: "Theming", slug: "core-concepts/theming" },
-						{ label: "Composable Layout", slug: "core-concepts/composable-layout" },
+						{
+							label: "Composable Layout",
+							slug: "core-concepts/composable-layout",
+						},
 						{ label: "Headless Usage", slug: "core-concepts/headless" },
 					],
 					label: "Core Concepts",
 				},
 				{
 					items: [
-						{ label: "ViewModeProvider", slug: "components/view-mode-provider" },
+						{
+							label: "ViewModeProvider",
+							slug: "components/view-mode-provider",
+						},
 						{ label: "DropZone", slug: "components/drop-zone" },
 						{ label: "FileList", slug: "components/file-list" },
 						{ label: "FileItem", slug: "components/file-item" },

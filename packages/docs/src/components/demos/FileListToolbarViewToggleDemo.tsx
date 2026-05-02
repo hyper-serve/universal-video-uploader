@@ -17,9 +17,7 @@ export default function FileListToolbarViewToggleDemo() {
 				<FileListToolbar.ViewToggle>
 					{({ viewMode, setViewMode }) => (
 						<select
-							onChange={(e) =>
-								setViewMode(e.target.value as "list" | "grid")
-							}
+							onChange={(e) => setViewMode(e.target.value as "list" | "grid")}
 							style={{ fontSize: "0.875rem" }}
 							value={viewMode}
 						>

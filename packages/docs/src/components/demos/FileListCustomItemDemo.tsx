@@ -1,4 +1,8 @@
-import { FileItem, FileList, Thumbnail } from "@hyperserve/video-uploader-react";
+import {
+	FileItem,
+	FileList,
+	Thumbnail,
+} from "@hyperserve/video-uploader-react";
 import { MockFilesProvider } from "./MockFilesProvider";
 import { mockFileList } from "./mockFileState";
 
@@ -16,7 +20,7 @@ export default function FileListCustomItemDemo() {
 			>
 				<FileList>
 					{(file) => (
-						<FileItem key={file.id} file={file} layout="column">
+						<FileItem file={file} key={file.id} layout="column">
 							<Thumbnail file={file} playback />
 							<FileItem.FileName />
 							<FileItem.UploadProgress />

@@ -31,7 +31,8 @@ let mockContext: MockUploadContext = {
 };
 
 vi.mock("@hyperserve/video-uploader", async (importOriginal) => {
-	const actual = await importOriginal<typeof import("@hyperserve/video-uploader")>();
+	const actual =
+		await importOriginal<typeof import("@hyperserve/video-uploader")>();
 	return {
 		...actual,
 		useUpload: () => mockContext,

@@ -1,6 +1,6 @@
 import { Thumbnail } from "@hyperserve/video-uploader-react";
 import type React from "react";
-import { THUMB_URL, mockFile } from "./mockFileState";
+import { mockFile, THUMB_URL } from "./mockFileState";
 
 const col: React.CSSProperties = {
 	display: "flex",
@@ -37,7 +37,10 @@ export default function ThumbnailBasicDemo() {
 				<span style={label}>Thumbnail</span>
 			</div>
 			<div style={col}>
-				<Thumbnail file={mockFile({ id: "placeholder" })} style={{ width: 160 }} />
+				<Thumbnail
+					file={mockFile({ id: "placeholder" })}
+					style={{ width: 160 }}
+				/>
 				<span style={label}>Placeholder</span>
 			</div>
 		</div>

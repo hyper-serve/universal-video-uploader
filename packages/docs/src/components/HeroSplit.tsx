@@ -1,12 +1,13 @@
+import {
+	DropZone,
+	FileList,
+	FileListToolbar,
+} from "@hyperserve/video-uploader-react";
 import type React from "react";
-import { DropZone, FileList, FileListToolbar } from "@hyperserve/video-uploader-react";
 import { MockFilesProvider } from "./demos/MockFilesProvider";
 import { readyFile, uploadingFile } from "./demos/mockFileState";
 
-const heroFiles = [
-	uploadingFile,
-	readyFile
-];
+const heroFiles = [uploadingFile, readyFile];
 
 export default function HeroSplit() {
 	return (
@@ -16,28 +17,22 @@ export default function HeroSplit() {
 					<p style={codePaneLabel}>5 lines to get started</p>
 					<pre style={pre}>
 						<code>
-							<span style={kw}>import</span>{" "}
-							<span style={punct}>{"{ "}</span>
+							<span style={kw}>import</span> <span style={punct}>{"{ "}</span>
 							<span style={comp}>UploadProvider</span>
-							<span style={punct}>{" }"}</span>{" "}
-							<span style={kw}>from</span>{" "}
+							<span style={punct}>{" }"}</span> <span style={kw}>from</span>{" "}
 							<span style={str}>{"'@hyperserve/video-uploader'"}</span>
 							{"\n"}
-							<span style={kw}>import</span>{" "}
-							<span style={punct}>{"{ "}</span>
+							<span style={kw}>import</span> <span style={punct}>{"{ "}</span>
 							<span style={comp}>DropZone</span>
 							<span style={punct}>{", "}</span>
 							<span style={comp}>FileList</span>
-							<span style={punct}>{" }"}</span>{" "}
-							<span style={kw}>from</span>{" "}
+							<span style={punct}>{" }"}</span> <span style={kw}>from</span>{" "}
 							<span style={str}>{"'@hyperserve/video-uploader-react'"}</span>
 							{"\n\n"}
-							<span style={kw}>function</span>{" "}
-							<span style={fn}>App</span>
+							<span style={kw}>function</span> <span style={fn}>App</span>
 							<span style={punct}>{"() {"}</span>
 							{"\n  "}
-							<span style={kw}>return</span>{" "}
-							<span style={punct}>{"("}</span>
+							<span style={kw}>return</span> <span style={punct}>{"("}</span>
 							{"\n    "}
 							<span style={tag}>{"<"}</span>
 							<span style={comp}>UploadProvider</span>{" "}
@@ -48,12 +43,10 @@ export default function HeroSplit() {
 							<span style={tag}>{">"}</span>
 							{"\n      "}
 							<span style={tag}>{"<"}</span>
-							<span style={comp}>DropZone</span>{" "}
-							<span style={tag}>{"/>"}</span>
+							<span style={comp}>DropZone</span> <span style={tag}>{"/>"}</span>
 							{"\n      "}
 							<span style={tag}>{"<"}</span>
-							<span style={comp}>FileList</span>{" "}
-							<span style={tag}>{"/>"}</span>
+							<span style={comp}>FileList</span> <span style={tag}>{"/>"}</span>
 							{"\n    "}
 							<span style={tag}>{"</"}</span>
 							<span style={comp}>UploadProvider</span>
@@ -87,7 +80,7 @@ const wrapper: React.CSSProperties = {
 	overflow: "auto",
 };
 
-const strip: React.CSSProperties = {
+const _strip: React.CSSProperties = {
 	background: "#0f172a",
 	borderBottom: "1px solid #1e293b",
 	color: "#64748b",
@@ -96,7 +89,7 @@ const strip: React.CSSProperties = {
 	textAlign: "center",
 };
 
-const stripLink: React.CSSProperties = {
+const _stripLink: React.CSSProperties = {
 	color: "#818cf8",
 	textDecoration: "underline",
 };
@@ -165,4 +158,3 @@ const previewPaneLabel: React.CSSProperties = {
 	margin: "0 0 0.75rem",
 	textTransform: "uppercase",
 };
-

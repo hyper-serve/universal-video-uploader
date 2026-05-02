@@ -17,8 +17,8 @@ export default function ThemingDropZoneDemo() {
 		>
 			<UploadProvider config={config}>
 				<DropZone
-					style={{ background: "#1e293b", border: "1px dashed #334155" }}
 					activeStyle={{ background: "#1e1b4b", borderColor: "#818cf8" }}
+					style={{ background: "#1e293b", border: "1px dashed #334155" }}
 				/>
 			</UploadProvider>
 		</div>

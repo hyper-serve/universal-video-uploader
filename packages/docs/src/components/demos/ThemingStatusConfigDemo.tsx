@@ -1,8 +1,8 @@
 import { StatusBadge } from "@hyperserve/video-uploader-react";
 
 const statusConfig = {
-	ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
-	failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
+	failed: { bg: "#fee2e2", label: "Error", text: "#dc2626" },
+	ready: { bg: "#dbeafe", label: "Complete", text: "#1d4ed8" },
 };
 
 export default function ThemingStatusConfigDemo() {

@@ -1,4 +1,8 @@
-import { toFileRefs, UploadProvider, useUpload } from "@hyperserve/video-uploader";
+import {
+	toFileRefs,
+	UploadProvider,
+	useUpload,
+} from "@hyperserve/video-uploader";
 import type React from "react";
 import { useMemo, useRef, useState } from "react";
 import { createMockConfig } from "./MockAdapter";

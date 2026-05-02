@@ -1,5 +1,9 @@
 import { putVideoToStorage } from "@hyperserve/hyperserve-js/browser";
-import type { FileRef, UploadAdapter, UploadResult } from "@hyperserve/video-uploader";
+import type {
+	FileRef,
+	UploadAdapter,
+	UploadResult,
+} from "@hyperserve/video-uploader";
 import type {
 	HyperserveAdapterConfig,
 	HyperserveUploadOptions,
