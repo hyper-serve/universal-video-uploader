@@ -57,9 +57,9 @@ export function Thumbnail({
 				controls={controls}
 				src={file.playbackUrl}
 				style={{
+					aspectRatio: "16/9",
 					borderRadius: radius.md,
 					boxShadow: thumbnailShadow,
-					maxHeight: 300,
 					width: "100%",
 					...style,
 				}}
@@ -77,8 +77,8 @@ export function Thumbnail({
 				onError={() => setThumbnailLoadFailed(true)}
 				src={file.thumbnailUri}
 				style={{
+					aspectRatio: "16/9",
 					borderRadius: radius.md,
-					height: 100,
 					objectFit: "cover",
 					width: "100%",
 					...style,
@@ -92,13 +92,13 @@ export function Thumbnail({
 			className={placeholderClassName}
 			style={{
 				alignItems: "center",
+				aspectRatio: "16/9",
 				backgroundColor: colors.bgPlaceholder,
 				border: `1px solid ${colors.borderPlaceholder}`,
 				borderRadius: radius.md,
 				display: "flex",
-				height: 100,
 				justifyContent: "center",
-				minWidth: 80,
+				width: "100%",
 				...placeholderStyle,
 				...style,
 			}}
