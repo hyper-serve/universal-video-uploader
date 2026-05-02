@@ -63,7 +63,13 @@ describe("FilePicker (native)", () => {
 
 	it("renders custom children", () => {
 		const pickFiles = jest.fn().mockResolvedValue([]);
-		render(<FilePicker pickFiles={pickFiles}></FilePicker>);
+		// eslint-disable-next-line @typescript-eslint/no-var-requires
+		const { Text } = require("react-native");
+		render(
+			<FilePicker pickFiles={pickFiles}>
+				<Text>Custom Button</Text>
+			</FilePicker>,
+		);
 		expect(screen.queryByText("Pick Videos")).toBeNull();
 	});
 
