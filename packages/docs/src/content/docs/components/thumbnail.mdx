@@ -3,15 +3,12 @@ title: Thumbnail
 description: Renders a file thumbnail with optional playback mode.
 ---
 
-import ThumbnailDemo from "../../../components/demos/ThumbnailDemo";
 import ThumbnailBasicDemo from "../../../components/demos/ThumbnailBasicDemo";
 import ThumbnailPlaybackDemo from "../../../components/demos/ThumbnailPlaybackDemo";
 
 Thumbnail renders a file's visual preview, a browser-generated image thumbnail on web, or a placeholder icon when none is available. Set `playback` to render a `<video>` element when the file status is `"ready"` and a `playbackUrl` exists.
 
-<ThumbnailDemo client:load />
-
-## Usage
+<ThumbnailBasicDemo client:load />
 
 ```tsx
 import { Thumbnail } from "@hyperserve/upload-react";
@@ -19,14 +16,12 @@ import { Thumbnail } from "@hyperserve/upload-react";
 <Thumbnail file={file} />
 ```
 
-<ThumbnailBasicDemo client:load />
+<ThumbnailPlaybackDemo client:load />
 
 ```tsx
 // Renders a <video> element when file.status is "ready" and playbackUrl is set
 <Thumbnail file={file} playback />
 ```
-
-<ThumbnailPlaybackDemo client:load />
 
 ## Props
 

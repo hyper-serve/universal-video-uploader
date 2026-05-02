@@ -3,7 +3,6 @@ title: FileList
 description: Renders the list of files with support for list and grid view modes.
 ---
 
-import FileListDemo from "../../../components/demos/FileListDemo";
 import FileListDefaultDemo from "../../../components/demos/FileListDefaultDemo";
 import FileListEmptyDemo from "../../../components/demos/FileListEmptyDemo";
 import FileListGridColumnsDemo from "../../../components/demos/FileListGridColumnsDemo";
@@ -11,9 +10,7 @@ import FileListCustomItemDemo from "../../../components/demos/FileListCustomItem
 
 FileList renders all files in the upload queue in list or grid layout, reading file state from `UploadProvider` context. Pass a render function as `children` to use a custom item renderer; otherwise it renders `FileItem.Content` per file.
 
-<FileListDemo client:load />
-
-## Usage
+<FileListDefaultDemo client:load />
 
 ```tsx
 import { FileList } from "@hyperserve/upload-react";
@@ -21,19 +18,17 @@ import { FileList } from "@hyperserve/upload-react";
 <FileList />
 ```
 
-<FileListDefaultDemo client:load />
+<FileListEmptyDemo client:load />
 
 ```tsx
 <FileList emptyMessage="No files selected yet." />
 ```
 
-<FileListEmptyDemo client:load />
+<FileListGridColumnsDemo client:load />
 
 ```tsx
 <FileList mode="grid" columns="repeat(3, 1fr)" />
 ```
-
-<FileListGridColumnsDemo client:load />
 
 ## Props
 
@@ -53,6 +48,8 @@ import { FileList } from "@hyperserve/upload-react";
 
 When `children` is omitted, `FileList` renders a default `FileItem` per file. Provide a render function for custom items:
 
+<FileListCustomItemDemo client:load />
+
 ```tsx
 <FileList>
   {(file, index) => (
@@ -68,8 +65,6 @@ When `children` is omitted, `FileList` renders a default `FileItem` per file. Pr
   )}
 </FileList>
 ```
-
-<FileListCustomItemDemo client:load />
 
 ## View mode
 
