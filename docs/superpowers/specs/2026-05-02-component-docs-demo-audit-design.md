@@ -1,7 +1,7 @@
 # Component Docs Demo Audit
 
 **Date:** 2026-05-02  
-**Scope:** All 8 component pages in `packages/docs/src/content/docs/components/` plus 2 guide pages in `packages/docs/src/content/docs/guides/`
+**Scope:** All 8 component pages in `packages/docs/src/content/docs/components/` plus 2 core-concept pages in `packages/docs/src/content/docs/core-concepts/`
 
 ## Goals
 
@@ -303,24 +303,28 @@ function MyViewToggle() {
 
 ---
 
-### `theming.mdx` (guide)
+### `theming.mdx` (core-concept)
 
-**Current state:** Single `ThemedDemo` hero (no code) + monolithic `## Code` section. Three focused demos exist in the repo (`ThemingDropZoneDemo`, `ThemingFileItemDemo`, `ThemingStatusConfigDemo`) but are never imported.
+**Current state:** All 3 focused demos (`ThemingStatusConfigDemo`, `ThemingFileItemDemo`, `ThemingDropZoneDemo`) are already imported and rendered. `ThemedDemo` is a "Complete example" at the bottom with code below it (already demo → code). The 3 section demos follow the wrong ordering (code → demo). Two sections — `## Theme tokens` and `## Status config` import block — are import/type code and need no demos.
 
 **Structure:**
 1. Description paragraph
-2. `ThemedDemo` → full composite code (the complete dark-theme upload UI)
-3. `## DropZone` — `ThemingDropZoneDemo` → DropZone style props code
-4. `## FileItem` — `ThemingFileItemDemo` → FileItem + sub-component style props code
-5. `## statusConfig` — `ThemingStatusConfigDemo` → statusConfig override code
-6. `<LinkCard>` (stays)
+2. `## Theme tokens` — import code only (no demo: plain object exports, not a component)
+3. `## Status config` — import code only + `ThemingStatusConfigDemo` → statusConfig override code
+4. `## Style props` — `ThemingFileItemDemo` → FileItem style code; `ThemingDropZoneDemo` → DropZone style code
+5. `## Complete example` — `ThemedDemo` → full composite code (already correct ordering)
 
-**Code shown with `ThemingDropZoneDemo`:**
+**Code shown with `ThemingStatusConfigDemo`:**
 ```tsx
-<DropZone
-  style={{ background: "#1e293b", border: "1px dashed #334155" }}
-  activeStyle={{ background: "#1e1b4b", borderColor: "#818cf8" }}
-/>
+const statusConfig = {
+  ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
+  failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
+};
+
+// Pass statusConfig to any StatusBadge — only overridden statuses change
+<StatusBadge status="uploading" statusConfig={statusConfig} />
+<StatusBadge status="ready" statusConfig={statusConfig} />
+<StatusBadge status="failed" statusConfig={statusConfig} />
 ```
 
 **Code shown with `ThemingFileItemDemo`:**
@@ -336,34 +340,29 @@ function MyViewToggle() {
 </FileItem>
 ```
 
-**Code shown with `ThemingStatusConfigDemo`:**
+**Code shown with `ThemingDropZoneDemo`:**
 ```tsx
-const statusConfig = {
-  ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
-  failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
-};
-
-// Pass statusConfig to any StatusBadge — only overridden statuses change
-<StatusBadge status="uploading" statusConfig={statusConfig} />
-<StatusBadge status="ready" statusConfig={statusConfig} />
-<StatusBadge status="failed" statusConfig={statusConfig} />
+<DropZone
+  style={{ background: "#1e293b", border: "1px dashed #334155" }}
+  activeStyle={{ background: "#1e1b4b", borderColor: "#818cf8" }}
+/>
 ```
 
-**Changes:** Rename `## Code` section. Wire in the 3 existing demos with their exact code. Keep `ThemedDemo` as the comprehensive hero with the full composite code block directly below it.
+**Changes:** Flip `## Status config` and `## Style props` sections from code → demo to demo → code. `## Complete example` is already correct.
 
 ---
 
-### `composable-layout.mdx` (guide)
+### `composable-layout.mdx` (core-concept)
 
 **Current state:** `ComposableDemo` hero (no code), then `## How it works` code block, then `## Customizing the grid` code block (no demo), then sub-component table.
 
 **Structure:**
 1. Description paragraph
-2. `ComposableDemo` → full App composition code (collapse into hero — no section header between demo and code)
+2. `ComposableDemo` → full App composition code (collapse into hero — remove `## How it works` section header, code follows demo directly)
 3. `## Customizing the grid` — `FileListGridColumnsDemo` (reuse existing) → `columns` prop code
 4. `## What each sub-component does` table (stays)
 
-**Changes:** Move the "How it works" code block to immediately follow `ComposableDemo` (remove the `## How it works` section header — the code IS the explanation). Wire `FileListGridColumnsDemo` before the `columns` code block.
+**Changes:** Move the "How it works" code block to immediately follow `ComposableDemo` (remove `## How it works` header — the code IS the explanation). Wire `FileListGridColumnsDemo` before the `columns` code block.
 
 ---
 
@@ -371,10 +370,10 @@ const statusConfig = {
 
 | Category | Count |
 |----------|-------|
-| Pages updated | 10 (8 component + 2 guide) |
+| Pages updated | 10 (8 component + 2 core-concept) |
 | Demo files deleted | 2 |
 | Demo files created | 8 |
-| Demo files wired in (existed, unused) | 3 (`ThemingDropZoneDemo`, `ThemingFileItemDemo`, `ThemingStatusConfigDemo`) |
+| Demo ordering flips (code→demo to demo→code) | all demoed sections across all 10 pages |
 | Heroes that get code added | 9 |
-| Code-only sections that get demos | 11 |
+| Code-only sections that get new demos | 8 (new files) + 1 (composable grid, reuses existing) |
 | Bugs fixed | 1 (FileListEmptyDemo not rendered) |
