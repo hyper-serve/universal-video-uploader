@@ -4,12 +4,12 @@ description: Pill badge displaying the current file status.
 ---
 
 import StatusBadgeDemo from "../../../components/demos/StatusBadgeDemo";
+import StatusBadgeCustomizationDemo from "../../../components/demos/StatusBadgeCustomizationDemo";
+import StatusBadgeHeadlessDemo from "../../../components/demos/StatusBadgeHeadlessDemo";
 
 StatusBadge renders a colored pill label for a `FileStatus`. Override colors and labels per status with `statusConfig`, or drop into headless mode with the `children` render function.
 
 <StatusBadgeDemo client:load />
-
-## Usage
 
 ```tsx
 import { StatusBadge } from "@hyperserve/upload-react";
@@ -30,21 +30,27 @@ import { StatusBadge } from "@hyperserve/upload-react";
 
 ## Customization
 
-Override colors and labels per status:
+Override colors and labels per status. Only the statuses you specify are changed — the rest use their defaults:
+
+<StatusBadgeCustomizationDemo client:load />
 
 ```tsx
-<StatusBadge
-  status={file.status}
-  statusConfig={{
-    ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
-    failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
-  }}
-/>
+const statusConfig = {
+  ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
+  failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
+};
+
+<StatusBadge status="uploading" statusConfig={statusConfig} />
+<StatusBadge status="processing" statusConfig={statusConfig} />
+<StatusBadge status="ready" statusConfig={statusConfig} />
+<StatusBadge status="failed" statusConfig={statusConfig} />
 ```
 
 ## Headless mode
 
 Use the `children` render function for complete control:
+
+<StatusBadgeHeadlessDemo client:load />
 
 ```tsx
 <StatusBadge status={file.status}>
