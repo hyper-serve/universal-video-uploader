@@ -1,4 +1,4 @@
-import type { FileRef, ProcessingStatus } from "@hyperserve/upload";
+import type { FileRef, ProcessingStatus } from "@hyperserve/video-uploader";
 
 export type HyperserveUploadOptions = {
 	resolutions: string[];

@@ -1,4 +1,4 @@
-import type { FileState, WebFileRef } from "@hyperserve/upload";
+import type { FileState, WebFileRef } from "@hyperserve/video-uploader";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { FileItem } from "../FileItem.js";
@@ -30,8 +30,8 @@ let mockContext: MockUploadContext = {
 	retryFile: retryFileMock,
 };
 
-vi.mock("@hyperserve/upload", async (importOriginal) => {
-	const actual = await importOriginal<typeof import("@hyperserve/upload")>();
+vi.mock("@hyperserve/video-uploader", async (importOriginal) => {
+	const actual = await importOriginal<typeof import("@hyperserve/video-uploader")>();
 	return {
 		...actual,
 		useUpload: () => mockContext,

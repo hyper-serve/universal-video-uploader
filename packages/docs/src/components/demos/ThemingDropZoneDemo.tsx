@@ -1,5 +1,5 @@
-import { UploadProvider } from "@hyperserve/upload";
-import { DropZone } from "@hyperserve/upload-react";
+import { UploadProvider } from "@hyperserve/video-uploader";
+import { DropZone } from "@hyperserve/video-uploader-react";
 import { useMemo } from "react";
 import { createMockConfig } from "./MockAdapter";
 

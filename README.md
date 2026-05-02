@@ -1,4 +1,4 @@
-# @hyperserve/upload
+# @hyperserve/video-uploader
 
 Headless cross-platform video upload for React and React Native. Manage upload state, progress, validation, and status polling — bring your own UI or use the included composable components.
 
@@ -6,31 +6,31 @@ Headless cross-platform video upload for React and React Native. Manage upload s
 
 | Package | Description |
 |---------|-------------|
-| [`@hyperserve/upload`](./packages/core) | Core hooks, state machine, validation |
-| [`@hyperserve/upload-react`](./packages/react) | Web UI components (DropZone, FileList, etc.) |
-| [`@hyperserve/upload-react-native`](./packages/react-native) | React Native UI components |
-| [`@hyperserve/upload-adapter-hyperserve`](./packages/upload-adapter-hyperserve) | Official Hyperserve backend adapter |
+| [`@hyperserve/video-uploader`](./packages/core) | Core hooks, state machine, validation |
+| [`@hyperserve/video-uploader-react`](./packages/react) | Web UI components (DropZone, FileList, etc.) |
+| [`@hyperserve/video-uploader-react-native`](./packages/react-native) | React Native UI components |
+| [`@hyperserve/video-uploader-adapter-hyperserve`](./packages/upload-adapter-hyperserve) | Official Hyperserve backend adapter |
 
 ## Installation
 
 ```bash
 # Core + web components + Hyperserve adapter
-npm install @hyperserve/upload @hyperserve/upload-react @hyperserve/upload-adapter-hyperserve
+npm install @hyperserve/video-uploader @hyperserve/video-uploader-react @hyperserve/video-uploader-adapter-hyperserve
 
 # React Native
-npm install @hyperserve/upload @hyperserve/upload-react-native @hyperserve/upload-adapter-hyperserve
+npm install @hyperserve/video-uploader @hyperserve/video-uploader-react-native @hyperserve/video-uploader-adapter-hyperserve
 ```
 
 ## Quick Start
 
 ```tsx
-import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
-import { UploadProvider } from "@hyperserve/upload";
-import { DropZone, FileList } from "@hyperserve/upload-react";
+import { createHyperserveConfig } from "@hyperserve/video-uploader-adapter-hyperserve";
+import { UploadProvider } from "@hyperserve/video-uploader";
+import { DropZone, FileList } from "@hyperserve/video-uploader-react";
 
 const config = createHyperserveConfig({
   createUpload: async (file, options) => {
-    const raw = (file as import("@hyperserve/upload").WebFileRef).raw;
+    const raw = (file as import("@hyperserve/video-uploader").WebFileRef).raw;
     return fetch("/api/create-upload", {
       method: "POST",
       body: JSON.stringify({ name: raw.name, size: raw.size, ...options }),

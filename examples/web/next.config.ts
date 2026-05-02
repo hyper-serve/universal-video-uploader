@@ -2,9 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
 	transpilePackages: [
-		"@hyperserve/upload",
-		"@hyperserve/upload-react",
-		"@hyperserve/upload-adapter-hyperserve",
+		"@hyperserve/video-uploader",
+		"@hyperserve/video-uploader-react",
+		"@hyperserve/video-uploader-adapter-hyperserve",
 	],
 };
 

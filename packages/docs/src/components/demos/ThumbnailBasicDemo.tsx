@@ -1,4 +1,4 @@
-import { Thumbnail } from "@hyperserve/upload-react";
+import { Thumbnail } from "@hyperserve/video-uploader-react";
 import type React from "react";
 import { THUMB_URL, mockFile } from "./mockFileState";
 

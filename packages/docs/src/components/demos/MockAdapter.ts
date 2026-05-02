@@ -4,12 +4,12 @@ import type {
 	UploadAdapter,
 	UploadConfig,
 	UploadResult,
-} from "@hyperserve/upload";
+} from "@hyperserve/video-uploader";
 import {
 	allowedTypes,
 	composeValidators,
 	maxFileSize,
-} from "@hyperserve/upload";
+} from "@hyperserve/video-uploader";
 
 type MockOptions = Record<string, never>;
 

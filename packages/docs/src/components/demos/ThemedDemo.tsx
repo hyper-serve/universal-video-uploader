@@ -1,9 +1,9 @@
-import { UploadProvider } from "@hyperserve/upload";
+import { UploadProvider } from "@hyperserve/video-uploader";
 import {
 	DropZone,
 	FileItem,
 	FileList,
-} from "@hyperserve/upload-react";
+} from "@hyperserve/video-uploader-react";
 import type React from "react";
 import { useMemo } from "react";
 import { createMockConfig } from "./MockAdapter";

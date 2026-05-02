@@ -1,4 +1,4 @@
-import type { FileStatus } from "@hyperserve/upload";
+import type { FileStatus } from "@hyperserve/video-uploader";
 import { render, screen } from "@testing-library/react-native";
 import { Text } from "react-native";
 import { StatusBadge } from "../StatusBadge.js";

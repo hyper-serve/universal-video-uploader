@@ -1,5 +1,5 @@
-import type { FileRef } from "@hyperserve/upload";
-import { useUpload } from "@hyperserve/upload";
+import type { FileRef } from "@hyperserve/video-uploader";
+import { useUpload } from "@hyperserve/video-uploader";
 import type React from "react";
 import { useCallback } from "react";
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";

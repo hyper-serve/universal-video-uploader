@@ -1,5 +1,5 @@
 {
-	"name": "@hyperserve/upload-example-web",
+	"name": "@hyperserve/video-uploader-example-web",
 	"private": true,
 	"version": "0.0.1",
 	"scripts": {
@@ -9,9 +9,9 @@
 	},
 	"dependencies": {
 		"@hyperserve/hyperserve-js": "latest",
-		"@hyperserve/upload": "workspace:*",
-		"@hyperserve/upload-adapter-hyperserve": "workspace:*",
-		"@hyperserve/upload-react": "workspace:*",
+		"@hyperserve/video-uploader": "workspace:*",
+		"@hyperserve/video-uploader-adapter-hyperserve": "workspace:*",
+		"@hyperserve/video-uploader-react": "workspace:*",
 		"next": "16.2.4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"

@@ -1,4 +1,4 @@
-import type { FileRef } from "@hyperserve/upload";
+import type { FileRef } from "@hyperserve/video-uploader";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { BackgroundUploadModule } from "../adapter/hyperserve.native.js";
 import { HyperserveAdapter } from "../adapter/hyperserve.native.js";

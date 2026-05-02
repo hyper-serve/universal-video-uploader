@@ -1,20 +1,20 @@
-# @hyperserve/upload-react-native
+# @hyperserve/video-uploader-react-native
 
-Composable React Native UI components for `@hyperserve/upload`. Includes FilePicker, FileList, FileItem, ProgressBar, StatusBadge, Thumbnail, and FileListToolbar.
+Composable React Native UI components for `@hyperserve/video-uploader`. Includes FilePicker, FileList, FileItem, ProgressBar, StatusBadge, Thumbnail, and FileListToolbar.
 
 ## Install
 
 ```bash
-npm install @hyperserve/upload @hyperserve/upload-react-native
+npm install @hyperserve/video-uploader @hyperserve/video-uploader-react-native
 ```
 
 ## Usage
 
 ```tsx
-import { FilePicker, FileList } from "@hyperserve/upload-react-native";
-import { UploadProvider } from "@hyperserve/upload";
+import { FilePicker, FileList } from "@hyperserve/video-uploader-react-native";
+import { UploadProvider } from "@hyperserve/video-uploader";
 import * as DocumentPicker from "expo-document-picker";
-import { toFileRefs } from "@hyperserve/upload";
+import { toFileRefs } from "@hyperserve/video-uploader";
 
 <UploadProvider config={config}>
   <FilePicker

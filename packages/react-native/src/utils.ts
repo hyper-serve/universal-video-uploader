@@ -1,1 +1,1 @@
-export { statusConfig } from "@hyperserve/upload";
+export { statusConfig } from "@hyperserve/video-uploader";

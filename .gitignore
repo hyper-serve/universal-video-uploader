@@ -13,6 +13,8 @@ android/
 .env.local
 .next
 
-/docs/
+docs/plans/
+docs/specs/
+docs/superpowers/
 
 .superpowers

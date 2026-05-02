@@ -1,17 +1,17 @@
-# @hyperserve/upload
+# @hyperserve/video-uploader
 
-Headless video upload state machine for React and React Native. Manages file queue, concurrency, validation, progress, and status polling. Bring your own UI or use `@hyperserve/upload-react` / `@hyperserve/upload-react-native`.
+Headless video upload state machine for React and React Native. Manages file queue, concurrency, validation, progress, and status polling. Bring your own UI or use `@hyperserve/video-uploader-react` / `@hyperserve/video-uploader-react-native`.
 
 ## Install
 
 ```bash
-npm install @hyperserve/upload
+npm install @hyperserve/video-uploader
 ```
 
 ## Usage
 
 ```tsx
-import { UploadProvider, useUpload } from "@hyperserve/upload";
+import { UploadProvider, useUpload } from "@hyperserve/video-uploader";
 
 <UploadProvider config={config}>
   <YourUI />

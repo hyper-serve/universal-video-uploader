@@ -3,7 +3,7 @@ import {
 	UploadContext,
 	type UploadContextValue,
 	ViewModeProvider,
-} from "@hyperserve/upload";
+} from "@hyperserve/video-uploader";
 import type React from "react";
 import { useMemo } from "react";
 

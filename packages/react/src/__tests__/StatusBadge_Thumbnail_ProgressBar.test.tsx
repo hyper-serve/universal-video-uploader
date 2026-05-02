@@ -1,4 +1,4 @@
-import type { FileState } from "@hyperserve/upload";
+import type { FileState } from "@hyperserve/video-uploader";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { ProgressBar } from "../ProgressBar.js";
@@ -46,7 +46,7 @@ describe("StatusBadge", () => {
 
 	it("renders correct labels for all 6 statuses", () => {
 		const statuses: Array<{
-			status: import("@hyperserve/upload").FileStatus;
+			status: import("@hyperserve/video-uploader").FileStatus;
 			label: string;
 		}> = [
 			{ label: "Selected", status: "selected" },

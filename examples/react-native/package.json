@@ -1,5 +1,5 @@
 {
-  "name": "@hyperserve/upload-example-react-native",
+  "name": "@hyperserve/video-uploader-example-react-native",
   "private": true,
   "version": "0.0.1",
   "main": "index.js",
@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@hyperserve/hyperserve-js": "latest",
-    "@hyperserve/upload": "workspace:*",
-    "@hyperserve/upload-adapter-hyperserve": "workspace:*",
-    "@hyperserve/upload-react-native": "workspace:*",
+    "@hyperserve/video-uploader": "workspace:*",
+    "@hyperserve/video-uploader-adapter-hyperserve": "workspace:*",
+    "@hyperserve/video-uploader-react-native": "workspace:*",
     "expo": "55.0.4",
     "expo-document-picker": "55.0.8",
     "expo-status-bar": "55.0.4",

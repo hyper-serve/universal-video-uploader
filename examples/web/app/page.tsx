@@ -5,14 +5,14 @@ import {
 	composeValidators,
 	maxFileSize,
 	UploadProvider,
-} from "@hyperserve/upload";
-import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+} from "@hyperserve/video-uploader";
+import { createHyperserveConfig } from "@hyperserve/video-uploader-adapter-hyperserve";
 import {
 	DropZone,
 	FileList,
 	FileListToolbar,
 	ViewModeProvider,
-} from "@hyperserve/upload-react";
+} from "@hyperserve/video-uploader-react";
 import { useMemo } from "react";
 
 function makeConfig() {

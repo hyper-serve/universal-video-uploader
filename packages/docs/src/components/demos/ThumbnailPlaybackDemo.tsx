@@ -1,4 +1,4 @@
-import { Thumbnail } from "@hyperserve/upload-react";
+import { Thumbnail } from "@hyperserve/video-uploader-react";
 import { THUMB_URL, VIDEO_URL, mockFile } from "./mockFileState";
 
 export default function ThumbnailPlaybackDemo() {

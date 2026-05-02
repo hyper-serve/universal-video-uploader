@@ -1,4 +1,4 @@
-import { toFileRefs, useUpload } from "@hyperserve/upload";
+import { toFileRefs, useUpload } from "@hyperserve/video-uploader";
 import type React from "react";
 import { useCallback, useRef, useState } from "react";
 import { filterFilesByAccept } from "./acceptFilter.js";

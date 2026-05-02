@@ -1,5 +1,5 @@
 {
-	"name": "@hyperserve/upload-monorepo",
+	"name": "@hyperserve/video-uploader-monorepo",
 	"private": true,
 	"workspaces": [
 		"packages/*",
@@ -8,18 +8,18 @@
 	"scripts": {
 		"build": "bun run --filter '@hyperserve/*' build",
 		"build:watch": "bun run --filter '@hyperserve/*' build:watch",
-		"test": "bun run --filter '@hyperserve/upload' test && bun run --filter '@hyperserve/upload-adapter-hyperserve' test && bun run --filter '@hyperserve/upload-react' test && bun run --filter '@hyperserve/upload-react-native' test",
-		"test:watch": "bun run --filter '@hyperserve/upload' test:watch",
+		"test": "bun run --filter '@hyperserve/video-uploader' test && bun run --filter '@hyperserve/video-uploader-adapter-hyperserve' test && bun run --filter '@hyperserve/video-uploader-react' test && bun run --filter '@hyperserve/video-uploader-react-native' test",
+		"test:watch": "bun run --filter '@hyperserve/video-uploader' test:watch",
 		"typecheck": "bun run --filter '@hyperserve/*' typecheck",
 		"format:check": "biome format",
 		"format:write": "biome format --write",
 		"lint:check": "biome check",
 		"lint:fix": "biome check --write",
-		"start:web": "bun run --filter '@hyperserve/upload-example-web' dev",
-		"start:react-native": "bun run --filter '@hyperserve/upload-example-react-native' start",
-		"docs:dev": "bun run --filter '@hyperserve/upload-docs' dev",
-		"docs:build": "bun run --filter '@hyperserve/upload-docs' build",
-		"docs:preview": "bun run --filter '@hyperserve/upload-docs' preview",
+		"start:web": "bun run --filter '@hyperserve/video-uploader-example-web' dev",
+		"start:react-native": "bun run --filter '@hyperserve/video-uploader-example-react-native' start",
+		"docs:dev": "bun run --filter '@hyperserve/video-uploader-docs' dev",
+		"docs:build": "bun run --filter '@hyperserve/video-uploader-docs' build",
+		"docs:preview": "bun run --filter '@hyperserve/video-uploader-docs' preview",
 		"docs:deploy": "fly deploy --config packages/docs/fly.toml"
 	},
 	"devDependencies": {

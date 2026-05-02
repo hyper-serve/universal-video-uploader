@@ -1,10 +1,10 @@
-import { UploadProvider } from "@hyperserve/upload";
+import { UploadProvider } from "@hyperserve/video-uploader";
 import {
 	FileList,
 	FileListToolbar,
 	FilePicker,
 	ViewModeProvider,
-} from "@hyperserve/upload-react-native";
+} from "@hyperserve/video-uploader-react-native";
 import { StatusBar } from "expo-status-bar";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";

@@ -5,8 +5,8 @@ import {
 	type FileState,
 	maxDuration,
 	maxFileSize,
-} from "@hyperserve/upload";
-import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+} from "@hyperserve/video-uploader";
+import { createHyperserveConfig } from "@hyperserve/video-uploader-adapter-hyperserve";
 import * as DocumentPicker from "expo-document-picker";
 import { useVideoPlayer, VideoView } from "expo-video";
 

@@ -1,4 +1,4 @@
-import type { FileState } from "@hyperserve/upload";
+import type { FileState } from "@hyperserve/video-uploader";
 import { render, screen } from "@testing-library/react-native";
 import { Image } from "react-native";
 import { Thumbnail } from "../Thumbnail.js";

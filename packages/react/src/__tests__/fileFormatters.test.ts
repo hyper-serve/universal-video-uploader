@@ -1,4 +1,4 @@
-import type { FileState } from "@hyperserve/upload";
+import type { FileState } from "@hyperserve/video-uploader";
 import { describe, expect, it } from "vitest";
 import { formatFileSize, getFileDisplayName } from "../fileFormatters.js";
 

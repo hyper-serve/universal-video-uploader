@@ -1,4 +1,4 @@
-import type { FileRef } from "@hyperserve/upload";
+import type { FileRef } from "@hyperserve/video-uploader";
 import {
 	fireEvent,
 	render,
@@ -9,8 +9,8 @@ import { FilePicker } from "../FilePicker.js";
 
 const mockAddFiles = jest.fn();
 
-jest.mock("@hyperserve/upload", () => ({
-	...jest.requireActual("@hyperserve/upload"),
+jest.mock("@hyperserve/video-uploader", () => ({
+	...jest.requireActual("@hyperserve/video-uploader"),
 	useUpload: () => ({
 		addFiles: mockAddFiles,
 	}),

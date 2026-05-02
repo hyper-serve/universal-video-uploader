@@ -1,4 +1,4 @@
-import type { FileState } from "@hyperserve/upload";
+import type { FileState } from "@hyperserve/video-uploader";
 import sampleThumbnail from "../../assets/sample-thumbnail.jpg";
 
 export const THUMB_URL: string = sampleThumbnail.src;

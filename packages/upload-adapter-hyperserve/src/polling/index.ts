@@ -2,7 +2,7 @@ import type {
 	ProcessingStatus,
 	StatusChecker,
 	UploadResult,
-} from "@hyperserve/upload";
+} from "@hyperserve/video-uploader";
 import type { VideoStatusResult } from "../types.js";
 import { backoffDelay } from "./backoff.js";
 

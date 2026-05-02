@@ -1,4 +1,4 @@
-import type { FileStatus } from "@hyperserve/upload";
+import type { FileStatus } from "@hyperserve/video-uploader";
 import type React from "react";
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { StyleSheet, Text, View } from "react-native";

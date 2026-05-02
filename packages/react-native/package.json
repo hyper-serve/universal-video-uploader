@@ -1,8 +1,8 @@
 {
-	"name": "@hyperserve/upload-react-native",
+	"name": "@hyperserve/video-uploader-react-native",
 	"version": "0.1.0",
 	"author": "Ryan Trann",
-	"description": "Composable React Native UI components for @hyperserve/upload",
+	"description": "Composable React Native UI components for @hyperserve/video-uploader",
 	"license": "MIT",
 	"type": "module",
 	"exports": {
@@ -36,12 +36,12 @@
 		"prepublishOnly": "bun run build"
 	},
 	"peerDependencies": {
-		"@hyperserve/upload": ">=0.1.0",
+		"@hyperserve/video-uploader": ">=0.1.0",
 		"react": ">=18.0.0",
 		"react-native": ">=0.73.0"
 	},
 	"devDependencies": {
-		"@hyperserve/upload": "workspace:*",
+		"@hyperserve/video-uploader": "workspace:*",
 		"@react-native/babel-preset": "^0.84.1",
 		"@testing-library/react-native": "^13.3.1",
 		"@types/jest": "^29.5.14",

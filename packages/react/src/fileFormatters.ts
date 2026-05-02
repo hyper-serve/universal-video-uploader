@@ -1,4 +1,4 @@
-import type { FileState } from "@hyperserve/upload";
+import type { FileState } from "@hyperserve/video-uploader";
 
 export function formatFileSize(bytes: number): string {
 	const mb = bytes / (1024 * 1024);

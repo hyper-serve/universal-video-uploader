@@ -4,7 +4,7 @@ import type {
 	FileState,
 	UploadConfig,
 	ValidationResult,
-} from "@hyperserve/upload";
+} from "@hyperserve/video-uploader";
 import { HyperserveAdapter } from "./adapter/hyperserve.js";
 import { HyperserveStatusChecker } from "./polling/index.js";
 import type {

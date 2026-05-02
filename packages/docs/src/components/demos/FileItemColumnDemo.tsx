@@ -1,4 +1,4 @@
-import { FileItem, Thumbnail } from "@hyperserve/upload-react";
+import { FileItem, Thumbnail } from "@hyperserve/video-uploader-react";
 import { MockFilesProvider } from "./MockFilesProvider";
 import { readyFile } from "./mockFileState";
 

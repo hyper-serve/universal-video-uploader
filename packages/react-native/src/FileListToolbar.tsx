@@ -1,4 +1,4 @@
-import { useUpload } from "@hyperserve/upload";
+import { useUpload } from "@hyperserve/video-uploader";
 import type React from "react";
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";

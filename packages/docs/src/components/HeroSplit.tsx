@@ -1,5 +1,5 @@
 import type React from "react";
-import { DropZone, FileList, FileListToolbar } from "@hyperserve/upload-react";
+import { DropZone, FileList, FileListToolbar } from "@hyperserve/video-uploader-react";
 import { MockFilesProvider } from "./demos/MockFilesProvider";
 import { readyFile, uploadingFile } from "./demos/mockFileState";
 
@@ -21,7 +21,7 @@ export default function HeroSplit() {
 							<span style={comp}>UploadProvider</span>
 							<span style={punct}>{" }"}</span>{" "}
 							<span style={kw}>from</span>{" "}
-							<span style={str}>{"'@hyperserve/upload'"}</span>
+							<span style={str}>{"'@hyperserve/video-uploader'"}</span>
 							{"\n"}
 							<span style={kw}>import</span>{" "}
 							<span style={punct}>{"{ "}</span>
@@ -30,7 +30,7 @@ export default function HeroSplit() {
 							<span style={comp}>FileList</span>
 							<span style={punct}>{" }"}</span>{" "}
 							<span style={kw}>from</span>{" "}
-							<span style={str}>{"'@hyperserve/upload-react'"}</span>
+							<span style={str}>{"'@hyperserve/video-uploader-react'"}</span>
 							{"\n\n"}
 							<span style={kw}>function</span>{" "}
 							<span style={fn}>App</span>

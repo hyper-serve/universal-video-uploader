@@ -1,21 +1,21 @@
-# @hyperserve/upload-adapter-hyperserve
+# @hyperserve/video-uploader-adapter-hyperserve
 
-Official Hyperserve adapter for `@hyperserve/upload`. Handles file upload to Hyperserve-managed storage via signed URLs and polls for processing status.
+Official Hyperserve adapter for `@hyperserve/video-uploader`. Handles file upload to Hyperserve-managed storage via signed URLs and polls for processing status.
 
 ## Install
 
 ```bash
-npm install @hyperserve/upload @hyperserve/upload-adapter-hyperserve
+npm install @hyperserve/video-uploader @hyperserve/video-uploader-adapter-hyperserve
 ```
 
 ## Usage
 
 ```tsx
-import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+import { createHyperserveConfig } from "@hyperserve/video-uploader-adapter-hyperserve";
 
 const config = createHyperserveConfig({
   createUpload: async (file, options) => {
-    const raw = (file as import("@hyperserve/upload").WebFileRef).raw;
+    const raw = (file as import("@hyperserve/video-uploader").WebFileRef).raw;
     return fetch("/api/create-upload", {
       method: "POST",
       body: JSON.stringify({ name: raw.name, size: raw.size, ...options }),

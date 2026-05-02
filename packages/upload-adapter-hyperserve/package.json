@@ -1,8 +1,8 @@
 {
-	"name": "@hyperserve/upload-adapter-hyperserve",
+	"name": "@hyperserve/video-uploader-adapter-hyperserve",
 	"version": "0.1.0",
 	"author": "Ryan Trann",
-	"description": "Hyperserve adapter for @hyperserve/upload",
+	"description": "Hyperserve adapter for @hyperserve/video-uploader",
 	"license": "MIT",
 	"type": "module",
 	"exports": {
@@ -35,7 +35,7 @@
 		"prepublishOnly": "bun run build"
 	},
 	"dependencies": {
-		"@hyperserve/upload": "workspace:*",
+		"@hyperserve/video-uploader": "workspace:*",
 		"@hyperserve/hyperserve-js": "^0.1.0"
 	},
 	"peerDependencies": {

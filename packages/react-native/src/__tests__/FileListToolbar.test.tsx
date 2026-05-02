@@ -1,4 +1,4 @@
-import type { FileState } from "@hyperserve/upload";
+import type { FileState } from "@hyperserve/video-uploader";
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { Text } from "react-native";
 import { FileListToolbar } from "../FileListToolbar.js";
@@ -9,8 +9,8 @@ const mockSetViewMode = jest.fn((mode: string) => {
 	mockViewMode = mode;
 });
 
-jest.mock("@hyperserve/upload", () => ({
-	...jest.requireActual("@hyperserve/upload"),
+jest.mock("@hyperserve/video-uploader", () => ({
+	...jest.requireActual("@hyperserve/video-uploader"),
 	useUpload: () => ({
 		files: mockFiles,
 	}),

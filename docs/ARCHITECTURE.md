@@ -6,10 +6,10 @@ Universal Video Uploader is a cross-platform React library for uploading videos 
 
 ```
 packages/
-├── core                        # @hyperserve/upload — hooks, state machine, validation, theme
-├── react                       # @hyperserve/upload-react — Web UI components
-├── react-native                # @hyperserve/upload-react-native — React Native UI components
-└── upload-adapter-hyperserve   # @hyperserve/upload-adapter-hyperserve — Official Hyperserve adapter
+├── core                        # @hyperserve/video-uploader — hooks, state machine, validation, theme
+├── react                       # @hyperserve/video-uploader-react — Web UI components
+├── react-native                # @hyperserve/video-uploader-react-native — React Native UI components
+└── upload-adapter-hyperserve   # @hyperserve/video-uploader-adapter-hyperserve — Official Hyperserve adapter
 
 examples/
 ├── web/            # Vite + React 19
@@ -33,7 +33,7 @@ examples/
           └────────────┬─────────────┘
                        │
           ┌────────────▼─────────────┐
-          │ @hyperserve/upload         │
+          │ @hyperserve/video-uploader         │
           │ (core)                    │
           │                           │
           │ UploadProvider, useUpload  │
@@ -43,7 +43,7 @@ examples/
           └───────────────────────────┘
 ```
 
-The core package has **zero hard dependencies** beyond React as a peer dependency. Adapters are separate packages — `@hyperserve/upload-adapter-hyperserve` adds `@hyperserve/hyperserve-js` as a dependency; third-party adapters for other video providers follow the same pattern.
+The core package has **zero hard dependencies** beyond React as a peer dependency. Adapters are separate packages — `@hyperserve/video-uploader-adapter-hyperserve` adds `@hyperserve/hyperserve-js` as a dependency; third-party adapters for other video providers follow the same pattern.
 
 ## Core Concepts
 
@@ -201,14 +201,14 @@ Thumbnails are created eagerly when a file is added via `addFiles`. The blob URL
 
 ## Utility Functions
 
-Helper functions exported from `@hyperserve/upload` for working with files.
+Helper functions exported from `@hyperserve/video-uploader` for working with files.
 
 ### `toFileRef` / `toFileRefs`
 
 Convert a browser `File` (or array / `FileList`) to a `WebFileRef`, or a React Native `DocumentPickerResult` (or array) to a `NativeFileRef`. These create the object URL (`uri`) used throughout the upload flow.
 
 ```typescript
-import { toFileRef, toFileRefs } from "@hyperserve/upload";
+import { toFileRef, toFileRefs } from "@hyperserve/video-uploader";
 
 // Web
 const ref = toFileRef(file);           // File → WebFileRef
@@ -231,7 +231,7 @@ revokeFileRef(ref);
 Manually revokes a thumbnail blob URL. The `UploadProvider` handles this automatically on file transition and unmount — only call this if you're managing thumbnails outside the provider.
 
 ```typescript
-import { revokeThumbnail } from "@hyperserve/upload";
+import { revokeThumbnail } from "@hyperserve/video-uploader";
 revokeThumbnail(file.thumbnailUri);
 ```
 
@@ -256,10 +256,10 @@ type FileRef = WebFileRef | NativeFileRef;
 
 ## Hyperserve Integration
 
-The `@hyperserve/upload-adapter-hyperserve` package provides `HyperserveAdapter` and `HyperserveStatusChecker`. A convenience factory wires everything together:
+The `@hyperserve/video-uploader-adapter-hyperserve` package provides `HyperserveAdapter` and `HyperserveStatusChecker`. A convenience factory wires everything together:
 
 ```typescript
-import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+import { createHyperserveConfig } from "@hyperserve/video-uploader-adapter-hyperserve";
 
 const config = createHyperserveConfig({
   createUpload: async (file, options) =>
@@ -331,7 +331,7 @@ import {
   themeFontScale,  // xs, sm, md, lg, xl (pixel values; web converts to rem)
   themeSpacingScale, // xxs, xs, sm, … cardX, cardY, dropZone, etc.
   statusConfig,    // Record<FileStatus, { bg, text, label }>
-} from "@hyperserve/upload";
+} from "@hyperserve/video-uploader";
 ```
 
 `statusConfig` maps every `FileStatus` to a color pair and default label. UI packages consume it directly; consumers can override per-status entries when using `StatusBadge`.

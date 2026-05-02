@@ -1,4 +1,4 @@
-import { ProgressBar } from "@hyperserve/upload-react";
+import { ProgressBar } from "@hyperserve/video-uploader-react";
 
 export default function ProgressBarStylingDemo() {
 	return (

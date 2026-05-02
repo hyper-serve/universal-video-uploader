@@ -1,5 +1,5 @@
-import type { FileState } from "@hyperserve/upload";
-import { useUpload } from "@hyperserve/upload";
+import type { FileState } from "@hyperserve/video-uploader";
+import { useUpload } from "@hyperserve/video-uploader";
 import type React from "react";
 import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";

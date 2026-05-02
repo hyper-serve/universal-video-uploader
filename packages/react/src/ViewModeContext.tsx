@@ -3,7 +3,7 @@ import {
 	type ViewModeProviderProps as CoreViewModeProviderProps,
 	useViewMode,
 	type ViewMode,
-} from "@hyperserve/upload";
+} from "@hyperserve/video-uploader";
 import type React from "react";
 
 export type { ViewMode };

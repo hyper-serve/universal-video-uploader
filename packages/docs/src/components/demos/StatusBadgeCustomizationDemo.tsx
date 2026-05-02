@@ -1,4 +1,4 @@
-import { StatusBadge } from "@hyperserve/upload-react";
+import { StatusBadge } from "@hyperserve/video-uploader-react";
 
 const statusConfig = {
 	selected: { bg: "#fef9c3", text: "#713f12", label: "Queued" },

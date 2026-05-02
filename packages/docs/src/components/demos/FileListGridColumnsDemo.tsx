@@ -1,4 +1,4 @@
-import { FileList } from "@hyperserve/upload-react";
+import { FileList } from "@hyperserve/video-uploader-react";
 import { MockFilesProvider } from "./MockFilesProvider";
 import { mockFileList } from "./mockFileState";
 

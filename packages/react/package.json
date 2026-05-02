@@ -1,8 +1,8 @@
 {
-	"name": "@hyperserve/upload-react",
+	"name": "@hyperserve/video-uploader-react",
 	"version": "0.1.0",
 	"author": "Ryan Trann",
-	"description": "Composable React UI components for @hyperserve/upload",
+	"description": "Composable React UI components for @hyperserve/video-uploader",
 	"license": "MIT",
 	"type": "module",
 	"exports": {
@@ -35,12 +35,12 @@
 		"prepublishOnly": "bun run build"
 	},
 	"peerDependencies": {
-		"@hyperserve/upload": ">=0.1.0",
+		"@hyperserve/video-uploader": ">=0.1.0",
 		"react": ">=18.0.0",
 		"react-dom": ">=18.0.0"
 	},
 	"devDependencies": {
-		"@hyperserve/upload": "workspace:*",
+		"@hyperserve/video-uploader": "workspace:*",
 		"@testing-library/react": "16.3.2",
 		"@types/react": "19.2.14",
 		"@types/react-dom": "19.2.3",

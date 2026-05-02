@@ -1,4 +1,4 @@
-import { ProgressBar } from "@hyperserve/upload-react";
+import { ProgressBar } from "@hyperserve/video-uploader-react";
 
 const values = [0, 33, 67, 100];
 

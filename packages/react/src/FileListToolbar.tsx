@@ -1,4 +1,4 @@
-import { useUpload } from "@hyperserve/upload";
+import { useUpload } from "@hyperserve/video-uploader";
 import type React from "react";
 import { GridIcon, ListIcon } from "./icons.js";
 import { colors, radius } from "./theme.js";
