@@ -1,0 +1,103 @@
+---
+title: Headless Usage
+description: Build fully custom upload UI using only the core hooks.
+---
+
+import HeadlessDemo from "../../../components/demos/HeadlessDemo";
+
+Both UI packages are optional. The core hooks (`useUpload`, `useFile`) provide everything needed to build fully custom UI without taking any dependency on the React or React Native packages.
+
+This demo uses zero UI components: just `useUpload`, `toFileRefs`, and plain HTML:
+
+<HeadlessDemo client:load />
+
+## Example
+
+```tsx
+import { toFileRefs, UploadProvider, useUpload } from "@hyperserve/upload";
+import { useRef, useState } from "react";
+
+function formatSize(bytes: number) {
+  const mb = bytes / (1024 * 1024);
+  return mb < 1 ? `${(bytes / 1024).toFixed(0)} KB` : `${mb.toFixed(1)} MB`;
+}
+
+function UploadUI() {
+  const { addFiles, files, removeFile, retryFile } = useUpload();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [drag, setDrag] = useState(false);
+
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      addFiles(toFileRefs(e.target.files));
+      e.target.value = "";
+    }
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDrag(false);
+    const list = Array.from(e.dataTransfer.files).filter((f) =>
+      f.type.startsWith("video/"),
+    );
+    if (list.length) addFiles(toFileRefs(list));
+  };
+
+  return (
+    <div>
+      <input accept="video/*" multiple onChange={onInputChange} ref={inputRef} type="file" hidden />
+
+      <section
+        onDragLeave={() => setDrag(false)}
+        onDragOver={(e) => { e.preventDefault(); setDrag(true); }}
+        onDrop={onDrop}
+      >
+        <span>{drag ? "Drop to add" : "Drag videos here or "}</span>
+        <button onClick={() => inputRef.current?.click()}>browse</button>
+      </section>
+
+      {files.length === 0 ? (
+        <p>No files added yet.</p>
+      ) : (
+        <ul>
+          {files.map((file) => (
+            <li key={file.id}>
+              <span>{file.ref.name}</span>
+              <span>{formatSize(file.ref.size)} · {file.status}</span>
+              {file.status === "uploading" && (
+                <progress value={file.progress} max={100} />
+              )}
+              {file.status === "processing" && file.statusDetail && (
+                <span>{file.statusDetail}</span>
+              )}
+              {file.error && <span>{file.error}</span>}
+              {file.status === "failed" && (
+                <button onClick={() => retryFile(file.id)}>Retry</button>
+              )}
+              {file.status !== "processing" && file.status !== "ready" && (
+                <button onClick={() => removeFile(file.id)}>Remove</button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <UploadProvider config={config}>
+      <UploadUI />
+    </UploadProvider>
+  );
+}
+```
+
+## Key points
+
+- `toFileRefs` converts a `FileList` or `File[]` into the `FileRef[]` the provider expects
+- `removeFile` is a no-op for `processing`/`ready` files (server-committed)
+- `retryFile` resets a failed file back to `selected`, re-entering the queue
+- `file.progress` updates during upload (0–100)
+- `file.statusDetail` provides sub-status during processing (e.g. "Transcoding 480p")
