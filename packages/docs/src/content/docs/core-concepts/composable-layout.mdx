@@ -4,14 +4,11 @@ description: Build a custom card grid with thumbnail previews using FileList's r
 ---
 
 import ComposableDemo from "../../../components/demos/ComposableDemo";
+import FileListGridColumnsDemo from "../../../components/demos/FileListGridColumnsDemo";
 
 The default `FileList` renders a compact row per file. Passing a render function as `children` gives you full control over each card's layout, including where the thumbnail goes, how sub-components are arranged, and what the grid looks like.
 
 <ComposableDemo client:load />
-
-## How it works
-
-Pass a function to `FileList.children`. It receives each `FileState` and returns a `FileItem`:
 
 ```tsx
 import {
@@ -58,10 +55,10 @@ function App() {
 
 Control the grid column sizing with the `columns` prop:
 
+<FileListGridColumnsDemo client:load />
+
 ```tsx
-<FileList columns="repeat(2, 1fr)">
-  {(file) => <FileItem file={file} key={file.id} layout="column">...</FileItem>}
-</FileList>
+<FileList mode="grid" columns="repeat(3, 1fr)" />
 ```
 
 ## What each sub-component does
