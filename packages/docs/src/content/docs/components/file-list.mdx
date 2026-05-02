@@ -10,6 +10,8 @@ import FileListCustomItemDemo from "../../../components/demos/FileListCustomItem
 
 FileList renders all files in the upload queue in list or grid layout, reading file state from `UploadProvider` context. Pass a render function as `children` to use a custom item renderer; otherwise it renders `FileItem.Content` per file.
 
+## Default
+
 <FileListDefaultDemo client:load />
 
 ```tsx
@@ -18,11 +20,15 @@ import { FileList } from "@hyperserve/upload-react";
 <FileList />
 ```
 
+## Empty state
+
 <FileListEmptyDemo client:load />
 
 ```tsx
 <FileList emptyMessage="No files selected yet." />
 ```
+
+## Grid mode
 
 <FileListGridColumnsDemo client:load />
 

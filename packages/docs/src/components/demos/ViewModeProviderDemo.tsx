@@ -16,7 +16,7 @@ export default function ViewModeProviderDemo() {
 				padding: "1.5rem",
 			}}
 		>
-			<MockFilesProvider files={mockFileList}>
+			<MockFilesProvider defaultMode="grid" files={mockFileList}>
 				<FileListToolbar />
 				<FileList />
 			</MockFilesProvider>

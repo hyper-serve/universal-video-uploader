@@ -1,8 +1,11 @@
 import { StatusBadge } from "@hyperserve/upload-react";
 
 const statusConfig = {
-	ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
-	failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
+	selected: { bg: "#fef9c3", text: "#713f12", label: "Queued" },
+	uploading: { bg: "#dbeafe", text: "#1e40af", label: "In Progress" },
+	processing: { bg: "#ede9fe", text: "#5b21b6", label: "Encoding" },
+	ready: { bg: "#d1fae5", text: "#065f46", label: "Published" },
+	failed: { bg: "#fee2e2", text: "#991b1b", label: "Failed" },
 };
 
 export default function StatusBadgeCustomizationDemo() {
@@ -20,6 +23,7 @@ export default function StatusBadgeCustomizationDemo() {
 				padding: "1.5rem",
 			}}
 		>
+			<StatusBadge status="selected" statusConfig={statusConfig} />
 			<StatusBadge status="uploading" statusConfig={statusConfig} />
 			<StatusBadge status="processing" statusConfig={statusConfig} />
 			<StatusBadge status="ready" statusConfig={statusConfig} />

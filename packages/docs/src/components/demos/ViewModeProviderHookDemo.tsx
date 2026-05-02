@@ -8,12 +8,13 @@ function MyViewToggle() {
 		<button
 			onClick={() => setViewMode(viewMode === "list" ? "grid" : "list")}
 			style={{
-				background: "#f8fafc",
-				border: "1px solid #e2e8f0",
+				background: "#0f172a",
+				border: "none",
 				borderRadius: 6,
+				color: "#fff",
 				cursor: "pointer",
 				fontSize: "0.875rem",
-				padding: "0.375rem 0.75rem",
+				padding: "0.375rem 0.875rem",
 			}}
 			type="button"
 		>
@@ -36,7 +37,7 @@ export default function ViewModeProviderHookDemo() {
 				padding: "1.5rem",
 			}}
 		>
-			<MockFilesProvider files={mockFileList}>
+			<MockFilesProvider defaultMode="grid" files={mockFileList}>
 				<MyViewToggle />
 				<FileList />
 			</MockFilesProvider>

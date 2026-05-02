@@ -4,7 +4,6 @@ description: Build a custom card grid with thumbnail previews using FileList's r
 ---
 
 import ComposableDemo from "../../../components/demos/ComposableDemo";
-import FileListGridColumnsDemo from "../../../components/demos/FileListGridColumnsDemo";
 
 The default `FileList` renders a compact row per file. Passing a render function as `children` gives you full control over each card's layout, including where the thumbnail goes, how sub-components are arranged, and what the grid looks like.
 
@@ -50,16 +49,6 @@ function App() {
 ```
 
 `FileList` reads the view mode from `ViewModeProvider` context and switches between list and grid CSS layout automatically. Each card is a `FileItem`, a compound component whose named sub-components (`FileName`, `Meta`, `UploadProgress`, etc.) read their state from the parent `FileItem` context, so you never pass `file` down manually.
-
-## Customizing the grid
-
-Control the grid column sizing with the `columns` prop:
-
-<FileListGridColumnsDemo client:load />
-
-```tsx
-<FileList mode="grid" columns="repeat(3, 1fr)" />
-```
 
 ## What each sub-component does
 
