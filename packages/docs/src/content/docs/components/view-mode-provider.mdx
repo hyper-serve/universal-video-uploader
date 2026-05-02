@@ -3,9 +3,12 @@ title: ViewModeProvider
 description: Context provider for list/grid view mode state used by FileList and FileListToolbar.
 ---
 
+import ViewModeProviderDemo from "../../../components/demos/ViewModeProviderDemo";
+import ViewModeProviderHookDemo from "../../../components/demos/ViewModeProviderHookDemo";
+
 `ViewModeProvider` holds the current view mode (`"list"` or `"grid"`) and makes it available to `FileList` and `FileListToolbar.ViewToggle`. Wrap your upload UI in it when you want view switching, it's optional if you're using `FileList` in a fixed mode.
 
-## Usage
+<ViewModeProviderDemo client:load />
 
 ```tsx
 import { ViewModeProvider } from "@hyperserve/upload-react";
@@ -16,7 +19,7 @@ function App() {
     <UploadProvider config={config}>
       <ViewModeProvider>
         <DropZone />
-        <FileListToolbar right={<FileListToolbar.ViewToggle />} />
+        <FileListToolbar />
         <FileList />
       </ViewModeProvider>
     </UploadProvider>
@@ -38,6 +41,8 @@ function App() {
 ## useViewMode
 
 Access and update view mode from any component inside a `ViewModeProvider`:
+
+<ViewModeProviderHookDemo client:load />
 
 ```tsx
 import { useViewMode } from "@hyperserve/upload-react";
