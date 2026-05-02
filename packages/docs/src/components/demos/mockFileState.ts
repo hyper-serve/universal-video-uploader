@@ -35,6 +35,7 @@ export const selectedFile: FileState = {
 	...base,
 	id: "mock-selected",
 	status: "selected",
+	thumbnailUri: THUMB_URL,
 };
 
 export const uploadingFile: FileState = {
@@ -42,6 +43,7 @@ export const uploadingFile: FileState = {
 	id: "mock-uploading",
 	progress: 55,
 	status: "uploading",
+	thumbnailUri: THUMB_URL,
 };
 
 export const processingFile: FileState = {
@@ -49,6 +51,7 @@ export const processingFile: FileState = {
 	id: "mock-processing",
 	status: "processing",
 	statusDetail: "Transcoding 60%",
+	thumbnailUri: THUMB_URL,
 };
 
 export const readyFile: FileState = {
@@ -64,6 +67,7 @@ export const failedFile: FileState = {
 	error: "Upload failed. Check your connection.",
 	id: "mock-failed",
 	status: "failed",
+	thumbnailUri: THUMB_URL,
 };
 
 export const mockFileList: FileState[] = [
