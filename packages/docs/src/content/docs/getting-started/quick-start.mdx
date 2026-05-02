@@ -11,12 +11,12 @@ This guide gets you from zero to a working video upload UI in about 20 lines of 
 
 - React 18+
 - Packages installed (see [Installation](/getting-started/installation/))
-- A Hyperserve account and API key (for the example below)
+- A [Hyperserve](https://hyperserve.io) account and API key (for the example below)
 
 ## Minimal example
 
 <Aside type="note">
-  This example uses the Hyperserve adapter, the recommended starting point. If you're uploading to a different backend, skip to [Custom Adapter](/adapters/custom-adapter/).
+  This example uses the [Hyperserve](https://hyperserve.io) adapter, the recommended starting point. If you're uploading to a different backend, skip to [Custom Adapter](/adapters/custom-adapter/).
 </Aside>
 
 ```tsx
@@ -75,7 +75,7 @@ function App() {
 
 ## What's happening
 
-1. **`createHyperserveConfig`** wires up the Hyperserve adapter, status checker, and your validation rules into a single config object. The adapter calls `putVideoToStorage` from the Hyperserve SDK directly to stream the file to cloud storage; no backend is needed for that part. However, `createUpload`, `completeUpload`, and `getVideoStatus` must talk to the Hyperserve management API using your API key, which can't be exposed in the browser. Those three callbacks are thin fetches to your own backend routes, which hold the key and proxy the calls to Hyperserve.
+1. **`createHyperserveConfig`** wires up the [Hyperserve](https://hyperserve.io) adapter, status checker, and your validation rules into a single config object. The adapter calls `putVideoToStorage` from the Hyperserve SDK directly to stream the file to cloud storage; no backend is needed for that part. However, `createUpload`, `completeUpload`, and `getVideoStatus` must talk to the Hyperserve management API using your API key, which can't be exposed in the browser. Those three callbacks are thin fetches to your own backend routes, which hold the key and proxy the calls to Hyperserve.
 2. **`UploadProvider`** manages the upload state machine: file queue, concurrency, progress, abort/retry.
 3. **`ViewModeProvider`** provides list/grid toggle state to the UI components.
 4. **`DropZone`** handles drag-and-drop and file picker input.
@@ -85,44 +85,13 @@ All components read from the `UploadProvider` context. No prop drilling required
 
 ## Backend routes
 
-The three callbacks (`createUpload`, `completeUpload`, and `getVideoStatus`) must run server-side to keep your Hyperserve API key out of the browser. Each route must implement the following contract:
+The three callbacks (`createUpload`, `completeUpload`, and `getVideoStatus`) must run server-side to keep your [Hyperserve](https://hyperserve.io) API key out of the browser. Each route must implement the following contract:
 
 | Route | Receives | Returns |
 |---|---|---|
 | `POST /api/create-upload` | `{ name: string, size: number, ...uploadOptions }` | `{ videoId: string }` |
 | `POST /api/complete-upload/:id` | (none) | 204 / empty body |
 | `GET /api/video-status/:id` | (none) | `{ status: string, ... }` |
-
-<LinkCard
-  title="Next.js guide"
-  description="App Router example on GitHub with all three API routes."
-  href="/guides/next-js/"
-/>
-
-## Composable layout
-
-Pass a render function to `FileList` to take full control of each file card:
-
-```tsx
-<FileList>
-  {(file) => (
-    <FileItem file={file} key={file.id} layout="column">
-      <Thumbnail file={file} playback />
-      <FileItem.FileName />
-      <FileItem.Meta>
-        <FileItem.FileSize />
-        <FileItem.StatusIcon />
-      </FileItem.Meta>
-      <FileItem.UploadProgress />
-      <FileItem.ErrorMessage />
-      <FileItem.Actions>
-        <FileItem.RemoveButton />
-        <FileItem.RetryButton />
-      </FileItem.Actions>
-    </FileItem>
-  )}
-</FileList>
-```
 
 ## Try it locally
 
@@ -132,3 +101,9 @@ cd upload/examples/web
 cp .env.example .env   # add your Hyperserve API key
 bun install && bun dev
 ```
+
+<LinkCard
+  title="Next.js guide"
+  description="App Router example on GitHub with all three API routes."
+  href="/guides/next-js/"
+/>
