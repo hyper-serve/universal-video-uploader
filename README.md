@@ -57,7 +57,7 @@ export function App() {
 
 ## Documentation
 
-Full docs at **[your-docs-url]** — guides, component API, adapter setup, and custom backend walkthrough.
+Full docs at [videouploader.fyi](https://videouploader.fyi) — guides, component API, adapter setup, and custom backend walkthrough.
 
 ## License
 

@@ -1,13 +1,13 @@
-# fly.toml app configuration file generated for universal-video-uploader-docs on 2026-04-23T22:38:23-07:00
+# fly.toml app configuration file generated for video-uploader-docs on 2026-05-02T15:32:45-07:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'universal-video-uploader-docs'
+app = 'video-uploader-docs'
 primary_region = 'yyz'
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
 [http_service]
   internal_port = 8080
