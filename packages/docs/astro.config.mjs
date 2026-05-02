@@ -16,6 +16,7 @@ export default defineConfig({
 						{ label: "Introduction", slug: "index" },
 						{ label: "Installation", slug: "getting-started/installation" },
 						{ label: "Quick Start", slug: "getting-started/quick-start" },
+						{ label: "React Native", slug: "getting-started/react-native" },
 					],
 					label: "Getting Started",
 				},
@@ -57,7 +58,6 @@ export default defineConfig({
 					items: [
 						{ label: "Example: Next.js", slug: "guides/next-js" },
 						{ label: "Example: Expo", slug: "guides/expo" },
-						{ label: "Setup: React Native", slug: "guides/react-native" },
 					],
 					label: "Guides",
 				},
