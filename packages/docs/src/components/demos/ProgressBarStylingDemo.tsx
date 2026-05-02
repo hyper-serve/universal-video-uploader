@@ -13,7 +13,7 @@ export default function ProgressBarStylingDemo() {
 		>
 			<ProgressBar
 				progress={75}
-				trackStyle={{ borderRadius: 4, height: 8 }}
+				trackStyle={{ height: 8, borderRadius: 4 }}
 				fillStyle={{ background: "linear-gradient(90deg, #06b6d4, #3b82f6)" }}
 			/>
 		</div>
