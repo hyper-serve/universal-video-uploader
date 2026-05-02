@@ -13,7 +13,11 @@ Thumbnail renders a file's visual preview, a browser-generated image thumbnail o
 ```tsx
 import { Thumbnail } from "@hyperserve/upload-react";
 
+// With thumbnailUri — renders the preview image
 <Thumbnail file={file} />
+
+// Without thumbnailUri — renders the placeholder icon
+<Thumbnail file={fileWithNoPreview} />
 ```
 
 <ThumbnailPlaybackDemo client:load />

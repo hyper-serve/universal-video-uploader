@@ -1,12 +1,12 @@
 import type { FileState } from "@hyperserve/upload";
+import sampleThumbnail from "../../assets/sample-thumbnail.jpg";
 
-export const THUMB_SVG =
-	"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='90'%3E%3Crect width='160' height='90' fill='%23cbd5e1'/%3E%3Ctext x='80' y='48' text-anchor='middle' dominant-baseline='middle' fill='%2394a3b8' font-size='11' font-family='sans-serif'%3Evideo.mp4%3C/text%3E%3C/svg%3E";
+export const THUMB_URL: string = sampleThumbnail.src;
 
 export const VIDEO_URL =
-	"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4";
+	"https://cdn.hyperserve.io/74a26f64-f628-4409-90d3-10d77fc6c32a/02b894b7-40e5-428d-9a8d-14a723bf25ba/480p.mp4";
 
-export const mockRef = {
+const mockRef = {
 	name: "sample-video.mp4",
 	platform: "web" as const,
 	raw: null as unknown as File,
@@ -54,8 +54,9 @@ export const processingFile: FileState = {
 export const readyFile: FileState = {
 	...base,
 	id: "mock-ready",
-	playbackUrl: "https://example.com/video.mp4",
+	playbackUrl: VIDEO_URL,
 	status: "ready",
+	thumbnailUri: THUMB_URL,
 };
 
 export const failedFile: FileState = {
@@ -64,3 +65,10 @@ export const failedFile: FileState = {
 	id: "mock-failed",
 	status: "failed",
 };
+
+export const mockFileList: FileState[] = [
+	uploadingFile,
+	processingFile,
+	readyFile,
+	failedFile,
+];
