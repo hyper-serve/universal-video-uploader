@@ -85,7 +85,7 @@ All components read from the `UploadProvider` context. No prop drilling required
 
 ## Backend routes
 
-The three callbacks (`createUpload`, `completeUpload`, and `getVideoStatus`) must run server-side to keep your Hyperserve API key out of the browser. Here's the contract each route needs to implement:
+The three callbacks (`createUpload`, `completeUpload`, and `getVideoStatus`) must run server-side to keep your Hyperserve API key out of the browser. Each route must implement the following contract:
 
 | Route | Receives | Returns |
 |---|---|---|
