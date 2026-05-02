@@ -3,6 +3,8 @@ title: Quick Start
 description: Get a working upload UI in under 20 lines of code.
 ---
 
+import { Aside, LinkCard } from "@astrojs/starlight/components";
+
 ## Minimal example
 
 ```tsx
@@ -96,7 +98,7 @@ Pass a render function to `FileList` to take full control of each file card:
 
 ## Using a different adapter
 
-Replace `createHyperserveConfig` with a plain `UploadConfig` object and your own adapter. See [Custom Adapter](/guides/custom-adapter/) for a full walkthrough.
+Replace `createHyperserveConfig` with a plain `UploadConfig` object and your own adapter. See [Custom Adapter](/adapters/custom-adapter/) for a full walkthrough.
 
 ## Try it locally
 
