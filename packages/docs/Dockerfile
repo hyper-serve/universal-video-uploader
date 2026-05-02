@@ -18,9 +18,9 @@ COPY packages/core/ packages/core/
 COPY packages/react/ packages/react/
 COPY packages/docs/ packages/docs/
 
-RUN bun run --filter '@hyperserve/upload' build && \
-    bun run --filter '@hyperserve/upload-react' build && \
-    bun run --filter '@hyperserve/upload-docs' build
+RUN bun run --filter '@hyperserve/video-uploader' build && \
+    bun run --filter '@hyperserve/video-uploader-react' build && \
+    bun run --filter '@hyperserve/video-uploader-docs' build
 
 COPY packages/docs/nginx.conf /app/packages/docs/
 
