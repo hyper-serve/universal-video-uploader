@@ -3,6 +3,8 @@ title: Hooks
 description: React hooks for reading upload state and driving file actions.
 ---
 
+The library exposes two hooks. `useUpload` gives you the full upload context — file list, actions, and derived state — and is the primary way to drive your UI. `useFile` is a scoped hook for use inside custom `FileItem` renderers; it reads the file context injected by `FileList` so you don't have to thread file state as a prop.
+
 ## useUpload
 
 The primary hook for reading upload state and triggering actions. Must be called within an `UploadProvider`.

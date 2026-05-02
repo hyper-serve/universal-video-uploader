@@ -3,6 +3,8 @@ title: Previews
 description: How the library handles visual previews before and after upload.
 ---
 
+The library handles two kinds of visual preview: a locally-generated thumbnail shown while the file is uploading, and a playback video available once the upload is ready. Both are surfaced through `FileState` and rendered automatically by the `Thumbnail` component.
+
 ## Thumbnails
 
 When a file is added, the library immediately attempts to generate a thumbnail from the video. This is best-effort. Whether a thumbnail can be produced depends on the file's container format and the browser's codec support. When generation fails or the format isn't supported, the `Thumbnail` component falls back to a placeholder icon automatically.
@@ -31,7 +33,7 @@ With `playback` set, the component renders a thumbnail image during upload and t
 
 ## Platform support
 
-Thumbnail generation is web-only. On React Native, `thumbnailUri` is always `null` and a placeholder is shown until the file is ready.
+Thumbnail generation on React Native requires the optional `expo-video-thumbnails` package. If it is not installed, `thumbnailUri` is always `null` and a placeholder is shown.
 
 ## See also
 

@@ -3,6 +3,8 @@ title: Validation
 description: Composable client-side validators for file size, type, and duration.
 ---
 
+Validation runs client-side before a file enters the upload queue. A file that fails validation moves immediately to `failed` and never reaches the adapter. The library ships several built-in validators and a `composeValidators` helper for combining them.
+
 ## Built-in validators
 
 | Validator | Platform | Description |

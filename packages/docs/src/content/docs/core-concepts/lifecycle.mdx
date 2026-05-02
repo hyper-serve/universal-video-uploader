@@ -3,6 +3,8 @@ title: Lifecycle
 description: Every uploaded file moves through a defined set of statuses.
 ---
 
+Every file in the upload queue moves through a defined set of statuses from the moment it's added until it's ready for playback. Understanding the lifecycle helps you know when to read specific fields, how retry works, and what state is safe to act on.
+
 ## State machine
 
 ```
@@ -35,16 +37,14 @@ type FileState = {
   playbackUrl: string | null;  // available when ready; see Previews
   videoId: string | null;      // backend video ID
   error: string | null;        // error message when failed
-  statusDetail: string | null; // sub-status from StatusChecker
+  statusDetail: string | null; // sub-status from StatusChecker during processing
 };
 ```
+
+`statusDetail` is populated during `processing` when the `StatusChecker` provides sub-status updates (e.g. `"Transcoding 480p"`). Render it in your UI when `file.status === "processing" && file.statusDetail`.
 
 ## Immutability rules
 
 - Files in `processing` or `ready` cannot be removed; they're committed to the server. `removeFile` on these statuses is a no-op.
 - The file list is an append-only record of uploads in the current session.
 - `retry` resets a `failed` file back to `selected`, re-entering the flow.
-
-## statusDetail
-
-Populated during `processing` when the `StatusChecker` provides sub-status updates (e.g. `"Transcoding 480p"`). Render it in your UI when `file.status === "processing" && file.statusDetail`.
