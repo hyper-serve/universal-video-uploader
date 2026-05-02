@@ -4,17 +4,16 @@ description: Standalone progress track and fill component.
 ---
 
 import ProgressBarDemo from "../../../components/demos/ProgressBarDemo";
+import ProgressBarStylingDemo from "../../../components/demos/ProgressBarStylingDemo";
 
 ProgressBar renders a track-and-fill progress indicator. It accepts `progress` (0–100) and optional style props for both the track and fill elements independently.
 
 <ProgressBarDemo client:load />
 
-## Usage
-
 ```tsx
 import { ProgressBar } from "@hyperserve/upload-react";
 
-<ProgressBar progress={file.progress} />
+<ProgressBar progress={75} />
 ```
 
 ## Props
@@ -30,6 +29,8 @@ import { ProgressBar } from "@hyperserve/upload-react";
 ## Styling
 
 The track and fill are separate elements, each accepting their own style and className props:
+
+<ProgressBarStylingDemo client:load />
 
 ```tsx
 <ProgressBar
