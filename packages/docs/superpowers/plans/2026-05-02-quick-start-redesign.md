@@ -55,7 +55,7 @@ import { Aside, LinkCard } from "@astrojs/starlight/components";
 cd packages/docs && bun dev
 ```
 
-Open `http://localhost:4321/getting-started/quick-start/` in a browser. The page should render without errors. (No visible change yet — imports are invisible.)
+Open `http://localhost:4321/getting-started/quick-start/` in a browser. The page should render without errors. (No visible change yet; imports are invisible.)
 
 ---
 
@@ -114,7 +114,7 @@ Change it to:
 ## Minimal example
 
 <Aside type="note">
-  This example uses the Hyperserve adapter — the recommended starting point. If you're uploading to a different backend, skip to [Custom Adapter](/adapters/custom-adapter/).
+  This example uses the Hyperserve adapter, the recommended starting point. If you're uploading to a different backend, skip to [Custom Adapter](/adapters/custom-adapter/).
 </Aside>
 
 ```tsx
@@ -148,13 +148,13 @@ All components read from the `UploadProvider` context. No prop drilling required
 
 ## Backend routes
 
-The three callbacks — `createUpload`, `completeUpload`, and `getVideoStatus` — must run server-side to keep your Hyperserve API key out of the browser. Here's the contract each route needs to implement:
+The three callbacks (`createUpload`, `completeUpload`, and `getVideoStatus`) must run server-side to keep your Hyperserve API key out of the browser. Here's the contract each route needs to implement:
 
 | Route | Receives | Returns |
 |---|---|---|
 | `POST /api/create-upload` | `{ name: string, size: number, ...uploadOptions }` | `{ videoId: string }` |
-| `POST /api/complete-upload/:id` | — | 204 / empty body |
-| `GET /api/video-status/:id` | — | `{ status: string, ... }` |
+| `POST /api/complete-upload/:id` | (none) | 204 / empty body |
+| `GET /api/video-status/:id` | (none) | `{ status: string, ... }` |
 
 <LinkCard
   title="Next.js guide"
@@ -183,7 +183,7 @@ git commit -m "docs(quick-start): add backend routes contract section"
 **Files:**
 - Modify: `packages/docs/src/content/docs/getting-started/quick-start.mdx`
 
-This section is now redundant — the Hyperserve callout block added in Task 3 covers this with better placement.
+This section is now redundant: the Hyperserve callout block added in Task 3 covers this with better placement.
 
 - [ ] **Step 1: Delete the section**
 
