@@ -10,9 +10,17 @@ FileItem is a compound component that renders a single file's upload state. Comp
 
 <FileItemDemo client:only="react" />
 
+```tsx
+import { FileItem } from "@hyperserve/upload-react";
+
+<FileItem file={file} layout="row" />
+```
+
 ## Usage
 
 `FileItem` is a compound component. Use it with its sub-components to build custom file row/card layouts.
+
+<FileItemColumnDemo client:load />
 
 ```tsx
 import { FileItem, Thumbnail } from "@hyperserve/upload-react";
@@ -32,8 +40,6 @@ import { FileItem, Thumbnail } from "@hyperserve/upload-react";
   </FileItem.Actions>
 </FileItem>
 ```
-
-<FileItemColumnDemo client:load />
 
 ## Props
 
