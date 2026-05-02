@@ -1,18 +1,10 @@
 import { FileItem, Thumbnail } from "@hyperserve/upload-react";
 import { MockFilesProvider } from "./MockFilesProvider";
-import { THUMB_SVG, VIDEO_URL, mockFile, mockRef } from "./mockFileState";
-
-const file = mockFile({
-	id: "fic-1",
-	playbackUrl: VIDEO_URL,
-	ref: { ...mockRef, name: "product-demo.mp4" },
-	status: "ready",
-	thumbnailUri: THUMB_SVG,
-});
+import { readyFile } from "./mockFileState";
 
 export default function FileItemColumnDemo() {
 	return (
-		<MockFilesProvider files={[file]}>
+		<MockFilesProvider files={[readyFile]}>
 			<div
 				className="not-content"
 				style={{
@@ -23,8 +15,8 @@ export default function FileItemColumnDemo() {
 					padding: "1.5rem",
 				}}
 			>
-				<FileItem file={file} layout="column">
-					<Thumbnail file={file} playback />
+				<FileItem file={readyFile} layout="column">
+					<Thumbnail file={readyFile} playback />
 					<FileItem.FileName />
 					<FileItem.Meta>
 						<FileItem.FileSize />

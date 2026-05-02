@@ -1,5 +1,5 @@
 import { Thumbnail } from "@hyperserve/upload-react";
-import { THUMB_SVG, VIDEO_URL, mockFile } from "./mockFileState";
+import { THUMB_URL, VIDEO_URL, mockFile } from "./mockFileState";
 
 export default function ThumbnailPlaybackDemo() {
 	return (
@@ -17,7 +17,7 @@ export default function ThumbnailPlaybackDemo() {
 					id: "playback-1",
 					playbackUrl: VIDEO_URL,
 					status: "ready",
-					thumbnailUri: THUMB_SVG,
+					thumbnailUri: THUMB_URL,
 				})}
 				playback
 			/>

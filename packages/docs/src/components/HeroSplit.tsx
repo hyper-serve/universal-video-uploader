@@ -1,11 +1,11 @@
 import type React from "react";
 import { DropZone, FileList, FileListToolbar } from "@hyperserve/upload-react";
 import { MockFilesProvider } from "./demos/MockFilesProvider";
-import { mockFile, mockRef } from "./demos/mockFileState";
+import { readyFile, uploadingFile } from "./demos/mockFileState";
 
 const heroFiles = [
-	mockFile({ id: "hero-1", progress: 65, ref: { ...mockRef, name: "intro.mp4" }, status: "uploading" }),
-	mockFile({ id: "hero-2", ref: { ...mockRef, name: "demo.mov" }, status: "ready" }),
+	uploadingFile,
+	readyFile
 ];
 
 export default function HeroSplit() {
