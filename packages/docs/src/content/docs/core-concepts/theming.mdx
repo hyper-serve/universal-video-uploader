@@ -40,21 +40,25 @@ import { statusConfig } from "@hyperserve/upload";
 
 Components like `StatusBadge` accept a `statusConfig` prop to override per-status values:
 
-```tsx
-<StatusBadge
-  status={file.status}
-  statusConfig={{
-    ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
-    failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
-  }}
-/>
-```
-
 <ThemingStatusConfigDemo client:load />
+
+```tsx
+const statusConfig = {
+  ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
+  failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
+};
+
+// Pass statusConfig to any StatusBadge — only overridden statuses change
+<StatusBadge status="uploading" statusConfig={statusConfig} />
+<StatusBadge status="ready" statusConfig={statusConfig} />
+<StatusBadge status="failed" statusConfig={statusConfig} />
+```
 
 ## Style props
 
 All UI components accept `style` and `className`. Compound components like `FileItem` expose per-sub-component props so you can restyle individual elements without rebuilding the layout:
+
+<ThemingFileItemDemo client:load />
 
 ```tsx
 <FileItem file={file} style={{ background: "#1e293b", border: "1px solid #334155" }}>
@@ -68,9 +72,9 @@ All UI components accept `style` and `className`. Compound components like `File
 </FileItem>
 ```
 
-<ThemingFileItemDemo client:load />
-
 `DropZone` also accepts `activeStyle` for the drag-active state:
+
+<ThemingDropZoneDemo client:load />
 
 ```tsx
 <DropZone
@@ -78,8 +82,6 @@ All UI components accept `style` and `className`. Compound components like `File
   activeStyle={{ background: "#1e1b4b", borderColor: "#818cf8" }}
 />
 ```
-
-<ThemingDropZoneDemo client:load />
 
 ## Complete example
 
