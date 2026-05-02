@@ -1,0 +1,38 @@
+---
+title: React Native
+description: Platform resolution, FileRef, and component API for React Native.
+---
+
+## Platform resolution
+
+The adapter packages use the `.native.ts` convention. Metro resolves `foo.js` to `foo.native.ts` when bundling for iOS/Android.
+
+| Module | Web | Native |
+|--------|-----|--------|
+| `adapter/hyperserve` | XHR with progress events | `react-native-background-upload` with fallback to `fetch` |
+| `platform/fileRef` | `File` → `FileRef` with `raw` | `DocumentPickerResult` → `FileRef` with `uri` |
+| `platform/thumbnail` | `URL.createObjectURL` | `expo-video-thumbnails` or `null` |
+| `validation/maxDuration` | DOM video element | `expo-video-metadata` (skips if missing) |
+
+## FileRef
+
+`FileRef` is a discriminated union on `platform`:
+
+```typescript
+type WebFileRef  = { platform: "web";    uri: string; name: string; size: number; type: string; raw: File };
+type NativeFileRef = { platform: "native"; uri: string; name: string; size: number; type: string };
+```
+
+On native, `raw` is not available; the adapter uses the `uri` directly.
+
+## Components
+
+The native UI package mirrors the web package:
+
+| Web | Native |
+|-----|--------|
+| `DropZone` | `FilePicker` |
+| `FileList` | `FileList` (uses `FlatList`, supports `numColumns`) |
+| `FileItem` + sub-components | Same compound component API |
+| `FileListToolbar` | Same API |
+| `Thumbnail` | Renders `Image` (no built-in playback) |
