@@ -4,24 +4,17 @@ description: Toolbar with configurable slots for file count and view toggle.
 ---
 
 import FileListToolbarDemo from "../../../components/demos/FileListToolbarDemo";
+import FileListToolbarFileCountDemo from "../../../components/demos/FileListToolbarFileCountDemo";
+import FileListToolbarViewToggleDemo from "../../../components/demos/FileListToolbarViewToggleDemo";
 
 FileListToolbar is a two-slot bar (left and right) for showing file count and a list/grid view toggle. Both slots are fully replaceable: pass `null` to hide a slot or a custom `ReactNode` to override the default sub-component.
 
 <FileListToolbarDemo client:load />
 
-## Usage
-
 ```tsx
 import { FileListToolbar } from "@hyperserve/upload-react";
 
-// Default: file count on left, view toggle on right
 <FileListToolbar />
-
-// Custom right slot
-<FileListToolbar right={<FileListToolbar.ViewToggle />} />
-
-// Hide default slots
-<FileListToolbar showFileCount={false} showViewToggle={false} />
 ```
 
 ## Props
@@ -41,6 +34,8 @@ import { FileListToolbar } from "@hyperserve/upload-react";
 
 Shows `"N files added"` by default. Accepts a `label` render prop:
 
+<FileListToolbarFileCountDemo client:load />
+
 ```tsx
 <FileListToolbar
   left={
@@ -54,6 +49,8 @@ Shows `"N files added"` by default. Accepts a `label` render prop:
 ### FileListToolbar.ViewToggle
 
 List/grid toggle buttons. Requires a `ViewModeProvider` ancestor. Accepts a `children` render prop for custom toggle UI:
+
+<FileListToolbarViewToggleDemo client:load />
 
 ```tsx
 <FileListToolbar.ViewToggle>
