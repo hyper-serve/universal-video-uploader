@@ -27,6 +27,9 @@ export default defineConfig({
 						{ label: "Previews", slug: "core-concepts/previews" },
 						{ label: "Provider", slug: "core-concepts/provider" },
 						{ label: "Hooks", slug: "core-concepts/hooks" },
+						{ label: "Theming", slug: "core-concepts/theming" },
+						{ label: "Composable Layout", slug: "core-concepts/composable-layout" },
+						{ label: "Headless Usage", slug: "core-concepts/headless" },
 					],
 					label: "Core Concepts",
 				},
@@ -45,17 +48,16 @@ export default defineConfig({
 				},
 				{
 					items: [
-						{ label: "Hyperserve", slug: "core-concepts/hyperserve-adapter" },
-						{ label: "Custom Adapter", slug: "guides/custom-adapter" },
+						{ label: "Hyperserve", slug: "adapters/hyperserve-adapter" },
+						{ label: "Custom Adapter", slug: "adapters/custom-adapter" },
 					],
 					label: "Adapters",
 				},
 				{
 					items: [
-						{ label: "React Native", slug: "guides/react-native" },
-						{ label: "Composable Layout", slug: "guides/composable-layout" },
-						{ label: "Theming", slug: "guides/theming" },
-						{ label: "Headless Usage", slug: "guides/headless" },
+						{ label: "Example: Next.js", slug: "guides/next-js" },
+						{ label: "Example: Expo", slug: "guides/expo" },
+						{ label: "Setup: React Native", slug: "guides/react-native" },
 					],
 					label: "Guides",
 				},
