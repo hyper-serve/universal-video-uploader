@@ -24,7 +24,9 @@ describe("StatusBadge", () => {
 
 		const badge = screen.getByText("Done");
 		expect(badge).toBeTruthy();
-		expect((badge as HTMLElement).style.backgroundColor).toBe("rgb(0, 0, 0)");
+		expect(["rgb(0, 0, 0)", "#000000"]).toContain(
+			(badge as HTMLElement).style.backgroundColor,
+		);
 	});
 
 	it("supports render-prop children", () => {

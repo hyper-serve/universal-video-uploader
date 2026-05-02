@@ -153,10 +153,13 @@ describe("fileRef (web)", () => {
 	});
 
 	it("toFileRefs converts File array to FileRef array", () => {
-		const blob = new Blob(["a"], { type: "video/mp4" });
 		const files = [
-			new File([blob], "a.mp4", { type: "video/mp4" }),
-			new File([blob], "b.mp4", { type: "video/mp4" }),
+			new File([new Blob(["a"], { type: "video/mp4" })], "a.mp4", {
+				type: "video/mp4",
+			}),
+			new File([new Blob(["b"], { type: "video/mp4" })], "b.mp4", {
+				type: "video/mp4",
+			}),
 		];
 
 		const refs = toFileRefs(files);
