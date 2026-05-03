@@ -1,135 +1,172 @@
 ---
 title: Theming
-description: How the style system works across UI packages — tokens, style props, and status appearance.
+description: How to theme components — slot maps, status config, and escape hatches.
 ---
 
 import { LinkCard } from "@astrojs/starlight/components";
 import ThemingStatusConfigDemo from "../../../components/demos/ThemingStatusConfigDemo";
 import ThemingFileItemDemo from "../../../components/demos/ThemingFileItemDemo";
 import ThemingDropZoneDemo from "../../../components/demos/ThemingDropZoneDemo";
+import ThemingSlotMapDemo from "../../../components/demos/ThemingSlotMapDemo";
 import ThemedDemo from "../../../components/demos/ThemedDemo";
 
-All components are unstyled by default beyond functional defaults, and accept `style`, `className`, and per-sub-component style props. This means you can restyle anything without forking or replacing components.
+Every compound component accepts a `styles` slot map: a single prop that themes every internal element of the component. Build a slot map once, spread it where you use the component. Local `style` props on individual sub-components remain available as fine-grained overrides, and `children` render props provide the maximum-control escape hatch.
 
-## Theme tokens
+## Slot maps
 
-The core package exports design tokens consumed by both UI packages:
-
-```typescript
-import {
-  themeColors,        // accent, error, border, bg variants, etc.
-  themeRadius,        // sm, md, lg, xl, pill
-  themeFontScale,     // xs, sm, md, lg, xl (pixel values)
-  themeSpacingScale,  // xxs, xs, sm, … cardX, cardY, dropZone, etc.
-} from "@hyperserve/upload";
-```
-
-These are plain objects — use them in inline styles, CSS-in-JS, or when building your own components alongside the library.
-
-## Status config
-
-`statusConfig` maps every `FileStatus` to a background color, text color, and label:
-
-```typescript
-import { statusConfig } from "@hyperserve/upload";
-
-// statusConfig.uploading = { bg: "#eff6ff", text: "#2563eb", label: "Uploading" }
-// statusConfig.failed    = { bg: "#fef2f2", text: "#dc2626", label: "Failed" }
-// ...
-```
-
-Components like `StatusBadge` accept a `statusConfig` prop to override per-status values:
-
-<ThemingStatusConfigDemo client:load />
-
-```tsx
-const statusConfig = {
-  ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
-  failed: { bg: "#fee2e2", text: "#dc2626", label: "Error" },
-};
-
-// Pass statusConfig to any StatusBadge — only overridden statuses change
-<StatusBadge status="uploading" statusConfig={statusConfig} />
-<StatusBadge status="ready" statusConfig={statusConfig} />
-<StatusBadge status="failed" statusConfig={statusConfig} />
-```
-
-## Style props
-
-All UI components accept `style` and `className`. Compound components like `FileItem` expose per-sub-component props so you can restyle individual elements without rebuilding the layout:
+Each component exports a `<Component>Styles` type. Pass the map to the component's `styles` prop:
 
 <ThemingFileItemDemo client:load />
 
 ```tsx
-<FileItem file={file} style={{ background: "#1e293b", border: "1px solid #334155" }}>
-  <FileItem.FileName style={{ color: "#f1f5f9" }} />
-  <FileItem.FileSize style={{ color: "#64748b" }} />
-  <FileItem.StatusIcon style={{ color: "#818cf8" }} />
-  <FileItem.UploadProgress
-    fillStyle={{ background: "linear-gradient(90deg, #818cf8, #a78bfa)" }}
-  />
-  <FileItem.ErrorMessage style={{ color: "#f87171" }} />
+import { FileItem, type FileItemStyles } from "@hyperserve/video-uploader-react";
+
+<FileItem
+  file={file}
+  styles={{
+    root: { background: "#1e293b", border: "1px solid #334155" },
+    fileName: { color: "#f1f5f9" },
+    fileSize: { color: "#64748b" },
+    statusIcon: { color: "#818cf8" },
+    progressFill: { background: "linear-gradient(90deg, #818cf8, #a78bfa)" },
+    errorMessage: { color: "#f87171" },
+  }}
+>
+  <FileItem.Content />
 </FileItem>
 ```
 
-`DropZone` also accepts `activeStyle` for the drag-active state:
+The slot map covers every internal element. See each component's docs for the full list of slot names.
+
+### Merge order
+
+Three layers, applied in this order (last wins on conflicts):
+
+1. The component's built-in defaults
+2. `styles[slotName]` from the slot map
+3. Individual `style` prop on a sub-component (when used in compound form)
+
+```tsx
+// styles.fileName.color = red applies to FileName
+// but the local style prop on FileItem.FileName overrides it
+<FileItem
+  file={file}
+  styles={{ fileName: { color: "red" } }}
+>
+  <FileItem.FileName style={{ color: "blue" }} />  {/* blue wins */}
+</FileItem>
+```
+
+## Theming a `DropZone`
+
+`DropZone` slots cover the default inner content (icon, primary text, browse link, supporting text) and the active drag state:
 
 <ThemingDropZoneDemo client:load />
 
 ```tsx
 <DropZone
-  style={{ background: "#1e293b", border: "1px dashed #334155" }}
-  activeStyle={{ background: "#1e1b4b", borderColor: "#818cf8" }}
+  styles={{
+    root: { background: "#1e293b", border: "1px dashed #334155" },
+    activeRoot: { background: "#1e1b4b", borderColor: "#818cf8" },
+    primaryText: { color: "#f1f5f9" },
+    browseText: { color: "#818cf8" },
+    supportingText: { color: "#64748b" },
+  }}
+  supportingText="MP4 up to 500 MB"
 />
 ```
 
-## Complete example
+For full control of the inner content (replacing the icon, text, and browse link entirely), pass a `children` render prop instead.
 
-The demo below applies a dark slate theme entirely through style props — combining `DropZone`, `FileList`, and `FileItem` in one cohesive theme:
+## Build once, spread many
 
-<ThemedDemo client:load />
+Define your theme as a typed object and reuse it everywhere. This is the recommended pattern for cohesive themes across multiple components.
+
+<ThemingSlotMapDemo client:load />
 
 ```tsx
-<DropZone
-  style={{ background: "#1e293b", border: "1px dashed #334155", borderRadius: 8 }}
-  activeStyle={{ background: "#1e1b4b", borderColor: "#818cf8", borderStyle: "solid" }}
->
-  {({ isDragging, openPicker }) => (
-    <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center", padding: "1rem" }}>
-      <span style={{ color: isDragging ? "#a5b4fc" : "#94a3b8", fontSize: "0.875rem" }}>
-        {isDragging ? "Release to add" : "Drag videos here or "}
-      </span>
-      {!isDragging && (
-        <button onClick={openPicker} style={{ border: "1px solid #4f46e5", borderRadius: 5, color: "#818cf8" }}>
-          browse
-        </button>
-      )}
-    </div>
-  )}
-</DropZone>
+import {
+  type DropZoneStyles,
+  type FileItemStyles,
+  DropZone,
+  FileItem,
+  FileList,
+} from "@hyperserve/video-uploader-react";
 
+const darkTheme = {
+  dropZone: {
+    root: { background: "#1e293b", border: "1px dashed #334155" },
+    activeRoot: { borderColor: "#818cf8", borderStyle: "solid" },
+    primaryText: { color: "#f1f5f9" },
+    browseText: { color: "#818cf8" },
+  } satisfies DropZoneStyles,
+  fileItem: {
+    root: { background: "#1e293b", border: "1px solid #334155" },
+    fileName: { color: "#f1f5f9" },
+    fileSize: { color: "#64748b" },
+    statusIcon: { color: "#818cf8" },
+    progressFill: { background: "linear-gradient(90deg, #818cf8, #a78bfa)" },
+  } satisfies FileItemStyles,
+};
+
+<DropZone styles={darkTheme.dropZone} />
 <FileList>
   {(file) => (
-    <FileItem
-      file={file}
-      key={file.id}
-      layout="column"
-      style={{ background: "#1e293b", border: "1px solid #334155" }}
-    >
-      <div style={{ alignItems: "center", display: "flex", justifyContent: "space-between" }}>
-        <FileItem.FileName style={{ color: "#f1f5f9" }} />
-        <FileItem.RemoveButton style={{ color: "#64748b" }} />
-      </div>
-      <FileItem.Meta>
-        <FileItem.FileSize style={{ color: "#64748b" }} />
-        <FileItem.StatusIcon style={{ color: "#818cf8" }} />
-      </FileItem.Meta>
-      <FileItem.UploadProgress
-        fillStyle={{ background: "linear-gradient(90deg, #818cf8, #a78bfa)" }}
-      />
-      <FileItem.ErrorMessage style={{ color: "#f87171" }} />
-      <FileItem.RetryButton style={{ color: "#fb923c" }} />
+    <FileItem file={file} key={file.id} styles={darkTheme.fileItem}>
+      <FileItem.Content />
     </FileItem>
   )}
 </FileList>
 ```
+
+## Status config
+
+`statusConfig` maps every `FileStatus` to a background color, text color, and label. It's separate from the slot system because it's a per-status table, not a per-element style:
+
+<ThemingStatusConfigDemo client:load />
+
+```typescript
+import { statusConfig } from "@hyperserve/video-uploader";
+
+// statusConfig.uploading = { bg: "#eff6ff", text: "#2563eb", label: "Uploading" }
+```
+
+Pass overrides to `StatusBadge`:
+
+```tsx
+<StatusBadge
+  status="uploading"
+  statusConfig={{
+    ready: { bg: "#dbeafe", text: "#1d4ed8", label: "Complete" },
+  }}
+/>
+```
+
+## Escape hatches
+
+Three tools, in order of granularity:
+
+1. **`styles` slot map** — themes everything from one prop
+2. **Per-sub-component `style` prop** — fine-grained override that wins over the slot
+3. **`children` render prop** — full custom rendering (available on `DropZone`, `StatusBadge`, `Thumbnail`, `FileItem.StatusIcon`, `FileList`, `FileItem`)
+
+## React Native
+
+The same `styles` slot pattern works on React Native. Slot names are identical; types use `StyleProp<ViewStyle>` and `StyleProp<TextStyle>` instead of `React.CSSProperties`:
+
+```tsx
+import { FileItem, type FileItemStyles } from "@hyperserve/video-uploader-react-native";
+
+const fileItemStyles: FileItemStyles = {
+  root: { backgroundColor: "#1e293b", borderColor: "#334155" },
+  fileName: { color: "#f1f5f9" },
+};
+
+<FileItem file={file} styles={fileItemStyles}>
+  <FileItem.Content />
+</FileItem>;
+```
+
+## Complete example
+
+<ThemedDemo client:load />

@@ -23,17 +23,19 @@ export default function ThemingFileItemDemo() {
 					<FileItem
 						file={file}
 						key={file.id}
-						style={{ background: "#1e293b", border: "1px solid #334155" }}
-					>
-						<FileItem.FileName style={{ color: "#f1f5f9" }} />
-						<FileItem.FileSize style={{ color: "#64748b" }} />
-						<FileItem.StatusIcon style={{ color: "#818cf8" }} />
-						<FileItem.UploadProgress
-							fillStyle={{
+						layout="column"
+						styles={{
+							errorMessage: { color: "#f87171" },
+							fileName: { color: "#f1f5f9" },
+							fileSize: { color: "#64748b" },
+							progressFill: {
 								background: "linear-gradient(90deg, #818cf8, #a78bfa)",
-							}}
-						/>
-						<FileItem.ErrorMessage style={{ color: "#f87171" }} />
+							},
+							root: { background: "#1e293b", border: "1px solid #334155" },
+							statusIcon: { color: "#818cf8" },
+						}}
+					>
+						<FileItem.Content />
 					</FileItem>
 				))}
 			</div>

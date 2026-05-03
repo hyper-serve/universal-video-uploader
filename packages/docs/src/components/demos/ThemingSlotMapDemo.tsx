@@ -12,20 +12,10 @@ import { createMockConfig } from "./MockAdapter";
 
 const darkTheme = {
 	dropZone: {
-		activeRoot: {
-			background: "#1e1b4b",
-			borderColor: "#818cf8",
-			borderStyle: "solid",
-		},
+		activeRoot: { borderColor: "#818cf8", borderStyle: "solid" },
 		browseText: { color: "#818cf8" },
 		primaryText: { color: "#f1f5f9" },
-		root: {
-			background: "#1e293b",
-			border: "1px dashed #334155",
-			borderRadius: 8,
-			minHeight: 72,
-		},
-		supportingText: { color: "#64748b" },
+		root: { background: "#1e293b", border: "1px dashed #334155" },
 	} satisfies DropZoneStyles,
 	fileItem: {
 		errorMessage: { color: "#f87171" },
@@ -42,20 +32,13 @@ const darkTheme = {
 function UploadUI() {
 	return (
 		<div style={wrap}>
-			<DropZone styles={darkTheme.dropZone} supportingText="MP4 up to 500 MB" />
-
-			<FileList
-				emptyMessage={
-					<span style={{ color: "#475569", fontSize: "0.875rem" }}>
-						Drop files above to get started.
-					</span>
-				}
-			>
+			<DropZone styles={darkTheme.dropZone} supportingText="MP4 only" />
+			<FileList>
 				{(file) => (
 					<FileItem
 						file={file}
 						key={file.id}
-						layout="column"
+						layout="row"
 						styles={darkTheme.fileItem}
 					>
 						<FileItem.Content />
@@ -66,7 +49,7 @@ function UploadUI() {
 	);
 }
 
-export default function ThemedDemo() {
+export default function ThemingSlotMapDemo() {
 	const config = useMemo(() => createMockConfig(), []);
 	return (
 		<div className="not-content" style={container}>

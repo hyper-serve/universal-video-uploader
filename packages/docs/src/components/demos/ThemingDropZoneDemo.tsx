@@ -17,8 +17,22 @@ export default function ThemingDropZoneDemo() {
 		>
 			<UploadProvider config={config}>
 				<DropZone
-					activeStyle={{ background: "#1e1b4b", borderColor: "#818cf8" }}
-					style={{ background: "#1e293b", border: "1px dashed #334155" }}
+					styles={{
+						activeRoot: {
+							background: "#1e1b4b",
+							borderColor: "#818cf8",
+							borderStyle: "solid",
+						},
+						browseText: { color: "#818cf8" },
+						primaryText: { color: "#f1f5f9" },
+						root: {
+							background: "#1e293b",
+							border: "1px dashed #334155",
+							borderRadius: 8,
+						},
+						supportingText: { color: "#64748b" },
+					}}
+					supportingText="MP4 up to 500 MB"
 				/>
 			</UploadProvider>
 		</div>
