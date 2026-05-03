@@ -28,17 +28,17 @@ Bun.serve({
 					fileSizeBytes,
 					resolutions,
 					isPublic,
-					metadata,
-					thumbnail,
+					custom_user_metadata,
+					thumbnail_timestamps_seconds,
 				} = await req.json();
 				const result = await client.createVideo({
 					filename,
 					fileSizeBytes,
 					isPublic,
 					resolutions,
-					...(metadata && { customMetadata: metadata }),
-					...(thumbnail && {
-						thumbnailTimestampsSeconds: [thumbnail.timestampMs / 1000],
+					...(custom_user_metadata && { customMetadata: custom_user_metadata }),
+					...(thumbnail_timestamps_seconds && {
+						thumbnailTimestampsSeconds: thumbnail_timestamps_seconds,
 					}),
 				});
 				return Response.json(
