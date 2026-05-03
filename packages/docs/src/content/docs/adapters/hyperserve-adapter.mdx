@@ -68,12 +68,14 @@ The three callbacks call your backend, which proxies to Hyperserve using your AP
 type HyperserveUploadOptions = {
   resolutions: string[];
   isPublic: boolean;
-  thumbnail?: { timestampMs: number };
-  metadata?: Record<string, unknown>;
+  thumbnail_timestamps_seconds?: number[];
+  custom_user_metadata?: Record<string, unknown>;
 };
 ```
 
-`metadata` is forwarded on the create-video request and included in webhook payloads when processing completes. Use it to associate uploads with your app's entities (post ID, product ID, etc.).
+`custom_user_metadata` is forwarded on the create-video request and included in webhook payloads when processing completes. Use it to associate uploads with your app's entities (post ID, product ID, etc.).
+
+`thumbnail_timestamps_seconds` lets you request multiple thumbnail frames at specific points in the video. Each value is a non-negative number of seconds.
 
 ## Status polling
 
