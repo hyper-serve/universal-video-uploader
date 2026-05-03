@@ -9,12 +9,18 @@ export type StatusConfigEntry = {
 	text?: string;
 };
 
+export type StatusBadgeStyles = {
+	root?: React.CSSProperties;
+	label?: React.CSSProperties;
+};
+
 export type StatusBadgeProps = {
 	status: FileStatus;
 	style?: React.CSSProperties;
 	className?: string;
 	statusConfig?: Partial<Record<FileStatus, StatusConfigEntry>>;
 	getLabel?: (status: FileStatus) => string;
+	styles?: StatusBadgeStyles;
 	children?: (info: { label: string; color: string }) => React.ReactNode;
 };
 
@@ -39,6 +45,7 @@ export function StatusBadge({
 	className,
 	statusConfig: statusConfigOverride,
 	getLabel,
+	styles: slots,
 	children,
 }: StatusBadgeProps) {
 	const config = mergeConfig(status, statusConfigOverride, getLabel);
@@ -61,6 +68,8 @@ export function StatusBadge({
 				lineHeight: 1,
 				padding: "0.2rem 0.5rem",
 				textTransform: "uppercase",
+				...slots?.root,
+				...slots?.label,
 				...style,
 			}}
 		>

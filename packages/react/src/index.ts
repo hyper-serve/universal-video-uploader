@@ -42,6 +42,7 @@ export type { ProgressBarProps } from "./ProgressBar.js";
 export { ProgressBar } from "./ProgressBar.js";
 export type {
 	StatusBadgeProps,
+	StatusBadgeStyles,
 	StatusConfigEntry,
 } from "./StatusBadge.js";
 export { StatusBadge } from "./StatusBadge.js";

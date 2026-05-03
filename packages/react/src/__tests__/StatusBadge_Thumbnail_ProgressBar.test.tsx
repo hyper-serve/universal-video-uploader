@@ -44,6 +44,31 @@ describe("StatusBadge", () => {
 		expect(el.textContent).toMatch(/Failed/i);
 	});
 
+	it("StatusBadge styles.root applies to the badge container", () => {
+		const { container } = render(
+			<StatusBadge
+				status="ready"
+				styles={{ root: { backgroundColor: "rgb(10, 20, 30)" } }}
+			/>,
+		);
+
+		const badge = container.firstElementChild as HTMLElement;
+		expect(badge.style.backgroundColor).toBe("rgb(10, 20, 30)");
+	});
+
+	it("StatusBadge local style prop wins over styles slot", () => {
+		const { container } = render(
+			<StatusBadge
+				status="ready"
+				style={{ backgroundColor: "rgb(0, 0, 0)" }}
+				styles={{ root: { backgroundColor: "rgb(255, 255, 255)" } }}
+			/>,
+		);
+
+		const badge = container.firstElementChild as HTMLElement;
+		expect(badge.style.backgroundColor).toBe("rgb(0, 0, 0)");
+	});
+
 	it("renders correct labels for all 6 statuses", () => {
 		const statuses: Array<{
 			status: import("@hyperserve/video-uploader").FileStatus;
