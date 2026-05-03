@@ -88,6 +88,8 @@ describe("FileList (native)", () => {
 		const emptyView = views[0];
 		const style = emptyView.props.style as Array<unknown>;
 		const merged = Object.assign({}, ...style.filter(Boolean));
-		expect((merged as Record<string, unknown>).backgroundColor).toBe("rgb(1, 2, 3)");
+		expect((merged as Record<string, unknown>).backgroundColor).toBe(
+			"rgb(1, 2, 3)",
+		);
 	});
 });

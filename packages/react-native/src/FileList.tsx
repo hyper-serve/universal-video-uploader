@@ -38,7 +38,9 @@ export function FileList({
 		return (
 			<View style={[styles.empty, slots?.empty]}>
 				{typeof emptyMessage === "string" ? (
-					<Text style={[styles.emptyText, slots?.emptyText]}>{emptyMessage}</Text>
+					<Text style={[styles.emptyText, slots?.emptyText]}>
+						{emptyMessage}
+					</Text>
 				) : (
 					emptyMessage
 				)}
