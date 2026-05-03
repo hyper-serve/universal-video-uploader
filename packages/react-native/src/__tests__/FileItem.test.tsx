@@ -200,4 +200,57 @@ describe("FileItem (native)", () => {
 			render(<FileItem.FileName />);
 		}).toThrow("FileItem compound components must be used within <FileItem>");
 	});
+
+	it("styles slot map applies to compound sub-components via context", () => {
+		render(
+			<FileItem
+				file={makeFile()}
+				styles={{ fileName: { color: "rgb(255, 0, 0)" } }}
+			>
+				<FileItem.FileName />
+			</FileItem>,
+		);
+
+		const name = screen.getByText("clip.mp4");
+		expect(name.props.style).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ color: "rgb(255, 0, 0)" }),
+			]),
+		);
+	});
+
+	it("local style prop wins over styles slot (RN array merge)", () => {
+		render(
+			<FileItem
+				file={makeFile()}
+				styles={{ fileName: { color: "rgb(255, 0, 0)" } }}
+			>
+				<FileItem.FileName style={{ color: "rgb(0, 0, 255)" }} />
+			</FileItem>,
+		);
+
+		const name = screen.getByText("clip.mp4");
+		// RN style merges from left to right within an array; local style sits
+		// last in the [base, slot, local] order, so its color wins.
+		const flat = (
+			Array.isArray(name.props.style) ? name.props.style : [name.props.style]
+		).flat();
+		const colors = flat
+			.filter((s: any) => s && typeof s === "object" && "color" in s)
+			.map((s: any) => s.color);
+		expect(colors[colors.length - 1]).toBe("rgb(0, 0, 255)");
+	});
+
+	it("StatusIcon children render prop receives status and label", () => {
+		const childFn = jest.fn(() => <></>);
+		render(
+			<FileItem file={makeFile({ status: "processing" })}>
+				<FileItem.StatusIcon>{childFn}</FileItem.StatusIcon>
+			</FileItem>,
+		);
+		expect(childFn).toHaveBeenCalledWith({
+			label: "Processing",
+			status: "processing",
+		});
+	});
 });
