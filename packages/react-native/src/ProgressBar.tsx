@@ -3,10 +3,16 @@ import type { StyleProp, ViewStyle } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { colors, radius } from "./theme.js";
 
+export type ProgressBarStyles = {
+	track?: StyleProp<ViewStyle>;
+	fill?: StyleProp<ViewStyle>;
+};
+
 export type ProgressBarProps = {
 	progress: number;
 	trackStyle?: StyleProp<ViewStyle>;
 	fillStyle?: StyleProp<ViewStyle>;
+	styles?: ProgressBarStyles;
 	children?: (progress: number) => React.ReactNode;
 };
 
@@ -14,6 +20,7 @@ export function ProgressBar({
 	progress,
 	trackStyle,
 	fillStyle,
+	styles: slots,
 	children,
 }: ProgressBarProps) {
 	if (children) {
@@ -25,9 +32,11 @@ export function ProgressBar({
 			accessibilityRole="progressbar"
 			accessibilityValue={{ max: 100, min: 0, now: progress }}
 			accessible
-			style={[styles.track, trackStyle]}
+			style={[styles.track, slots?.track, trackStyle]}
 		>
-			<View style={[styles.fill, { width: `${progress}%` }, fillStyle]} />
+			<View
+				style={[styles.fill, { width: `${progress}%` }, slots?.fill, fillStyle]}
+			/>
 		</View>
 	);
 }

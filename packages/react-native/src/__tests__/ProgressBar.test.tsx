@@ -29,4 +29,24 @@ describe("ProgressBar (native)", () => {
 		render(<ProgressBar progress={75}>{childFn}</ProgressBar>);
 		expect(childFn).toHaveBeenCalledWith(75);
 	});
+
+	it("styles.track applies to the track View", () => {
+		const { UNSAFE_getAllByType } = render(
+			<ProgressBar
+				progress={50}
+				styles={{ track: { backgroundColor: "rgb(10, 20, 30)" } }}
+			/>,
+		);
+
+		const views = UNSAFE_getAllByType(require("react-native").View);
+		const track = views[0];
+		const flat = (
+			Array.isArray(track.props.style) ? track.props.style : [track.props.style]
+		).flat();
+		expect(flat).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ backgroundColor: "rgb(10, 20, 30)" }),
+			]),
+		);
+	});
 });
