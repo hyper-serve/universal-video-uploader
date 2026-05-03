@@ -118,3 +118,21 @@ If you are uploading to Hyperserve, install the official adapter package:
   description="Documentation for setting up the hyperserve adapter"
   href="/adapters/hyperserve-adapter/"
 />
+
+## Local development against a checkout
+
+When developing against a local clone of `universal-video-uploader` (for example, to test a fix before publishing), npm `github:` URLs do not target subdirectories of a monorepo. Use a `file:` reference in your consumer app's `package.json` instead:
+
+```json
+{
+  "dependencies": {
+    "@hyperserve/video-uploader": "file:../path/to/universal-video-uploader/packages/core",
+    "@hyperserve/video-uploader-react": "file:../path/to/universal-video-uploader/packages/react",
+    "@hyperserve/video-uploader-adapter-hyperserve": "file:../path/to/universal-video-uploader/packages/upload-adapter-hyperserve"
+  }
+}
+```
+
+Run `bun build` (or `npm run build`) inside the cloned repo before installing. The `file:` reference resolves to the package's built output, so re-run the build after each change.
+
+For published preview builds (for example, from a pull request), use [pkg.pr.new](https://pkg.pr.new) URLs.
