@@ -312,7 +312,7 @@ function Content({ style }: FileItemContentProps) {
 
 	return (
 		<View style={[slots.contentInner, style]}>
-			<Thumbnail file={file} />
+			<Thumbnail file={file} style={slots.thumbnail} />
 			<View style={styles.nameRow}>
 				<FileName style={styles.fileNameFlex} />
 				<Actions>
