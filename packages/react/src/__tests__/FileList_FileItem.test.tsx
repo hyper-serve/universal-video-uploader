@@ -70,6 +70,30 @@ describe("FileList and FileItem", () => {
 		expect(screen.queryByText("won't show")).toBeNull();
 	});
 
+	it("slots.root applies to list container", () => {
+		const file: FileState = {
+			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 0,
+			ref: makeRef("video.mp4", 1234),
+			status: "selected",
+			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
+		};
+		mockContext.files = [file];
+
+		const { container } = render(
+			<FileList slots={{ root: { backgroundColor: "rgb(1, 2, 3)" } }}>
+				{(f) => <div>{f.ref.name}</div>}
+			</FileList>,
+		);
+
+		const wrapper = container.firstElementChild as HTMLElement;
+		expect(wrapper.style.backgroundColor).toBe("rgb(1, 2, 3)");
+	});
+
 	it("renders files in list mode by default", () => {
 		const file: FileState = {
 			error: null,

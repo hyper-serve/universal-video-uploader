@@ -5,6 +5,11 @@ import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";
 import { useViewMode, type ViewMode } from "./ViewModeContext.js";
 
+export type FileListStyles = {
+	root?: React.CSSProperties;
+	empty?: React.CSSProperties;
+};
+
 export type FileListProps = {
 	mode?: ViewMode;
 	style?: React.CSSProperties;
@@ -14,6 +19,7 @@ export type FileListProps = {
 	emptyClassName?: string;
 	emptyStyle?: React.CSSProperties;
 	renderEmpty?: () => React.ReactNode;
+	slots?: FileListStyles;
 	children?: (file: FileState, index: number) => React.ReactNode;
 };
 
@@ -33,6 +39,7 @@ export function FileList({
 	emptyClassName,
 	emptyStyle,
 	renderEmpty,
+	slots,
 	children,
 }: FileListProps) {
 	const { files } = useUpload();
@@ -47,7 +54,7 @@ export function FileList({
 			return (
 				<div
 					className={emptyClassName}
-					style={{ ...defaultEmptyStyle, ...emptyStyle }}
+					style={{ ...defaultEmptyStyle, ...slots?.empty, ...emptyStyle }}
 				>
 					{emptyMessage}
 				</div>
@@ -61,12 +68,14 @@ export function FileList({
 					display: "grid",
 					gap: "0.875rem",
 					gridTemplateColumns: columns,
+					...slots?.root,
 					...style,
 				}
 			: {
 					display: "flex",
 					flexDirection: "column",
 					gap: "0.75rem",
+					...slots?.root,
 					...style,
 				};
 
