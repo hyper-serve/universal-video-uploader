@@ -269,4 +269,29 @@ describe("ProgressBar", () => {
 		const inner = (bar as HTMLElement).firstElementChild as HTMLElement;
 		expect(inner.style.width).toBe("100%");
 	});
+
+	it("ProgressBar styles.track applies to track and trackStyle wins", () => {
+		const { container } = render(
+			<ProgressBar
+				progress={50}
+				styles={{ track: { backgroundColor: "rgb(10, 20, 30)" } }}
+			/>,
+		);
+
+		const track = container.firstElementChild as HTMLElement;
+		expect(track.style.backgroundColor).toBe("rgb(10, 20, 30)");
+	});
+
+	it("ProgressBar trackStyle prop wins over styles.track slot", () => {
+		const { container } = render(
+			<ProgressBar
+				progress={50}
+				styles={{ track: { backgroundColor: "rgb(0, 0, 0)" } }}
+				trackStyle={{ backgroundColor: "rgb(255, 255, 255)" }}
+			/>,
+		);
+
+		const track = container.firstElementChild as HTMLElement;
+		expect(track.style.backgroundColor).toBe("rgb(255, 255, 255)");
+	});
 });

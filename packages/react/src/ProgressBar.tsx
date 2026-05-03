@@ -1,12 +1,18 @@
 import type React from "react";
 import { colors, radius } from "./theme.js";
 
+export type ProgressBarStyles = {
+	track?: React.CSSProperties;
+	fill?: React.CSSProperties;
+};
+
 export type ProgressBarProps = {
 	progress: number;
 	trackStyle?: React.CSSProperties;
 	fillStyle?: React.CSSProperties;
 	trackClassName?: string;
 	fillClassName?: string;
+	styles?: ProgressBarStyles;
 	children?: (progress: number) => React.ReactNode;
 };
 
@@ -16,6 +22,7 @@ export function ProgressBar({
 	fillStyle,
 	trackClassName,
 	fillClassName,
+	styles: slots,
 	children,
 }: ProgressBarProps) {
 	if (children) {
@@ -35,6 +42,7 @@ export function ProgressBar({
 				height: 6,
 				overflow: "hidden",
 				width: "100%",
+				...slots?.track,
 				...trackStyle,
 			}}
 		>
@@ -46,6 +54,7 @@ export function ProgressBar({
 					height: "100%",
 					transition: "width 0.25s ease-out",
 					width: `${progress}%`,
+					...slots?.fill,
 					...fillStyle,
 				}}
 			/>
