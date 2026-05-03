@@ -1,17 +1,24 @@
 import type { FileState } from "@hyperserve/video-uploader";
 import { useUpload } from "@hyperserve/video-uploader";
 import type React from "react";
-import type { StyleProp, ViewStyle } from "react-native";
+import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { FileItem } from "./FileItem.js";
 import { colors } from "./theme.js";
 import { useViewMode, type ViewMode } from "./ViewModeContext.js";
+
+export type FileListStyles = {
+	root?: StyleProp<ViewStyle>;
+	empty?: StyleProp<ViewStyle>;
+	emptyText?: StyleProp<TextStyle>;
+};
 
 export type FileListProps = {
 	mode?: ViewMode;
 	style?: StyleProp<ViewStyle>;
 	columns?: number;
 	emptyMessage?: React.ReactNode;
+	slots?: FileListStyles;
 	children?: (file: FileState, index: number) => React.ReactElement;
 };
 
@@ -20,6 +27,7 @@ export function FileList({
 	style,
 	columns = 2,
 	emptyMessage,
+	slots,
 	children,
 }: FileListProps) {
 	const { files } = useUpload();
@@ -28,9 +36,9 @@ export function FileList({
 
 	if (files.length === 0 && emptyMessage) {
 		return (
-			<View style={styles.empty}>
+			<View style={[styles.empty, slots?.empty]}>
 				{typeof emptyMessage === "string" ? (
-					<Text style={styles.emptyText}>{emptyMessage}</Text>
+					<Text style={[styles.emptyText, slots?.emptyText]}>{emptyMessage}</Text>
 				) : (
 					emptyMessage
 				)}
@@ -42,7 +50,7 @@ export function FileList({
 
 	return (
 		<FlatList
-			contentContainerStyle={[styles.content, style]}
+			contentContainerStyle={[styles.content, slots?.root, style]}
 			data={files}
 			key={resolvedMode === "grid" ? `grid-${columns}` : "list"}
 			keyExtractor={(item) => item.id}

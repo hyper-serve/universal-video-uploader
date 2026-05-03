@@ -1,6 +1,6 @@
 import type { FileState } from "@hyperserve/video-uploader";
 import { render, screen } from "@testing-library/react-native";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { FileList } from "../FileList.js";
 
 let mockFiles: FileState[] = [];
@@ -74,5 +74,20 @@ describe("FileList (native)", () => {
 		mockFiles = [makeFile("x")];
 		render(<FileList />);
 		expect(screen.getByText("x.mp4")).toBeTruthy();
+	});
+
+	it("slots.empty applies to empty wrapper View", () => {
+		const { UNSAFE_getAllByType } = render(
+			<FileList
+				emptyMessage="Empty"
+				slots={{ empty: { backgroundColor: "rgb(1, 2, 3)" } }}
+			/>,
+		);
+
+		const views = UNSAFE_getAllByType(View);
+		const emptyView = views[0];
+		const style = emptyView.props.style as Array<unknown>;
+		const merged = Object.assign({}, ...style.filter(Boolean));
+		expect((merged as Record<string, unknown>).backgroundColor).toBe("rgb(1, 2, 3)");
 	});
 });

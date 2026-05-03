@@ -14,7 +14,7 @@ export type {
 	UploadProgressProps,
 } from "./FileItem.js";
 export { FileItem } from "./FileItem.js";
-export type { FileListProps } from "./FileList.js";
+export type { FileListProps, FileListStyles } from "./FileList.js";
 export { FileList } from "./FileList.js";
 export type {
 	FileCountProps,
