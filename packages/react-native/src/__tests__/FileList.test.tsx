@@ -76,11 +76,11 @@ describe("FileList (native)", () => {
 		expect(screen.getByText("x.mp4")).toBeTruthy();
 	});
 
-	it("slots.empty applies to empty wrapper View", () => {
+	it("styles.empty applies to empty wrapper View", () => {
 		const { UNSAFE_getAllByType } = render(
 			<FileList
 				emptyMessage="Empty"
-				slots={{ empty: { backgroundColor: "rgb(1, 2, 3)" } }}
+				styles={{ empty: { backgroundColor: "rgb(1, 2, 3)" } }}
 			/>,
 		);
 

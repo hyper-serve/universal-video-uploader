@@ -19,7 +19,7 @@ export type FileListProps = {
 	emptyClassName?: string;
 	emptyStyle?: React.CSSProperties;
 	renderEmpty?: () => React.ReactNode;
-	slots?: FileListStyles;
+	styles?: FileListStyles;
 	children?: (file: FileState, index: number) => React.ReactNode;
 };
 
@@ -39,7 +39,7 @@ export function FileList({
 	emptyClassName,
 	emptyStyle,
 	renderEmpty,
-	slots,
+	styles: slots,
 	children,
 }: FileListProps) {
 	const { files } = useUpload();

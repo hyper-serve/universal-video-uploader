@@ -18,7 +18,7 @@ export type FileListProps = {
 	style?: StyleProp<ViewStyle>;
 	columns?: number;
 	emptyMessage?: React.ReactNode;
-	slots?: FileListStyles;
+	styles?: FileListStyles;
 	children?: (file: FileState, index: number) => React.ReactElement;
 };
 
@@ -27,7 +27,7 @@ export function FileList({
 	style,
 	columns = 2,
 	emptyMessage,
-	slots,
+	styles: slots,
 	children,
 }: FileListProps) {
 	const { files } = useUpload();

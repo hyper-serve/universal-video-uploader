@@ -70,7 +70,7 @@ describe("FileList and FileItem", () => {
 		expect(screen.queryByText("won't show")).toBeNull();
 	});
 
-	it("slots.root applies to list container", () => {
+	it("styles.root applies to list container", () => {
 		const file: FileState = {
 			error: null,
 			id: "1",
@@ -85,7 +85,7 @@ describe("FileList and FileItem", () => {
 		mockContext.files = [file];
 
 		const { container } = render(
-			<FileList slots={{ root: { backgroundColor: "rgb(1, 2, 3)" } }}>
+			<FileList styles={{ root: { backgroundColor: "rgb(1, 2, 3)" } }}>
 				{(f) => <div>{f.ref.name}</div>}
 			</FileList>,
 		);
