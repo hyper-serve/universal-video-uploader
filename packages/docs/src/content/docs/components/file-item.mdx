@@ -49,6 +49,7 @@ import { FileItem, Thumbnail } from "@hyperserve/upload-react";
 | `layout` | `"row" \| "column"` | `"column"` | Layout direction |
 | `style` | `CSSProperties` | none | Container styles |
 | `className` | `string` | none | Container class |
+| `styles` | `FileItemStyles` | none | Slot map applied to internal elements (see [Slots](#slots) below) |
 | `children` | `ReactNode \| (file) => ReactNode` | none | Sub-components or render function |
 
 ## Sub-components
@@ -72,3 +73,53 @@ All sub-components read from the parent `FileItem` context. They don't need expl
 ## Default rendering
 
 When `children` is omitted on `FileItem`, it renders `FileItem.Content`, which assembles all sub-components in a sensible default layout that adapts to the `layout` prop.
+
+## Slots
+
+Pass a `styles` slot map to theme every internal element from one prop. Slots merge over defaults; local `style` props on sub-components win over slots. See [Theming](/core-concepts/theming/) for the canonical merge-order explanation.
+
+| Slot | Targets |
+|------|---------|
+| `root` | The outer card container |
+| `contentInner` | The inner wrapper (when using `FileItem.Content`) |
+| `fileName` | `FileItem.FileName` text |
+| `fileSize` | `FileItem.FileSize` text |
+| `errorMessage` | `FileItem.ErrorMessage` div |
+| `removeButton` | `FileItem.RemoveButton` button |
+| `retryButton` | `FileItem.RetryButton` button |
+| `statusIcon` | `FileItem.StatusIcon` outer span |
+| `statusText` | "Processing..." text inside `StatusIcon` |
+| `meta` | `FileItem.Meta` flex row |
+| `actions` | `FileItem.Actions` flex column |
+| `progressTrack` | `FileItem.UploadProgress` track |
+| `progressFill` | `FileItem.UploadProgress` fill |
+| `thumbnail` | `Thumbnail` rendered by `FileItem.Content` or `PlaybackPreview` |
+
+```tsx
+<FileItem
+  file={file}
+  styles={{
+    root: { background: "#1e293b" },
+    fileName: { color: "white" },
+  }}
+>
+  <FileItem.Content />
+</FileItem>
+```
+
+The React Native `FileItem` exposes the same slots plus two extras for the inner `<Text>` of its buttons, which web doesn't need (it uses `children` text):
+
+- `removeButtonText`
+- `retryButtonText`
+
+## StatusIcon parity
+
+`FileItem.StatusIcon` accepts an additional `textStyle` prop (the inner "Processing..." span) and a `children` render prop for full custom rendering:
+
+```tsx
+<FileItem.StatusIcon textStyle={{ fontSize: 10 }} />
+
+<FileItem.StatusIcon>
+  {({ status, label }) => <CustomBadge status={status}>{label}</CustomBadge>}
+</FileItem.StatusIcon>
+```

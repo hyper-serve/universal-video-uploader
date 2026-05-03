@@ -39,6 +39,7 @@ import { Thumbnail } from "@hyperserve/upload-react";
 | `placeholderStyle` | `CSSProperties` | none | Styles for the placeholder container |
 | `placeholderClassName` | `string` | none | Class for the placeholder container |
 | `placeholder` | `ReactNode` | none | Custom placeholder content (replaces the default icon) |
+| `styles` | `ThumbnailStyles` | none | Slot map applied to internal elements (see [Slots](#slots) below) |
 | `children` | `(info) => ReactNode` | none | Render function receiving `{ thumbnailUri, playbackUrl, isReady }` |
 
 ## Behavior
@@ -46,3 +47,23 @@ import { Thumbnail } from "@hyperserve/upload-react";
 - Shows the thumbnail from `file.thumbnailUri` (generated on file add, web only)
 - When `playback` is true and the file is `ready`, renders a `<video>` element with the `playbackUrl`
 - Shows a placeholder icon when no thumbnail is available
+
+## Slots
+
+Pass a `styles` slot map to theme internal elements. Slots merge over defaults; local `style`/`placeholderStyle` props win over slots. See [Theming](/core-concepts/theming/) for the canonical merge-order explanation.
+
+| Slot | Targets |
+|------|---------|
+| `root` | The outer container (image, video, or placeholder wrapper) |
+| `image` | The `<img>` element (and `<video>` element in playback mode) |
+| `placeholder` | The placeholder container shown when no thumbnail is available |
+
+```tsx
+<Thumbnail
+  file={file}
+  styles={{
+    root: { borderRadius: 12, overflow: "hidden" },
+    placeholder: { background: "#0f172a", color: "#475569" },
+  }}
+/>
+```

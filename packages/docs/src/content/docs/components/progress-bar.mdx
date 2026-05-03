@@ -25,6 +25,7 @@ import { ProgressBar } from "@hyperserve/upload-react";
 | `fillStyle` | `CSSProperties` | none | Styles for the fill element |
 | `trackClassName` | `string` | none | Class for the track |
 | `fillClassName` | `string` | none | Class for the fill |
+| `styles` | `ProgressBarStyles` | none | Slot map applied to internal elements (see [Slots](#slots) below) |
 
 ## Styling
 
@@ -37,5 +38,36 @@ The track and fill are separate elements, each accepting their own style and cla
   progress={75}
   trackStyle={{ height: 8, borderRadius: 4 }}
   fillStyle={{ background: "linear-gradient(90deg, #06b6d4, #3b82f6)" }}
+/>
+```
+
+## Slots
+
+Pass a `styles` slot map to theme the track and fill from one prop. Useful when threading `ProgressBar` through a parent's slot map (e.g., `FileItem`'s `progressTrack`/`progressFill` slots map onto these). See [Theming](/core-concepts/theming/) for the canonical merge-order explanation.
+
+| Slot | Targets |
+|------|---------|
+| `track` | The outer track element |
+| `fill` | The inner fill element |
+
+```tsx
+<ProgressBar
+  progress={75}
+  styles={{
+    track: { height: 8, borderRadius: 4, background: "#1e293b" },
+    fill: { background: "#38bdf8" },
+  }}
+/>
+```
+
+### Precedence
+
+`trackStyle` and `fillStyle` props win over `styles.track` and `styles.fill`. The merge order is `defaults -> styles.track -> trackStyle` (and likewise for fill), preserving the existing direct-prop API as the most-specific override:
+
+```tsx
+<ProgressBar
+  progress={50}
+  styles={{ fill: { background: "red" } }}
+  fillStyle={{ background: "blue" }} // wins — fill is blue
 />
 ```

@@ -28,11 +28,41 @@ import { DropZone } from "@hyperserve/upload-react";
 | `activeStyle` | `CSSProperties` | none | Merged during drag hover |
 | `className` | `string` | none | Base class |
 | `activeClassName` | `string` | none | Appended during drag hover |
-| `children` | `ReactNode \| ((state: DropZoneRenderProps) => ReactNode)` | none | Custom content or render function |
+| `styles` | `DropZoneStyles` | none | Slot map for default inner content (see [Slots](#slots) below) |
+| `children` | `ReactNode \| ((state: DropZoneRenderProps) => ReactNode)` | none | Replaces the default inner content entirely (see [Render function](#render-function)) |
+
+## Slots
+
+Pass a `styles` slot map to theme the default inner content without replacing it. Slots merge over defaults; the `style`/`activeStyle` props on the root container still apply on top. See [Theming](/core-concepts/theming/) for the canonical merge-order explanation.
+
+| Slot | Targets |
+|------|---------|
+| `root` | The outer drop-zone container (merged on top of `style`) |
+| `activeRoot` | Container styles applied during drag hover (merged on top of `activeStyle`) |
+| `icon` | The default upload icon |
+| `primaryText` | The "Drop files here" headline |
+| `browseText` | The "browse" link inside the headline |
+| `supportingText` | The supporting text below the headline |
+
+```tsx
+<DropZone
+  styles={{
+    root: { background: "#0f172a", borderColor: "#334155" },
+    primaryText: { color: "white" },
+    browseText: { color: "#38bdf8" },
+    supportingText: { color: "#94a3b8" },
+  }}
+  supportingText="MP4, WebM, MOV, up to 500 MB"
+/>
+```
+
+If slots aren't enough (e.g., you want an entirely different layout), use the [render function](#render-function) to replace the inner content wholesale.
+
+`DropZone` is web-only; React Native uses the platform-native file picker instead of a drop target.
 
 ## Render function
 
-For full control over the drop zone content:
+For full control over the drop zone content (replaces the default inner content entirely; slots no longer apply):
 
 <DropZoneRenderFunctionDemo client:load />
 

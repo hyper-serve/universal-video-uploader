@@ -49,6 +49,7 @@ import { FileList } from "@hyperserve/upload-react";
 | `children` | `(file, index) => ReactNode` | none | Custom item renderer |
 | `style` | `CSSProperties` | none | Container styles |
 | `className` | `string` | none | Container class |
+| `styles` | `FileListStyles` | none | Slot map applied to internal elements (see [Slots](#slots) below) |
 
 ## Custom item rendering
 
@@ -75,3 +76,24 @@ When `children` is omitted, `FileList` renders a default `FileItem` per file. Pr
 ## View mode
 
 `FileList` reads the view mode from `ViewModeProvider` context when available. The `mode` prop always takes precedence over context. Without either, it defaults to `"list"`.
+
+## Slots
+
+Pass a `styles` slot map to theme internal elements. Slots merge over defaults; local `style`/`emptyStyle` props win over slots. See [Theming](/core-concepts/theming/) for the canonical merge-order explanation.
+
+| Slot | Targets |
+|------|---------|
+| `root` | The outer list/grid container |
+| `empty` | The empty-state container |
+
+The React Native `FileList` exposes the same slots plus an `emptyText` slot for the inner `<Text>` of the empty state, which web doesn't need (it accepts a `ReactNode` for `emptyMessage`).
+
+```tsx
+<FileList
+  styles={{
+    root: { gap: 12 },
+    empty: { background: "#f8fafc", padding: 24 },
+  }}
+  emptyMessage="No files selected yet."
+/>
+```

@@ -27,6 +27,7 @@ import { StatusBadge } from "@hyperserve/upload-react";
 | `children` | `(info) => ReactNode` | none | Headless render function |
 | `style` | `CSSProperties` | none | Container styles |
 | `className` | `string` | none | Container class |
+| `styles` | `StatusBadgeStyles` | none | Slot map applied to internal elements (see [Slots](#slots) below) |
 
 ## Customization
 
@@ -62,4 +63,23 @@ Use the `children` render function for complete control:
     <span style={{ color, fontWeight: 600 }}>{label}</span>
   )}
 </StatusBadge>
+```
+
+## Slots
+
+Pass a `styles` slot map to theme internal elements. Slots merge over defaults and per-status `statusConfig` colors; local `style` props win over slots. See [Theming](/core-concepts/theming/) for the canonical merge-order explanation.
+
+| Slot | Targets |
+|------|---------|
+| `root` | The outer pill container |
+| `label` | The label text inside the pill |
+
+```tsx
+<StatusBadge
+  status={file.status}
+  styles={{
+    root: { borderRadius: 999, padding: "4px 10px" },
+    label: { fontWeight: 600, letterSpacing: 0.5 },
+  }}
+/>
 ```

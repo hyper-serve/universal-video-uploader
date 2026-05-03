@@ -27,6 +27,7 @@ import { FileListToolbar } from "@hyperserve/upload-react";
 | `showViewToggle` | `boolean` | `true` | Show default view toggle in right slot |
 | `style` | `CSSProperties` | none | Container styles |
 | `className` | `string` | none | Container class |
+| `styles` | `FileListToolbarStyles` | none | Slot map applied to internal elements (see [Slots](#slots) below) |
 
 ## Sub-components
 
@@ -64,4 +65,32 @@ List/grid toggle buttons. Requires a `ViewModeProvider` ancestor. Accepts a `chi
     </select>
   )}
 </FileListToolbar.ViewToggle>
+```
+
+## Slots
+
+Pass a `styles` slot map to theme internal elements. Slots merge over defaults; local `style` props win over slots. See [Theming](/core-concepts/theming/) for the canonical merge-order explanation.
+
+| Slot | Targets |
+|------|---------|
+| `root` | The outer toolbar container |
+| `fileCount` | The default `FileCount` text |
+| `viewToggle` | The `ViewToggle` button group container |
+| `viewToggleButton` | Each view toggle button (inactive state) |
+| `viewToggleButtonActive` | Merged on top of `viewToggleButton` for the active button |
+
+The React Native `FileListToolbar` exposes the same slots plus two extras for the inner `<Text>` of each button (web doesn't need them — it uses inline icon children):
+
+- `viewToggleText`
+- `viewToggleTextActive`
+
+```tsx
+<FileListToolbar
+  styles={{
+    root: { padding: 12, background: "#0f172a" },
+    fileCount: { color: "#cbd5e1" },
+    viewToggleButton: { background: "#1e293b", color: "#94a3b8" },
+    viewToggleButtonActive: { background: "#38bdf8", color: "#0f172a" },
+  }}
+/>
 ```
