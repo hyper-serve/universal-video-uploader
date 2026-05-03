@@ -34,7 +34,7 @@ import type {
   UploadAdapter,
   UploadResult,
   WebFileRef,
-} from "@hyperserve/upload";
+} from "@hyperserve/video-uploader";
 
 type MyUploadOptions = {
   folderId?: string;
@@ -121,7 +121,7 @@ interface StatusChecker {
 ```
 
 ```typescript
-import type { StatusChecker } from "@hyperserve/upload";
+import type { StatusChecker } from "@hyperserve/video-uploader";
 
 class MyStatusChecker implements StatusChecker {
   constructor(private statusEndpoint: string) {}
@@ -157,7 +157,7 @@ class MyStatusChecker implements StatusChecker {
 ## Wiring it together
 
 ```typescript
-import type { UploadConfig } from "@hyperserve/upload";
+import type { UploadConfig } from "@hyperserve/video-uploader";
 
 const config: UploadConfig<MyUploadOptions> = {
   adapter: new MyAdapter("/api/upload-url"),

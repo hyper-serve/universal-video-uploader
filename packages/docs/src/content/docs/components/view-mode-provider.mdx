@@ -11,8 +11,8 @@ import ViewModeProviderHookDemo from "../../../components/demos/ViewModeProvider
 <ViewModeProviderDemo client:load />
 
 ```tsx
-import { ViewModeProvider } from "@hyperserve/upload-react";
-import { UploadProvider } from "@hyperserve/upload";
+import { ViewModeProvider } from "@hyperserve/video-uploader-react";
+import { UploadProvider } from "@hyperserve/video-uploader";
 
 function App() {
   return (
@@ -44,7 +44,7 @@ Access and update view mode from any component inside a `ViewModeProvider`:
 <ViewModeProviderHookDemo client:load />
 
 ```tsx
-import { useViewMode } from "@hyperserve/upload-react";
+import { useViewMode } from "@hyperserve/video-uploader-react";
 
 function MyViewToggle() {
   const { viewMode, setViewMode } = useViewMode();
@@ -63,7 +63,7 @@ function MyViewToggle() {
 On React Native, `ViewModeProvider` is a pure context provider; it renders no layout wrapper. This is intentional: React Native views already default to `flexDirection: "column"`, so children stack vertically without any wrapping element. Because there's no wrapper, there's nothing to apply `style` or `className` to. To style the container, wrap `ViewModeProvider` in your own `<View>`.
 
 ```tsx
-import { ViewModeProvider } from "@hyperserve/upload-react-native";
+import { ViewModeProvider } from "@hyperserve/video-uploader-react-native";
 
 <View style={{ gap: 12 }}>
   <ViewModeProvider>

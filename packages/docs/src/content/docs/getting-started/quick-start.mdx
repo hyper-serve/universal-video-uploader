@@ -20,19 +20,19 @@ This guide gets you from zero to a working video upload UI in about 20 lines of 
 </Aside>
 
 ```tsx
-import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+import { createHyperserveConfig } from "@hyperserve/video-uploader-adapter-hyperserve";
 import {
   UploadProvider,
   composeValidators,
   maxFileSize,
   allowedTypes,
-} from "@hyperserve/upload";
+} from "@hyperserve/video-uploader";
 import {
   DropZone,
   FileList,
   FileListToolbar,
   ViewModeProvider,
-} from "@hyperserve/upload-react";
+} from "@hyperserve/video-uploader-react";
 
 // These three callbacks call YOUR backend, which holds your Hyperserve API key.
 // The adapter handles the actual file upload to storage directly via the SDK,

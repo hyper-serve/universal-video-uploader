@@ -23,7 +23,7 @@ import {
   maxFileSize,
   allowedTypes,
   maxDuration,
-} from "@hyperserve/upload";
+} from "@hyperserve/video-uploader";
 
 const validate = composeValidators(
   maxFileSize(500 * 1024 * 1024),     // 500 MB
@@ -35,7 +35,7 @@ const validate = composeValidators(
 Pass the result to your config:
 
 ```typescript
-import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
+import { createHyperserveConfig } from "@hyperserve/video-uploader-adapter-hyperserve";
 
 const config = createHyperserveConfig({
   // ...

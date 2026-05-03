@@ -9,10 +9,10 @@ import { Tabs, TabItem, LinkCard } from "@astrojs/starlight/components";
 
 | Package | Purpose |
 |---------|---------|
-| `@hyperserve/upload` | Core: hooks, state machine, validation, shared theme |
-| `@hyperserve/upload-react` | Web UI: DropZone, FileList, FileItem, etc. |
-| `@hyperserve/upload-react-native` | React Native UI: FilePicker, FileList, FileItem, etc. |
-| `@hyperserve/upload-adapter-hyperserve` | Official Hyperserve adapter |
+| `@hyperserve/video-uploader` | Core: hooks, state machine, validation, shared theme |
+| `@hyperserve/video-uploader-react` | Web UI: DropZone, FileList, FileItem, etc. |
+| `@hyperserve/video-uploader-react-native` | React Native UI: FilePicker, FileList, FileItem, etc. |
+| `@hyperserve/video-uploader-adapter-hyperserve` | Official Hyperserve adapter |
 
 The core package is always required. Pick the UI package for your platform, or use neither for fully headless usage.
 
@@ -21,22 +21,22 @@ The core package is always required. Pick the UI package for your platform, or u
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @hyperserve/upload @hyperserve/upload-react
+    npm install @hyperserve/video-uploader @hyperserve/video-uploader-react
     ```
   </TabItem>
   <TabItem label="yarn">
     ```bash
-    yarn add @hyperserve/upload @hyperserve/upload-react
+    yarn add @hyperserve/video-uploader @hyperserve/video-uploader-react
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @hyperserve/upload @hyperserve/upload-react
+    pnpm add @hyperserve/video-uploader @hyperserve/video-uploader-react
     ```
   </TabItem>
   <TabItem label="bun">
     ```bash
-    bun add @hyperserve/upload @hyperserve/upload-react
+    bun add @hyperserve/video-uploader @hyperserve/video-uploader-react
     ```
   </TabItem>
 </Tabs>
@@ -48,22 +48,22 @@ The core package is always required. Pick the UI package for your platform, or u
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @hyperserve/upload @hyperserve/upload-react-native
+    npm install @hyperserve/video-uploader @hyperserve/video-uploader-react-native
     ```
   </TabItem>
   <TabItem label="yarn">
     ```bash
-    yarn add @hyperserve/upload @hyperserve/upload-react-native
+    yarn add @hyperserve/video-uploader @hyperserve/video-uploader-react-native
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @hyperserve/upload @hyperserve/upload-react-native
+    pnpm add @hyperserve/video-uploader @hyperserve/video-uploader-react-native
     ```
   </TabItem>
   <TabItem label="bun">
     ```bash
-    bun add @hyperserve/upload @hyperserve/upload-react-native
+    bun add @hyperserve/video-uploader @hyperserve/video-uploader-react-native
     ```
   </TabItem>
 </Tabs>
@@ -93,22 +93,22 @@ If you are uploading to Hyperserve, install the official adapter package:
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @hyperserve/upload-adapter-hyperserve
+    npm install @hyperserve/video-uploader-adapter-hyperserve
     ```
   </TabItem>
   <TabItem label="yarn">
     ```bash
-    yarn add @hyperserve/upload-adapter-hyperserve
+    yarn add @hyperserve/video-uploader-adapter-hyperserve
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @hyperserve/upload-adapter-hyperserve
+    pnpm add @hyperserve/video-uploader-adapter-hyperserve
     ```
   </TabItem>
   <TabItem label="bun">
     ```bash
-    bun add @hyperserve/upload-adapter-hyperserve
+    bun add @hyperserve/video-uploader-adapter-hyperserve
     ```
   </TabItem>
 </Tabs>

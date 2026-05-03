@@ -14,22 +14,22 @@ Using Hyperserve requires an API key. Hyperserve offers free accounts and pay-pe
 <Tabs>
   <TabItem label="npm">
     ```bash
-    npm install @hyperserve/upload-adapter-hyperserve
+    npm install @hyperserve/video-uploader-adapter-hyperserve
     ```
   </TabItem>
   <TabItem label="yarn">
     ```bash
-    yarn add  @hyperserve/upload-adapter-hyperserve
+    yarn add  @hyperserve/video-uploader-adapter-hyperserve
     ```
   </TabItem>
   <TabItem label="pnpm">
     ```bash
-    pnpm add @hyperserve/upload-adapter-hyperserve
+    pnpm add @hyperserve/video-uploader-adapter-hyperserve
     ```
   </TabItem>
   <TabItem label="bun">
     ```bash
-    bun add  @hyperserve/upload-adapter-hyperserve
+    bun add  @hyperserve/video-uploader-adapter-hyperserve
     ```
   </TabItem>
 </Tabs>
@@ -37,8 +37,8 @@ Using Hyperserve requires an API key. Hyperserve offers free accounts and pay-pe
 Use `createHyperserveConfig` to produce a ready-to-use `UploadConfig`:
 
 ```typescript
-import { createHyperserveConfig } from "@hyperserve/upload-adapter-hyperserve";
-import { composeValidators, maxFileSize } from "@hyperserve/upload";
+import { createHyperserveConfig } from "@hyperserve/video-uploader-adapter-hyperserve";
+import { composeValidators, maxFileSize } from "@hyperserve/video-uploader";
 
 const config = createHyperserveConfig({
   createUpload: async (file, options) =>
