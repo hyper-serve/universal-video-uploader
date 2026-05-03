@@ -23,7 +23,7 @@ export type {
 	ViewToggleProps,
 } from "./FileListToolbar.js";
 export { FileListToolbar } from "./FileListToolbar.js";
-export type { FilePickerProps } from "./FilePicker.js";
+export type { FilePickerProps, FilePickerStyles } from "./FilePicker.js";
 export { FilePicker } from "./FilePicker.js";
 export type { ProgressBarProps, ProgressBarStyles } from "./ProgressBar.js";
 export { ProgressBar } from "./ProgressBar.js";

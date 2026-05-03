@@ -99,4 +99,27 @@ describe("FilePicker (native)", () => {
 			expect(mockAddFiles).toHaveBeenCalledWith(refs);
 		});
 	});
+
+	it("styles.root applies to Pressable", async () => {
+		const { UNSAFE_getByType } = render(
+			<FilePicker
+				pickFiles={async () => []}
+				styles={{ root: { backgroundColor: "rgb(10, 20, 30)" } }}
+			/>,
+		);
+
+		// Pressable renders as View in the RN test environment; check the
+		// outermost View (the Pressable host node) carries the slot style.
+		const pressable = UNSAFE_getByType(require("react-native").View);
+		const flat = (
+			Array.isArray(pressable.props.style)
+				? pressable.props.style
+				: [pressable.props.style]
+		).flat();
+		expect(flat).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ backgroundColor: "rgb(10, 20, 30)" }),
+			]),
+		);
+	});
 });

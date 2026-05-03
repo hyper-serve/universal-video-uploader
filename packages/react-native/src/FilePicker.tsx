@@ -6,10 +6,16 @@ import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Pressable, StyleSheet, Text } from "react-native";
 import { colors, radius } from "./theme.js";
 
+export type FilePickerStyles = {
+	root?: StyleProp<ViewStyle>;
+	text?: StyleProp<TextStyle>;
+};
+
 export type FilePickerProps = {
 	pickFiles: () => Promise<FileRef[]>;
 	style?: StyleProp<ViewStyle>;
 	textStyle?: StyleProp<TextStyle>;
+	styles?: FilePickerStyles;
 	children?:
 		| React.ReactNode
 		| ((state: { pick: () => void }) => React.ReactNode);
@@ -19,6 +25,7 @@ export function FilePicker({
 	pickFiles,
 	style,
 	textStyle,
+	styles: slots,
 	children,
 }: FilePickerProps) {
 	const { addFiles } = useUpload();
@@ -35,8 +42,10 @@ export function FilePicker({
 	}
 
 	return (
-		<Pressable onPress={pick} style={[styles.button, style]}>
-			{children ?? <Text style={[styles.text, textStyle]}>Pick Videos</Text>}
+		<Pressable onPress={pick} style={[styles.button, slots?.root, style]}>
+			{children ?? (
+				<Text style={[styles.text, slots?.text, textStyle]}>Pick Videos</Text>
+			)}
 		</Pressable>
 	);
 }
