@@ -75,7 +75,7 @@ export default defineConfig({
 					label: "Hyperserve",
 				},
 				{
-					href: "https://github.com/hyper-serve/upload",
+					href: "https://github.com/hyper-serve/video-uploader",
 					icon: "github",
 					label: "GitHub",
 				},

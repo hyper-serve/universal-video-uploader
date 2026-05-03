@@ -8,7 +8,7 @@
 ## Setup
 
 ```bash
-git clone https://github.com/hyper-serve/upload
+git clone https://github.com/hyper-serve/video-uploader
 cd upload
 bun install
 bun run build
@@ -42,4 +42,4 @@ bunx lefthook install
 
 ## Questions
 
-Open a [GitHub Discussion](https://github.com/hyper-serve/upload/discussions).
+Open a [GitHub Discussion](https://github.com/hyper-serve/video-uploader/discussions).
