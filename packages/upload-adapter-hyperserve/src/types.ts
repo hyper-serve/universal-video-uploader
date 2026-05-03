@@ -3,8 +3,8 @@ import type { FileRef, ProcessingStatus } from "@hyperserve/video-uploader";
 export type HyperserveUploadOptions = {
 	resolutions: string[];
 	isPublic: boolean;
-	thumbnail?: { timestampMs: number };
-	metadata?: Record<string, unknown>;
+	thumbnail_timestamps_seconds?: number[];
+	custom_user_metadata?: Record<string, unknown>;
 };
 
 export type HyperserveAdapterConfig = {

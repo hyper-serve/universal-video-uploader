@@ -195,4 +195,32 @@ describe("HyperserveAdapter (web)", () => {
 			expect.objectContaining({ file: (fileRef as { raw: File }).raw }),
 		);
 	});
+
+	it("passes thumbnail_timestamps_seconds and custom_user_metadata through to createUpload", async () => {
+		const config = makeConfig();
+		const adapter = new HyperserveAdapter(config);
+		const ac = new AbortController();
+
+		const optionsWithExtras: HyperserveUploadOptions = {
+			custom_user_metadata: { postId: "p_123", tag: "promo" },
+			isPublic: true,
+			resolutions: ["240p", "480p"],
+			thumbnail_timestamps_seconds: [0, 5.5, 10],
+		};
+
+		await adapter.upload(
+			makeFileRef(),
+			optionsWithExtras,
+			{ onProgress: vi.fn() },
+			ac.signal,
+		);
+
+		expect(config.createUpload).toHaveBeenCalledWith(
+			expect.objectContaining({ platform: "web" }),
+			expect.objectContaining({
+				custom_user_metadata: { postId: "p_123", tag: "promo" },
+				thumbnail_timestamps_seconds: [0, 5.5, 10],
+			}),
+		);
+	});
 });
