@@ -49,4 +49,25 @@ describe("ProgressBar (native)", () => {
 			]),
 		);
 	});
+
+	it("trackStyle prop wins over styles.track slot", () => {
+		const { UNSAFE_getAllByType } = render(
+			<ProgressBar
+				progress={50}
+				styles={{ track: { backgroundColor: "rgb(0, 0, 0)" } }}
+				trackStyle={{ backgroundColor: "rgb(255, 255, 255)" }}
+			/>,
+		);
+
+		const views = UNSAFE_getAllByType(require("react-native").View);
+		const track = views[0];
+		const flat = (
+			Array.isArray(track.props.style) ? track.props.style : [track.props.style]
+		).flat();
+		// Find color entries; trackStyle (last in style array) should win.
+		const colors = flat
+			.filter((s: any) => s && typeof s === "object" && "backgroundColor" in s)
+			.map((s: any) => s.backgroundColor);
+		expect(colors[colors.length - 1]).toBe("rgb(255, 255, 255)");
+	});
 });
