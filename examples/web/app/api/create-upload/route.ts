@@ -8,8 +8,8 @@ export async function POST(req: Request) {
 			fileSizeBytes,
 			resolutions,
 			isPublic,
-			metadata,
-			thumbnail,
+			custom_user_metadata,
+			thumbnail_timestamps_seconds,
 		} = await req.json();
 
 		const result = await hyperserve.createVideo({
@@ -17,9 +17,9 @@ export async function POST(req: Request) {
 			fileSizeBytes,
 			isPublic,
 			resolutions,
-			...(metadata && { customMetadata: metadata }),
-			...(thumbnail && {
-				thumbnailTimestampsSeconds: [thumbnail.timestampMs / 1000],
+			...(custom_user_metadata && { customMetadata: custom_user_metadata }),
+			...(thumbnail_timestamps_seconds && {
+				thumbnailTimestampsSeconds: thumbnail_timestamps_seconds,
 			}),
 		});
 
