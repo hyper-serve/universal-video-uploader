@@ -64,3 +64,27 @@ function App() {
 | `FileItem.RetryButton` | Only when `failed` |
 
 See the [FileItem](/components/file-item/) and [FileList](/components/file-list/) reference pages for the full prop API.
+
+## When you need a fully custom layout
+
+If `styles` slots cover *what* but not *how* (e.g., you want the file name and size on one line, with the thumbnail beside the actions instead of below them), compose `FileItem` from primitives instead of using `FileItem.Content`.
+
+```tsx
+<FileItem file={file} styles={fileItemStyles}>
+  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    <Thumbnail file={file} />
+    <div style={{ flex: 1 }}>
+      <FileItem.FileName />
+      <FileItem.FileSize />
+    </div>
+    <FileItem.Actions>
+      <FileItem.RemoveButton />
+      <FileItem.RetryButton />
+    </FileItem.Actions>
+  </div>
+  <FileItem.UploadProgress />
+  <FileItem.ErrorMessage />
+</FileItem>
+```
+
+Slots passed to `FileItem` flow to all compound sub-components via context, so theming still works through one prop. Only the layout is custom.
