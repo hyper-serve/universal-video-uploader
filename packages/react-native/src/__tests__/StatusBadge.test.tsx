@@ -1,6 +1,6 @@
 import type { FileStatus } from "@hyperserve/video-uploader";
 import { render, screen } from "@testing-library/react-native";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { StatusBadge } from "../StatusBadge.js";
 
 describe("StatusBadge (native)", () => {
@@ -44,6 +44,29 @@ describe("StatusBadge (native)", () => {
 			/>,
 		);
 		expect(screen.getByText("Complete")).toBeTruthy();
+	});
+
+	it("StatusBadge styles.root applies to the badge container", () => {
+		const { UNSAFE_getAllByType } = render(
+			<StatusBadge
+				status="ready"
+				styles={{ root: { backgroundColor: "rgb(10, 20, 30)" } }}
+			/>,
+		);
+
+		// The badge View is the only View rendered by StatusBadge
+		const views = UNSAFE_getAllByType(View);
+		const badgeView = views[0];
+		const flat = (
+			Array.isArray(badgeView.props.style)
+				? badgeView.props.style
+				: [badgeView.props.style]
+		).flat();
+		expect(flat).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ backgroundColor: "rgb(10, 20, 30)" }),
+			]),
+		);
 	});
 
 	it("supports children render-prop", () => {

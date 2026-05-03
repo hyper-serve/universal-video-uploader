@@ -11,12 +11,18 @@ export type StatusConfigEntry = {
 	text?: string;
 };
 
+export type StatusBadgeStyles = {
+	root?: StyleProp<ViewStyle>;
+	label?: StyleProp<TextStyle>;
+};
+
 export type StatusBadgeProps = {
 	status: FileStatus;
 	style?: StyleProp<ViewStyle>;
 	textStyle?: StyleProp<TextStyle>;
 	statusConfig?: Partial<Record<FileStatus, StatusConfigEntry>>;
 	getLabel?: (status: FileStatus) => string;
+	styles?: StatusBadgeStyles;
 	children?: (info: { label: string; color: string }) => React.ReactNode;
 };
 
@@ -40,6 +46,7 @@ export function StatusBadge({
 	textStyle,
 	statusConfig: statusConfigOverride,
 	getLabel,
+	styles: slots,
 	children,
 }: StatusBadgeProps) {
 	const config = mergeConfig(status, statusConfigOverride, getLabel);
@@ -49,8 +56,12 @@ export function StatusBadge({
 	}
 
 	return (
-		<View style={[styles.badge, { backgroundColor: config.bg }, style]}>
-			<Text style={[styles.text, { color: config.text }, textStyle]}>
+		<View
+			style={[styles.badge, { backgroundColor: config.bg }, slots?.root, style]}
+		>
+			<Text
+				style={[styles.text, { color: config.text }, slots?.label, textStyle]}
+			>
 				{config.label}
 			</Text>
 		</View>

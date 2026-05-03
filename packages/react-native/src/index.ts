@@ -26,7 +26,11 @@ export type { FilePickerProps } from "./FilePicker.js";
 export { FilePicker } from "./FilePicker.js";
 export type { ProgressBarProps } from "./ProgressBar.js";
 export { ProgressBar } from "./ProgressBar.js";
-export type { StatusBadgeProps, StatusConfigEntry } from "./StatusBadge.js";
+export type {
+	StatusBadgeProps,
+	StatusBadgeStyles,
+	StatusConfigEntry,
+} from "./StatusBadge.js";
 export { StatusBadge } from "./StatusBadge.js";
 export type { ThumbnailProps } from "./Thumbnail.js";
 export { Thumbnail } from "./Thumbnail.js";
