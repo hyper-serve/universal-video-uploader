@@ -1,9 +1,20 @@
 import { useUpload } from "@hyperserve/video-uploader";
 import type React from "react";
+import { createContext, useContext } from "react";
 import type { StyleProp, TextStyle, ViewStyle } from "react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { colors, radius } from "./theme.js";
 import { useViewMode, type ViewMode } from "./ViewModeContext.js";
+
+export type FileListToolbarStyles = {
+	root?: StyleProp<ViewStyle>;
+	fileCount?: StyleProp<TextStyle>;
+	viewToggle?: StyleProp<ViewStyle>;
+	viewToggleButton?: StyleProp<ViewStyle>;
+	viewToggleButtonActive?: StyleProp<ViewStyle>;
+	viewToggleText?: StyleProp<TextStyle>;
+	viewToggleTextActive?: StyleProp<TextStyle>;
+};
 
 export type FileListToolbarProps = {
 	left?: React.ReactNode | null;
@@ -11,22 +22,13 @@ export type FileListToolbarProps = {
 	showFileCount?: boolean;
 	showViewToggle?: boolean;
 	style?: StyleProp<ViewStyle>;
+	styles?: FileListToolbarStyles;
 };
 
 export type FileCountProps = {
 	label?: (count: number) => React.ReactNode;
 	style?: StyleProp<TextStyle>;
 };
-
-function FileCount({ label, style }: FileCountProps) {
-	const { files } = useUpload();
-	const count = files.length;
-	const content =
-		label != null
-			? label(count)
-			: `${count} file${count !== 1 ? "s" : ""} added`;
-	return <Text style={[styles.fileCount, style]}>{content}</Text>;
-}
 
 export type ViewToggleProps = {
 	style?: StyleProp<ViewStyle>;
@@ -36,24 +38,49 @@ export type ViewToggleProps = {
 	}) => React.ReactNode;
 };
 
+type ToolbarContextValue = { styles: FileListToolbarStyles };
+const ToolbarContext = createContext<ToolbarContextValue>({ styles: {} });
+
+function useToolbarContext(): ToolbarContextValue {
+	return useContext(ToolbarContext);
+}
+
+function FileCount({ label, style }: FileCountProps) {
+	const { files } = useUpload();
+	const { styles: slots } = useToolbarContext();
+	const count = files.length;
+	const content =
+		label != null
+			? label(count)
+			: `${count} file${count !== 1 ? "s" : ""} added`;
+	return (
+		<Text style={[styles.fileCount, slots.fileCount, style]}>{content}</Text>
+	);
+}
+
 function ViewToggle({ style, children }: ViewToggleProps) {
 	const { viewMode, setViewMode } = useViewMode();
+	const { styles: slots } = useToolbarContext();
 	if (children) {
 		return <>{children({ setViewMode, viewMode })}</>;
 	}
 	return (
-		<View style={[styles.toggleGroup, style]}>
+		<View style={[styles.toggleGroup, slots.viewToggle, style]}>
 			<Pressable
 				onPress={() => setViewMode("list")}
 				style={[
 					styles.toggleButton,
+					slots.viewToggleButton,
 					viewMode === "list" && styles.toggleActive,
+					viewMode === "list" && slots.viewToggleButtonActive,
 				]}
 			>
 				<Text
 					style={[
 						styles.toggleText,
+						slots.viewToggleText,
 						viewMode === "list" && styles.toggleTextActive,
+						viewMode === "list" && slots.viewToggleTextActive,
 					]}
 				>
 					List
@@ -63,13 +90,17 @@ function ViewToggle({ style, children }: ViewToggleProps) {
 				onPress={() => setViewMode("grid")}
 				style={[
 					styles.toggleButton,
+					slots.viewToggleButton,
 					viewMode === "grid" && styles.toggleActive,
+					viewMode === "grid" && slots.viewToggleButtonActive,
 				]}
 			>
 				<Text
 					style={[
 						styles.toggleText,
+						slots.viewToggleText,
 						viewMode === "grid" && styles.toggleTextActive,
+						viewMode === "grid" && slots.viewToggleTextActive,
 					]}
 				>
 					Grid
@@ -85,19 +116,25 @@ export function FileListToolbar({
 	showFileCount = true,
 	showViewToggle = true,
 	style,
+	styles: stylesProp,
 }: FileListToolbarProps) {
+	const slots = stylesProp ?? EMPTY_TOOLBAR_STYLES;
 	const leftContent =
 		left !== undefined ? left : showFileCount ? <FileCount /> : null;
 	const rightContent =
 		right !== undefined ? right : showViewToggle ? <ViewToggle /> : null;
 
 	return (
-		<View style={[styles.toolbar, style]}>
-			{leftContent}
-			{rightContent}
-		</View>
+		<ToolbarContext.Provider value={{ styles: slots }}>
+			<View style={[styles.toolbar, slots.root, style]}>
+				{leftContent}
+				{rightContent}
+			</View>
+		</ToolbarContext.Provider>
 	);
 }
+
+const EMPTY_TOOLBAR_STYLES: FileListToolbarStyles = {};
 
 FileListToolbar.FileCount = FileCount;
 FileListToolbar.ViewToggle = ViewToggle;

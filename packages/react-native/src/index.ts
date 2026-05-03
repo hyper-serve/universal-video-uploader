@@ -19,6 +19,7 @@ export { FileList } from "./FileList.js";
 export type {
 	FileCountProps,
 	FileListToolbarProps,
+	FileListToolbarStyles,
 	ViewToggleProps,
 } from "./FileListToolbar.js";
 export { FileListToolbar } from "./FileListToolbar.js";

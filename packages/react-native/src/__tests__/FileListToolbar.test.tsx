@@ -125,4 +125,18 @@ describe("FileListToolbar (native)", () => {
 		);
 		expect(screen.getByTestId("mode").props.children).toBe("list");
 	});
+
+	it("styles.root applies to toolbar View", () => {
+		const { UNSAFE_getAllByType } = render(
+			<FileListToolbar styles={{ root: { padding: 8 } }} />,
+		);
+		const views = UNSAFE_getAllByType(require("react-native").View);
+		const root = views[0];
+		const flat = (
+			Array.isArray(root.props.style) ? root.props.style : [root.props.style]
+		).flat();
+		expect(flat).toEqual(
+			expect.arrayContaining([expect.objectContaining({ padding: 8 })]),
+		);
+	});
 });
