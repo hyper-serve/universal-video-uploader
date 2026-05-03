@@ -62,4 +62,23 @@ describe("Thumbnail (native)", () => {
 			thumbnailUri: "file:///thumb.jpg",
 		});
 	});
+
+	it("styles.placeholder is applied to the placeholder View", () => {
+		const { UNSAFE_getByType } = render(
+			<Thumbnail
+				file={baseFile}
+				styles={{ placeholder: { backgroundColor: "rgb(10, 20, 30)" } }}
+			/>,
+		);
+
+		const view = UNSAFE_getByType(require("react-native").View);
+		const flat = (
+			Array.isArray(view.props.style) ? view.props.style : [view.props.style]
+		).flat();
+		expect(flat).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ backgroundColor: "rgb(10, 20, 30)" }),
+			]),
+		);
+	});
 });
