@@ -159,4 +159,38 @@ describe("DropZone", () => {
 		expect(zone.getAttribute("aria-disabled")).toBe("true");
 		expect(zone.getAttribute("tabindex")).toBe("-1");
 	});
+
+	it("styles slot map themes default inner content", () => {
+		const { container } = render(
+			<DropZone
+				styles={{
+					primaryText: { color: "rgb(255, 0, 0)" },
+					root: { backgroundColor: "rgb(10, 20, 30)" },
+					supportingText: { color: "rgb(0, 128, 0)" },
+				}}
+				supportingText="MP4 only"
+			/>,
+		);
+
+		const root = container.firstElementChild as HTMLElement;
+		expect(root.style.backgroundColor).toBe("rgb(10, 20, 30)");
+		expect(
+			(screen.getByText(/Drop videos here/) as HTMLElement).style.color,
+		).toBe("rgb(255, 0, 0)");
+		expect((screen.getByText("MP4 only") as HTMLElement).style.color).toBe(
+			"rgb(0, 128, 0)",
+		);
+	});
+
+	it("local style prop wins over styles.root", () => {
+		const { container } = render(
+			<DropZone
+				style={{ backgroundColor: "rgb(0, 0, 0)" }}
+				styles={{ root: { backgroundColor: "rgb(255, 255, 255)" } }}
+			/>,
+		);
+
+		const root = container.firstElementChild as HTMLElement;
+		expect(root.style.backgroundColor).toBe("rgb(0, 0, 0)");
+	});
 });

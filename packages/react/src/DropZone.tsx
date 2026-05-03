@@ -10,6 +10,15 @@ export type DropZoneRenderProps = {
 	openPicker: () => void;
 };
 
+export type DropZoneStyles = {
+	root?: React.CSSProperties;
+	activeRoot?: React.CSSProperties;
+	icon?: React.CSSProperties;
+	primaryText?: React.CSSProperties;
+	browseText?: React.CSSProperties;
+	supportingText?: React.CSSProperties;
+};
+
 export type DropZoneProps = {
 	accept?: string;
 	multiple?: boolean;
@@ -19,6 +28,7 @@ export type DropZoneProps = {
 	className?: string;
 	activeClassName?: string;
 	supportingText?: React.ReactNode;
+	styles?: DropZoneStyles;
 	children?:
 		| React.ReactNode
 		| ((state: DropZoneRenderProps) => React.ReactNode);
@@ -33,6 +43,7 @@ export function DropZone({
 	className,
 	activeClassName,
 	supportingText,
+	styles: slots,
 	children,
 }: DropZoneProps) {
 	const { addFiles, canAddMore } = useUpload();
@@ -125,11 +136,13 @@ export function DropZone({
 		padding: "1.5rem",
 		pointerEvents: isDisabled ? "none" : undefined,
 		transition: "border-color 0.2s ease, background-color 0.2s ease",
+		...slots?.root,
 		...style,
 		...(isDragging
 			? {
 					backgroundColor: colors.dropZoneActiveBg,
 					borderColor: colors.dropZoneActiveBorder,
+					...slots?.activeRoot,
 					...activeStyle,
 				}
 			: {}),
@@ -161,7 +174,9 @@ export function DropZone({
 				? children({ isDragging, openPicker })
 				: (children ?? (
 						<>
-							<div style={{ color: colors.accent, lineHeight: 1 }}>
+							<div
+								style={{ color: colors.accent, lineHeight: 1, ...slots?.icon }}
+							>
 								<UploadIcon />
 							</div>
 							<div
@@ -169,17 +184,30 @@ export function DropZone({
 									color: colors.textPrimary,
 									fontSize: "0.9375rem",
 									fontWeight: 600,
+									...slots?.primaryText,
 								}}
 							>
 								{isDragging ? "Drop your videos here" : "Drop videos here or "}
 								{!isDragging && (
-									<span style={{ color: colors.accent, fontWeight: 600 }}>
+									<span
+										style={{
+											color: colors.accent,
+											fontWeight: 600,
+											...slots?.browseText,
+										}}
+									>
 										browse
 									</span>
 								)}
 							</div>
 							{supportingText != null && (
-								<div style={{ color: colors.textMuted, fontSize: "0.8125rem" }}>
+								<div
+									style={{
+										color: colors.textMuted,
+										fontSize: "0.8125rem",
+										...slots?.supportingText,
+									}}
+								>
 									{supportingText}
 								</div>
 							)}

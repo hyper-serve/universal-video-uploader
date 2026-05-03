@@ -1,4 +1,8 @@
-export type { DropZoneProps, DropZoneRenderProps } from "./DropZone.js";
+export type {
+	DropZoneProps,
+	DropZoneRenderProps,
+	DropZoneStyles,
+} from "./DropZone.js";
 export { DropZone } from "./DropZone.js";
 export type {
 	ErrorMessageProps,
