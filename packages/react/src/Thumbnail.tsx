@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { ThumbnailPlaceholderIcon } from "./icons.js";
 import { colors, radius, thumbnailShadow } from "./theme.js";
 
+export type ThumbnailStyles = {
+	root?: React.CSSProperties;
+	image?: React.CSSProperties;
+	placeholder?: React.CSSProperties;
+};
+
 export type ThumbnailProps = {
 	file: FileState;
 	playback?: boolean;
@@ -13,6 +19,7 @@ export type ThumbnailProps = {
 	placeholderStyle?: React.CSSProperties;
 	placeholderClassName?: string;
 	placeholder?: React.ReactNode;
+	styles?: ThumbnailStyles;
 	children?: (info: {
 		thumbnailUri: string | null;
 		playbackUrl: string | null;
@@ -29,6 +36,7 @@ export function Thumbnail({
 	placeholderStyle,
 	placeholderClassName,
 	placeholder,
+	styles: slots,
 	children,
 }: ThumbnailProps) {
 	const isReady = file.status === "ready";
@@ -61,6 +69,8 @@ export function Thumbnail({
 					borderRadius: radius.md,
 					boxShadow: thumbnailShadow,
 					width: "100%",
+					...slots?.root,
+					...slots?.image,
 					...style,
 				}}
 			>
@@ -81,6 +91,8 @@ export function Thumbnail({
 					borderRadius: radius.md,
 					objectFit: "cover",
 					width: "100%",
+					...slots?.root,
+					...slots?.image,
 					...style,
 				}}
 			/>
@@ -99,6 +111,8 @@ export function Thumbnail({
 				display: "flex",
 				justifyContent: "center",
 				width: "100%",
+				...slots?.root,
+				...slots?.placeholder,
 				...placeholderStyle,
 				...style,
 			}}

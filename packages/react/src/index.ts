@@ -46,7 +46,7 @@ export type {
 	StatusConfigEntry,
 } from "./StatusBadge.js";
 export { StatusBadge } from "./StatusBadge.js";
-export type { ThumbnailProps } from "./Thumbnail.js";
+export type { ThumbnailProps, ThumbnailStyles } from "./Thumbnail.js";
 export { Thumbnail } from "./Thumbnail.js";
 export type { ViewMode, ViewModeProviderProps } from "./ViewModeContext.js";
 export { useViewMode, ViewModeProvider } from "./ViewModeContext.js";

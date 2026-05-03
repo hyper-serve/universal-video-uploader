@@ -220,6 +220,18 @@ describe("Thumbnail", () => {
 		expect(video2).not.toBeNull();
 		expect(video2?.hasAttribute("controls")).toBe(true);
 	});
+
+	it("Thumbnail styles.placeholder applies to placeholder div", () => {
+		const { container } = render(
+			<Thumbnail
+				file={baseFile}
+				styles={{ placeholder: { backgroundColor: "rgb(10, 20, 30)" } }}
+			/>,
+		);
+
+		const root = container.firstElementChild as HTMLElement;
+		expect(root.style.backgroundColor).toBe("rgb(10, 20, 30)");
+	});
 });
 
 describe("ProgressBar", () => {
