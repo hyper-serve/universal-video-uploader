@@ -46,11 +46,11 @@ describe("StatusBadge (native)", () => {
 		expect(screen.getByText("Complete")).toBeTruthy();
 	});
 
-	it("StatusBadge styles.root applies to the badge container", () => {
+	it("StatusBadge style prop applies to the badge container", () => {
 		const { UNSAFE_getAllByType } = render(
 			<StatusBadge
 				status="ready"
-				styles={{ root: { backgroundColor: "rgb(10, 20, 30)" } }}
+				style={{ backgroundColor: "rgb(10, 20, 30)" }}
 			/>,
 		);
 

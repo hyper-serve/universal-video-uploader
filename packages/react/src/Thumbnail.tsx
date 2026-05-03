@@ -5,7 +5,6 @@ import { ThumbnailPlaceholderIcon } from "./icons.js";
 import { colors, radius, thumbnailShadow } from "./theme.js";
 
 export type ThumbnailStyles = {
-	root?: React.CSSProperties;
 	image?: React.CSSProperties;
 	placeholder?: React.CSSProperties;
 };
@@ -69,7 +68,6 @@ export function Thumbnail({
 					borderRadius: radius.md,
 					boxShadow: thumbnailShadow,
 					width: "100%",
-					...slots?.root,
 					...slots?.image,
 					...style,
 				}}
@@ -91,7 +89,6 @@ export function Thumbnail({
 					borderRadius: radius.md,
 					objectFit: "cover",
 					width: "100%",
-					...slots?.root,
 					...slots?.image,
 					...style,
 				}}
@@ -111,7 +108,6 @@ export function Thumbnail({
 				display: "flex",
 				justifyContent: "center",
 				width: "100%",
-				...slots?.root,
 				...slots?.placeholder,
 				...placeholderStyle,
 				...style,

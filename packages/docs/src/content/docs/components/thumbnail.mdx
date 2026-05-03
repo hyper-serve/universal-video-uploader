@@ -54,7 +54,6 @@ Pass a `styles` slot map to theme internal elements. Slots merge over defaults; 
 
 | Slot | Targets |
 |------|---------|
-| `root` | The outer container (image, video, or placeholder wrapper) |
 | `image` | The `<img>` element (and `<video>` element in playback mode) |
 | `placeholder` | The placeholder container shown when no thumbnail is available |
 
@@ -62,7 +61,6 @@ Pass a `styles` slot map to theme internal elements. Slots merge over defaults; 
 <Thumbnail
   file={file}
   styles={{
-    root: { borderRadius: 12, overflow: "hidden" },
     placeholder: { background: "#0f172a", color: "#475569" },
   }}
 />

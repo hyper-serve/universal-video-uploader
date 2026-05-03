@@ -12,7 +12,6 @@ export type StatusConfigEntry = {
 };
 
 export type StatusBadgeStyles = {
-	root?: StyleProp<ViewStyle>;
 	label?: StyleProp<TextStyle>;
 };
 
@@ -56,9 +55,7 @@ export function StatusBadge({
 	}
 
 	return (
-		<View
-			style={[styles.badge, { backgroundColor: config.bg }, slots?.root, style]}
-		>
+		<View style={[styles.badge, { backgroundColor: config.bg }, style]}>
 			<Text
 				style={[styles.text, { color: config.text }, slots?.label, textStyle]}
 			>

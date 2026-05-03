@@ -44,16 +44,13 @@ describe("StatusBadge", () => {
 		expect(el.textContent).toMatch(/Failed/i);
 	});
 
-	it("StatusBadge styles.root applies to the badge container", () => {
+	it("StatusBadge styles.label applies to the badge span", () => {
 		const { container } = render(
-			<StatusBadge
-				status="ready"
-				styles={{ root: { backgroundColor: "rgb(10, 20, 30)" } }}
-			/>,
+			<StatusBadge status="ready" styles={{ label: { fontWeight: "bold" } }} />,
 		);
 
 		const badge = container.firstElementChild as HTMLElement;
-		expect(badge.style.backgroundColor).toBe("rgb(10, 20, 30)");
+		expect(badge.style.fontWeight).toBe("bold");
 	});
 
 	it("StatusBadge local style prop wins over styles slot", () => {
@@ -61,7 +58,7 @@ describe("StatusBadge", () => {
 			<StatusBadge
 				status="ready"
 				style={{ backgroundColor: "rgb(0, 0, 0)" }}
-				styles={{ root: { backgroundColor: "rgb(255, 255, 255)" } }}
+				styles={{ label: { backgroundColor: "rgb(255, 255, 255)" } }}
 			/>,
 		);
 

@@ -71,14 +71,12 @@ Pass a `styles` slot map to theme internal elements. Slots merge over defaults a
 
 | Slot | Targets |
 |------|---------|
-| `root` | The outer pill container |
-| `label` | The label text inside the pill |
+| `label` | The pill element (text and container) |
 
 ```tsx
 <StatusBadge
   status={file.status}
   styles={{
-    root: { borderRadius: 999, padding: "4px 10px" },
     label: { fontWeight: 600, letterSpacing: 0.5 },
   }}
 />

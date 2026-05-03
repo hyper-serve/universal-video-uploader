@@ -6,7 +6,6 @@ import { Image, StyleSheet, View } from "react-native";
 import { colors, radius } from "./theme.js";
 
 export type ThumbnailStyles = {
-	root?: StyleProp<ViewStyle>;
 	image?: StyleProp<ImageStyle>;
 	placeholder?: StyleProp<ViewStyle>;
 };
@@ -56,12 +55,7 @@ export function Thumbnail({
 			<Image
 				onError={() => setThumbnailLoadFailed(true)}
 				source={{ uri: file.thumbnailUri }}
-				style={[
-					styles.image,
-					slots?.root as StyleProp<ImageStyle>,
-					slots?.image,
-					style,
-				]}
+				style={[styles.image, slots?.image, style]}
 			/>
 		);
 	}
@@ -70,7 +64,6 @@ export function Thumbnail({
 		<View
 			style={[
 				styles.placeholder,
-				slots?.root,
 				slots?.placeholder,
 				placeholderStyle,
 				style as StyleProp<ViewStyle>,

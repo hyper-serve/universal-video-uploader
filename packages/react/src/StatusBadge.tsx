@@ -10,7 +10,6 @@ export type StatusConfigEntry = {
 };
 
 export type StatusBadgeStyles = {
-	root?: React.CSSProperties;
 	label?: React.CSSProperties;
 };
 
@@ -68,7 +67,6 @@ export function StatusBadge({
 				lineHeight: 1,
 				padding: "0.2rem 0.5rem",
 				textTransform: "uppercase",
-				...slots?.root,
 				...slots?.label,
 				...style,
 			}}
