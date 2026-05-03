@@ -6,6 +6,7 @@ export type {
 	FileItemContentProps,
 	FileItemMetaProps,
 	FileItemProps,
+	FileItemStyles,
 	FileNameProps,
 	FileSizeProps,
 	PlaybackPreviewProps,

@@ -8,9 +8,27 @@ import { ProgressBar } from "./ProgressBar.js";
 import { Thumbnail } from "./Thumbnail.js";
 import { colors, radius } from "./theme.js";
 
+export type FileItemStyles = {
+	root?: React.CSSProperties;
+	contentInner?: React.CSSProperties;
+	fileName?: React.CSSProperties;
+	fileSize?: React.CSSProperties;
+	errorMessage?: React.CSSProperties;
+	removeButton?: React.CSSProperties;
+	retryButton?: React.CSSProperties;
+	statusIcon?: React.CSSProperties;
+	statusText?: React.CSSProperties;
+	meta?: React.CSSProperties;
+	actions?: React.CSSProperties;
+	progressTrack?: React.CSSProperties;
+	progressFill?: React.CSSProperties;
+	thumbnail?: React.CSSProperties;
+};
+
 type FileItemContextValue = {
 	file: FileState;
 	layout: "row" | "column";
+	styles: FileItemStyles;
 };
 
 const FileItemContext = createContext<FileItemContextValue | null>(null);
@@ -30,6 +48,7 @@ export type FileItemProps = {
 	layout?: "row" | "column";
 	style?: React.CSSProperties;
 	className?: string;
+	styles?: FileItemStyles;
 	children?: React.ReactNode | ((file: FileState) => React.ReactNode);
 };
 
@@ -38,11 +57,13 @@ export function FileItem({
 	layout = "column",
 	style,
 	className,
+	styles,
 	children,
 }: FileItemProps) {
 	const isRow = layout === "row";
+	const slots = styles ?? EMPTY_STYLES;
 	return (
-		<FileItemContext.Provider value={{ file, layout }}>
+		<FileItemContext.Provider value={{ file, layout, styles: slots }}>
 			<div
 				className={className}
 				style={{
@@ -54,6 +75,7 @@ export function FileItem({
 					flexDirection: isRow ? "row" : "column",
 					gap: isRow ? 12 : "0.5rem",
 					padding: isRow ? "0.75rem 1rem" : "0.875rem 1rem",
+					...slots.root,
 					...style,
 				}}
 			>
@@ -63,13 +85,15 @@ export function FileItem({
 	);
 }
 
+const EMPTY_STYLES: FileItemStyles = {};
+
 export type FileNameProps = {
 	style?: React.CSSProperties;
 	className?: string;
 };
 
 function FileName({ style, className }: FileNameProps) {
-	const { file } = useFileItemContext();
+	const { file, styles } = useFileItemContext();
 	return (
 		<span
 			className={className}
@@ -79,6 +103,7 @@ function FileName({ style, className }: FileNameProps) {
 				overflow: "hidden",
 				textOverflow: "ellipsis",
 				whiteSpace: "nowrap",
+				...styles.fileName,
 				...style,
 			}}
 		>
@@ -93,11 +118,16 @@ export type FileSizeProps = {
 };
 
 function FileSize({ style, className }: FileSizeProps) {
-	const { file } = useFileItemContext();
+	const { file, styles } = useFileItemContext();
 	return (
 		<span
 			className={className}
-			style={{ color: colors.textSecondary, fontSize: "0.8125rem", ...style }}
+			style={{
+				color: colors.textSecondary,
+				fontSize: "0.8125rem",
+				...styles.fileSize,
+				...style,
+			}}
 		>
 			{formatFileSize(file.ref.size)}
 		</span>
@@ -110,12 +140,17 @@ export type ErrorMessageProps = {
 };
 
 function ErrorMessage({ style, className }: ErrorMessageProps) {
-	const { file } = useFileItemContext();
+	const { file, styles } = useFileItemContext();
 	if (!file.error) return null;
 	return (
 		<div
 			className={className}
-			style={{ color: colors.error, fontSize: "0.8125rem", ...style }}
+			style={{
+				color: colors.error,
+				fontSize: "0.8125rem",
+				...styles.errorMessage,
+				...style,
+			}}
 		>
 			{file.error}
 		</div>
@@ -137,7 +172,7 @@ function RemoveButton({
 	ariaLabel,
 	cancelLabel = "Cancel",
 }: RemoveButtonProps) {
-	const { file } = useFileItemContext();
+	const { file, styles } = useFileItemContext();
 	const { removeFile } = useUpload();
 	if (file.status === "processing" || file.status === "ready") {
 		return null;
@@ -158,6 +193,7 @@ function RemoveButton({
 				lineHeight: 1,
 				padding: "0.25rem",
 				transition: "color 0.15s ease",
+				...styles.removeButton,
 				...style,
 			}}
 			type="button"
@@ -180,7 +216,7 @@ function RetryButton({
 	children,
 	ariaLabel,
 }: RetryButtonProps) {
-	const { file } = useFileItemContext();
+	const { file, styles } = useFileItemContext();
 	const { retryFile } = useUpload();
 	if (file.status !== "failed") return null;
 	return (
@@ -196,6 +232,7 @@ function RetryButton({
 				fontSize: "0.8125rem",
 				padding: "0.25rem 0",
 				transition: "opacity 0.15s ease",
+				...styles.retryButton,
 				...style,
 			}}
 			type="button"
@@ -207,11 +244,36 @@ function RetryButton({
 
 export type StatusIconProps = {
 	style?: React.CSSProperties;
+	textStyle?: React.CSSProperties;
 	className?: string;
+	children?: (info: {
+		status: FileState["status"];
+		label: string;
+	}) => React.ReactNode;
 };
 
-function StatusIcon({ style, className }: StatusIconProps) {
-	const { file } = useFileItemContext();
+const STATUS_ICON_LABELS: Record<FileState["status"], string> = {
+	failed: "Failed",
+	processing: "Processing",
+	ready: "Ready",
+	selected: "Selected",
+	uploading: "Uploading",
+	validating: "Validating",
+};
+
+function StatusIcon({
+	style,
+	textStyle,
+	className,
+	children,
+}: StatusIconProps) {
+	const { file, styles } = useFileItemContext();
+	const label = STATUS_ICON_LABELS[file.status];
+
+	if (children) {
+		return <>{children({ label, status: file.status })}</>;
+	}
+
 	if (file.status === "processing") {
 		return (
 			<span
@@ -221,11 +283,20 @@ function StatusIcon({ style, className }: StatusIconProps) {
 					color: "#9CA3AF",
 					display: "inline-flex",
 					gap: 4,
+					...styles.statusIcon,
 					...style,
 				}}
 			>
 				<SpinnerIcon />
-				<span style={{ fontSize: "0.8125rem" }}>Processing...</span>
+				<span
+					style={{
+						fontSize: "0.8125rem",
+						...styles.statusText,
+						...textStyle,
+					}}
+				>
+					Processing...
+				</span>
 			</span>
 		);
 	}
@@ -233,7 +304,12 @@ function StatusIcon({ style, className }: StatusIconProps) {
 		return (
 			<span
 				className={className}
-				style={{ color: "#059669", display: "inline-flex", ...style }}
+				style={{
+					color: "#059669",
+					display: "inline-flex",
+					...styles.statusIcon,
+					...style,
+				}}
 			>
 				<CheckCircleIcon />
 			</span>
@@ -249,10 +325,17 @@ export type FileItemMetaProps = {
 };
 
 function Meta({ style, className, children }: FileItemMetaProps) {
+	const { styles } = useFileItemContext();
 	return (
 		<div
 			className={className}
-			style={{ alignItems: "center", display: "flex", gap: 6, ...style }}
+			style={{
+				alignItems: "center",
+				display: "flex",
+				gap: 6,
+				...styles.meta,
+				...style,
+			}}
 		>
 			{children}
 		</div>
@@ -266,6 +349,7 @@ export type FileItemActionsProps = {
 };
 
 function Actions({ style, className, children }: FileItemActionsProps) {
+	const { styles } = useFileItemContext();
 	return (
 		<div
 			className={className}
@@ -274,6 +358,7 @@ function Actions({ style, className, children }: FileItemActionsProps) {
 				display: "flex",
 				flexDirection: "column",
 				gap: 4,
+				...styles.actions,
 				...style,
 			}}
 		>
@@ -295,15 +380,15 @@ function UploadProgress({
 	fillStyle,
 	fillClassName,
 }: UploadProgressProps) {
-	const { file } = useFileItemContext();
+	const { file, styles } = useFileItemContext();
 	if (file.status !== "uploading") return null;
 	return (
 		<ProgressBar
 			fillClassName={fillClassName}
-			fillStyle={fillStyle}
+			fillStyle={{ ...styles.progressFill, ...fillStyle }}
 			progress={file.progress}
 			trackClassName={trackClassName}
-			trackStyle={trackStyle}
+			trackStyle={{ ...styles.progressTrack, ...trackStyle }}
 		/>
 	);
 }
@@ -314,9 +399,16 @@ export type PlaybackPreviewProps = {
 };
 
 function PlaybackPreview({ style, className }: PlaybackPreviewProps) {
-	const { file } = useFileItemContext();
+	const { file, styles } = useFileItemContext();
 	if (file.status !== "ready" || !file.playbackUrl) return null;
-	return <Thumbnail className={className} file={file} playback style={style} />;
+	return (
+		<Thumbnail
+			className={className}
+			file={file}
+			playback
+			style={{ ...styles.thumbnail, ...style }}
+		/>
+	);
 }
 
 export type FileItemContentProps = {
@@ -325,7 +417,7 @@ export type FileItemContentProps = {
 };
 
 function Content({ style, className }: FileItemContentProps) {
-	const { file, layout } = useFileItemContext();
+	const { file, layout, styles } = useFileItemContext();
 	const isRow = layout === "row";
 
 	if (isRow) {
@@ -334,7 +426,7 @@ function Content({ style, className }: FileItemContentProps) {
 				<Thumbnail
 					file={file}
 					playback
-					style={{ flexShrink: 0, height: 72, width: 128 }}
+					style={{ flexShrink: 0, height: 72, width: 128, ...styles.thumbnail }}
 				/>
 				<div
 					className={className}
@@ -344,6 +436,7 @@ function Content({ style, className }: FileItemContentProps) {
 						flexDirection: "column",
 						gap: 2,
 						minWidth: 0,
+						...styles.contentInner,
 						...style,
 					}}
 				>
@@ -364,8 +457,8 @@ function Content({ style, className }: FileItemContentProps) {
 	}
 
 	return (
-		<div className={className} style={style}>
-			<Thumbnail file={file} playback />
+		<div className={className} style={{ ...styles.contentInner, ...style }}>
+			<Thumbnail file={file} playback style={styles.thumbnail} />
 			<div
 				style={{
 					alignItems: "center",

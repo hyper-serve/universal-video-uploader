@@ -353,4 +353,138 @@ describe("FileList and FileItem", () => {
 		expect(screen.queryByText("Retry")).toBeNull();
 		expect(screen.queryByLabelText("Remove")).toBeNull();
 	});
+
+	it("styles slot map applies to compound sub-components via context", () => {
+		const file: FileState = {
+			error: "Boom",
+			id: "1",
+			playbackUrl: null,
+			progress: 0,
+			ref: makeRef("clip.mp4", 1024),
+			status: "failed",
+			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
+		};
+
+		render(
+			<FileItem
+				file={file}
+				styles={{
+					errorMessage: { color: "rgb(0, 128, 0)" },
+					fileName: { color: "rgb(255, 0, 0)" },
+				}}
+			>
+				<FileItem.FileName />
+				<FileItem.ErrorMessage />
+			</FileItem>,
+		);
+
+		const name = screen.getByText("clip.mp4") as HTMLElement;
+		const error = screen.getByText("Boom") as HTMLElement;
+		expect(name.style.color).toBe("rgb(255, 0, 0)");
+		expect(error.style.color).toBe("rgb(0, 128, 0)");
+	});
+
+	it("local style prop wins over styles slot", () => {
+		const file: FileState = {
+			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 0,
+			ref: makeRef("clip.mp4", 1024),
+			status: "selected",
+			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
+		};
+
+		render(
+			<FileItem file={file} styles={{ fileName: { color: "rgb(255, 0, 0)" } }}>
+				<FileItem.FileName style={{ color: "rgb(0, 0, 255)" }} />
+			</FileItem>,
+		);
+
+		const name = screen.getByText("clip.mp4") as HTMLElement;
+		expect(name.style.color).toBe("rgb(0, 0, 255)");
+	});
+
+	it("styles.root merges into the FileItem container", () => {
+		const file: FileState = {
+			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 0,
+			ref: makeRef("clip.mp4", 1024),
+			status: "selected",
+			statusDetail: null,
+			thumbnailUri: null,
+			videoId: null,
+		};
+
+		const { container } = render(
+			<FileItem
+				file={file}
+				styles={{ root: { backgroundColor: "rgb(10, 20, 30)" } }}
+			>
+				<FileItem.FileName />
+			</FileItem>,
+		);
+
+		const root = container.firstElementChild as HTMLElement;
+		expect(root.style.backgroundColor).toBe("rgb(10, 20, 30)");
+	});
+
+	it("StatusIcon textStyle prop overrides inner text font-size", () => {
+		const file: FileState = {
+			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 100,
+			ref: makeRef("clip.mp4", 1024),
+			status: "processing",
+			statusDetail: null,
+			thumbnailUri: null,
+			videoId: "v1",
+		};
+
+		render(
+			<FileItem file={file}>
+				<FileItem.StatusIcon textStyle={{ fontSize: 10 }} />
+			</FileItem>,
+		);
+
+		const text = screen.getByText("Processing...") as HTMLElement;
+		expect(text.style.fontSize).toBe("10px");
+	});
+
+	it("StatusIcon children render prop receives status and label", () => {
+		const file: FileState = {
+			error: null,
+			id: "1",
+			playbackUrl: null,
+			progress: 100,
+			ref: makeRef("clip.mp4", 1024),
+			status: "processing",
+			statusDetail: null,
+			thumbnailUri: null,
+			videoId: "v1",
+		};
+
+		render(
+			<FileItem file={file}>
+				<FileItem.StatusIcon>
+					{({ status, label }) => (
+						<span data-testid="custom-status">
+							{status}:{label}
+						</span>
+					)}
+				</FileItem.StatusIcon>
+			</FileItem>,
+		);
+
+		expect(screen.getByTestId("custom-status").textContent).toBe(
+			"processing:Processing",
+		);
+	});
 });
