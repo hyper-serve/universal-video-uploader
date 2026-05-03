@@ -89,3 +89,34 @@ const config = createHyperserveConfig({
 ```
 
 Prefer push updates via webhook or SSE? Skip the status checker and call `updateFileStatus` from `useUpload()`. See [Hooks](/core-concepts/hooks/).
+
+## Dynamic config from form state
+
+When `uploadOptions` come from a form (the user picks resolutions, toggles `isPublic`, etc.), build the config inside the component with `useMemo` so it reflects current state:
+
+```tsx
+import { useMemo } from "react";
+import { UploadProvider } from "@hyperserve/video-uploader";
+import { createHyperserveConfig } from "@hyperserve/video-uploader-adapter-hyperserve";
+
+function UploadModal({ isPublic, resolutions }: Props) {
+  const config = useMemo(
+    () =>
+      createHyperserveConfig({
+        createUpload: /* ... */,
+        completeUpload: /* ... */,
+        getVideoStatus: /* ... */,
+        uploadOptions: { isPublic, resolutions },
+      }),
+    [isPublic, resolutions],
+  );
+
+  return (
+    <UploadProvider config={config}>
+      {/* ... */}
+    </UploadProvider>
+  );
+}
+```
+
+`UploadProvider` keeps an internal `configRef` that updates on every render, so the config you pass is always current when a new upload starts. `useMemo` is for performance only: it avoids rebuilding the config object on every render.
