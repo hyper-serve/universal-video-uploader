@@ -150,4 +150,28 @@ describe("FileListToolbar", () => {
 		);
 		expect(screen.getByTestId("mode").textContent).toBe("list");
 	});
+
+	it("styles.root applies to toolbar container", () => {
+		const { container } = render(
+			<ViewModeProvider>
+				<FileListToolbar styles={{ root: { padding: "8px" } }} />
+			</ViewModeProvider>,
+		);
+
+		// ViewModeProvider renders a wrapping div; toolbar is its first child
+		const viewModeDiv = container.firstElementChild as HTMLElement;
+		const root = viewModeDiv.firstElementChild as HTMLElement;
+		expect(root.style.padding).toBe("8px");
+	});
+
+	it("styles.fileCount applies to FileCount span", () => {
+		const { container } = render(
+			<ViewModeProvider>
+				<FileListToolbar styles={{ fileCount: { color: "rgb(255, 0, 0)" } }} />
+			</ViewModeProvider>,
+		);
+
+		const span = container.querySelector("span") as HTMLElement;
+		expect(span.style.color).toBe("rgb(255, 0, 0)");
+	});
 });

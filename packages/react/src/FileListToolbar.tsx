@@ -1,8 +1,17 @@
 import { useUpload } from "@hyperserve/video-uploader";
 import type React from "react";
+import { createContext, useContext } from "react";
 import { GridIcon, ListIcon } from "./icons.js";
 import { colors, radius } from "./theme.js";
 import { useViewMode, type ViewMode } from "./ViewModeContext.js";
+
+export type FileListToolbarStyles = {
+	root?: React.CSSProperties;
+	fileCount?: React.CSSProperties;
+	viewToggle?: React.CSSProperties;
+	viewToggleButton?: React.CSSProperties;
+	viewToggleButtonActive?: React.CSSProperties;
+};
 
 export type FileListToolbarProps = {
 	left?: React.ReactNode | null;
@@ -11,6 +20,7 @@ export type FileListToolbarProps = {
 	showViewToggle?: boolean;
 	style?: React.CSSProperties;
 	className?: string;
+	styles?: FileListToolbarStyles;
 };
 
 export type FileCountProps = {
@@ -18,23 +28,6 @@ export type FileCountProps = {
 	style?: React.CSSProperties;
 	className?: string;
 };
-
-function FileCount({ label, style, className }: FileCountProps) {
-	const { files } = useUpload();
-	const count = files.length;
-	const content =
-		label != null
-			? label(count)
-			: `${count} file${count !== 1 ? "s" : ""} added`;
-	return (
-		<span
-			className={className}
-			style={{ color: colors.textPrimary, fontSize: "0.875rem", ...style }}
-		>
-			{content}
-		</span>
-	);
-}
 
 export type ViewToggleProps = {
 	style?: React.CSSProperties;
@@ -45,8 +38,39 @@ export type ViewToggleProps = {
 	}) => React.ReactNode;
 };
 
+type ToolbarContextValue = { styles: FileListToolbarStyles };
+const ToolbarContext = createContext<ToolbarContextValue>({ styles: {} });
+
+function useToolbarContext(): ToolbarContextValue {
+	return useContext(ToolbarContext);
+}
+
+function FileCount({ label, style, className }: FileCountProps) {
+	const { files } = useUpload();
+	const { styles: slots } = useToolbarContext();
+	const count = files.length;
+	const content =
+		label != null
+			? label(count)
+			: `${count} file${count !== 1 ? "s" : ""} added`;
+	return (
+		<span
+			className={className}
+			style={{
+				color: colors.textPrimary,
+				fontSize: "0.875rem",
+				...slots.fileCount,
+				...style,
+			}}
+		>
+			{content}
+		</span>
+	);
+}
+
 function ViewToggle({ style, className, children }: ViewToggleProps) {
 	const { viewMode, setViewMode } = useViewMode();
+	const { styles: slots } = useToolbarContext();
 	if (children) {
 		return <>{children({ setViewMode, viewMode })}</>;
 	}
@@ -58,6 +82,7 @@ function ViewToggle({ style, className, children }: ViewToggleProps) {
 				borderRadius: radius.md,
 				display: "flex",
 				overflow: "hidden",
+				...slots.viewToggle,
 				...style,
 			}}
 		>
@@ -74,6 +99,8 @@ function ViewToggle({ style, className, children }: ViewToggleProps) {
 					justifyContent: "center",
 					lineHeight: 0,
 					padding: "0.375rem 0.5rem",
+					...slots.viewToggleButton,
+					...(viewMode === "list" ? slots.viewToggleButtonActive : {}),
 				}}
 				type="button"
 			>
@@ -92,6 +119,8 @@ function ViewToggle({ style, className, children }: ViewToggleProps) {
 					justifyContent: "center",
 					lineHeight: 0,
 					padding: "0.375rem 0.5rem",
+					...slots.viewToggleButton,
+					...(viewMode === "grid" ? slots.viewToggleButtonActive : {}),
 				}}
 				type="button"
 			>
@@ -108,28 +137,35 @@ export function FileListToolbar({
 	showViewToggle = true,
 	style,
 	className,
+	styles: stylesProp,
 }: FileListToolbarProps) {
+	const slots = stylesProp ?? EMPTY_TOOLBAR_STYLES;
 	const leftContent =
 		left !== undefined ? left : showFileCount ? <FileCount /> : null;
 	const rightContent =
 		right !== undefined ? right : showViewToggle ? <ViewToggle /> : null;
 
 	return (
-		<div
-			className={className}
-			style={{
-				alignItems: "center",
-				display: "flex",
-				justifyContent: "space-between",
-				width: "100%",
-				...style,
-			}}
-		>
-			{leftContent}
-			{rightContent}
-		</div>
+		<ToolbarContext.Provider value={{ styles: slots }}>
+			<div
+				className={className}
+				style={{
+					alignItems: "center",
+					display: "flex",
+					justifyContent: "space-between",
+					width: "100%",
+					...slots.root,
+					...style,
+				}}
+			>
+				{leftContent}
+				{rightContent}
+			</div>
+		</ToolbarContext.Provider>
 	);
 }
+
+const EMPTY_TOOLBAR_STYLES: FileListToolbarStyles = {};
 
 FileListToolbar.FileCount = FileCount;
 FileListToolbar.ViewToggle = ViewToggle;
