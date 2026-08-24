@@ -144,10 +144,6 @@ export function DropZone({
 					...activeStyle,
 				}
 			: {}),
-		// Resolve the disabled treatment last so a consumer's root/style can't
-		// clobber the dimming. Keep the zone as the pointer target (no
-		// pointer-events: none) so its not-allowed cursor renders and clicks are
-		// attributed to it; the handlers already no-op when disabled.
 		...(isDisabled ? { cursor: "not-allowed", opacity: 0.6 } : {}),
 	};
 
