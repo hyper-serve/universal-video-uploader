@@ -1,0 +1,37 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [main]
+    # The Dockerfile builds core + react + docs, so a change to any of those
+    # can alter the published site. Everything else (other packages, examples,
+    # repo tooling) leaves the docs output untouched, so skip the deploy.
+    paths:
+      - 'packages/docs/**'
+      - 'packages/core/**'
+      - 'packages/react/**'
+      - '.github/workflows/deploy-docs.yml'
+  workflow_dispatch:
+
+# One deploy at a time; let an in-flight deploy finish before the next starts.
+concurrency:
+  group: deploy-docs
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # `push` is gated to main, but `workflow_dispatch` runs against whatever ref
+    # the operator selects. Only ever deploy the site from main.
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      # fly.toml lives in packages/docs, but the Dockerfile COPYs from the repo
+      # root, so deploy from the root with an explicit config path.
+      - name: Deploy to Fly.io
+        run: flyctl deploy --config packages/docs/fly.toml --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
