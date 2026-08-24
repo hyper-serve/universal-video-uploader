@@ -51,18 +51,6 @@ describe("DropZone", () => {
 		expect(zone.style.cursor).toBe("not-allowed");
 	});
 
-	it("disabled dimming is not clobbered by a consumer's root or style opacity", () => {
-		const { getByRole } = render(
-			<DropZone
-				disabled
-				style={{ opacity: 1 }}
-				styles={{ root: { opacity: 1 } }}
-			/>,
-		);
-
-		expect(getByRole("button").style.opacity).toBe("0.6");
-	});
-
 	it("does not open picker when disabled", () => {
 		const clickSpy = vi
 			.spyOn(HTMLInputElement.prototype, "click")

@@ -126,12 +126,13 @@ export function DropZone({
 		backgroundColor: isDragging ? colors.dropZoneActiveBg : colors.dropZoneBg,
 		border: `1.5px dashed ${colors.dropZoneBorder}`,
 		borderRadius: radius.xl,
-		cursor: "pointer",
+		cursor: isDisabled ? "not-allowed" : "pointer",
 		display: "flex",
 		flexDirection: "column",
 		gap: "0.375rem",
 		justifyContent: "center",
 		minHeight: 160,
+		opacity: isDisabled ? 0.6 : 1,
 		padding: "1.5rem",
 		transition: "border-color 0.2s ease, background-color 0.2s ease",
 		...slots?.root,
@@ -144,7 +145,6 @@ export function DropZone({
 					...activeStyle,
 				}
 			: {}),
-		...(isDisabled ? { cursor: "not-allowed", opacity: 0.6 } : {}),
 	};
 
 	return (
