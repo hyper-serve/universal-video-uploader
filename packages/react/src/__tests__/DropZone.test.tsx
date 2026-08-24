@@ -43,6 +43,14 @@ describe("DropZone", () => {
 		expect(clickSpy).toHaveBeenCalledTimes(2);
 	});
 
+	it("keeps the disabled zone as the pointer target so its cursor still shows", () => {
+		const { getByRole } = render(<DropZone disabled />);
+		const zone = getByRole("button");
+
+		expect(zone.style.pointerEvents).toBe("");
+		expect(zone.style.cursor).toBe("not-allowed");
+	});
+
 	it("does not open picker when disabled", () => {
 		const clickSpy = vi
 			.spyOn(HTMLInputElement.prototype, "click")

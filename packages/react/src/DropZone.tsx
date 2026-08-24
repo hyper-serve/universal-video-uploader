@@ -134,7 +134,6 @@ export function DropZone({
 		minHeight: 160,
 		opacity: isDisabled ? 0.6 : 1,
 		padding: "1.5rem",
-		pointerEvents: isDisabled ? "none" : undefined,
 		transition: "border-color 0.2s ease, background-color 0.2s ease",
 		...slots?.root,
 		...style,
