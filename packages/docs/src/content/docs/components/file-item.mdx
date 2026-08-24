@@ -63,10 +63,10 @@ All sub-components read from the parent `FileItem` context. They don't need expl
 | `FileItem.ErrorMessage` | Renders `file.error` when present |
 | `FileItem.RemoveButton` | Hidden during `processing`/`ready` |
 | `FileItem.RetryButton` | Only shown when `failed` |
-| `FileItem.StatusIcon` | Spinner during `processing`, check mark when `ready` |
+| `FileItem.StatusIcon` | Spinner during `preparing`/`processing`, check mark when `ready` |
 | `FileItem.Meta` | Flex row container for status metadata |
 | `FileItem.Actions` | Flex column container for action buttons |
-| `FileItem.UploadProgress` | Progress bar, visible only during `uploading` |
+| `FileItem.UploadProgress` | Progress bar, visible during `uploading` and `preparing` |
 | `FileItem.PlaybackPreview` | Thumbnail in playback mode, visible only when `ready` |
 | `FileItem.Content` | Opinionated default layout combining all sub-components |
 
@@ -88,7 +88,7 @@ Pass a `styles` slot map to theme every internal element from one prop. Slots me
 | `removeButton` | `FileItem.RemoveButton` button |
 | `retryButton` | `FileItem.RetryButton` button |
 | `statusIcon` | `FileItem.StatusIcon` outer span |
-| `statusText` | "Processing..." text inside `StatusIcon` |
+| `statusText` | "Preparing..."/"Processing..." text inside `StatusIcon` |
 | `meta` | `FileItem.Meta` flex row |
 | `actions` | `FileItem.Actions` flex column |
 | `progressTrack` | `FileItem.UploadProgress` track |

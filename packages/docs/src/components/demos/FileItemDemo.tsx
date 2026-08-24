@@ -2,7 +2,7 @@ import { UploadProvider } from "@hyperserve/video-uploader";
 import { FileItem } from "@hyperserve/video-uploader-react";
 import { useMemo } from "react";
 import { createMockConfig } from "./MockAdapter";
-import { mockFileList } from "./mockFileState";
+import { mockFileList, preparingFile } from "./mockFileState";
 
 export default function FileItemDemo() {
 	const config = useMemo(() => createMockConfig(), []);
@@ -21,7 +21,7 @@ export default function FileItemDemo() {
 					padding: "1.5rem",
 				}}
 			>
-				{mockFileList.map((file) => (
+				{[preparingFile, ...mockFileList].map((file) => (
 					<FileItem file={file} key={file.id} layout="row">
 						<FileItem.Content />
 					</FileItem>
