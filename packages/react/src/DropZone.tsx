@@ -7,14 +7,12 @@ import { colors, radius } from "./theme";
 
 export type DropZoneRenderProps = {
 	isDragging: boolean;
-	isDisabled: boolean;
 	openPicker: () => void;
 };
 
 export type DropZoneStyles = {
 	root?: React.CSSProperties;
 	activeRoot?: React.CSSProperties;
-	disabledRoot?: React.CSSProperties;
 	icon?: React.CSSProperties;
 	primaryText?: React.CSSProperties;
 	browseText?: React.CSSProperties;
@@ -146,13 +144,11 @@ export function DropZone({
 					...activeStyle,
 				}
 			: {}),
-		...(isDisabled
-			? {
-					cursor: "not-allowed",
-					opacity: 0.6,
-					...slots?.disabledRoot,
-				}
-			: {}),
+		// Resolve the disabled treatment last so a consumer's root/style can't
+		// clobber the dimming. Keep the zone as the pointer target (no
+		// pointer-events: none) so its not-allowed cursor renders and clicks are
+		// attributed to it; the handlers already no-op when disabled.
+		...(isDisabled ? { cursor: "not-allowed", opacity: 0.6 } : {}),
 	};
 
 	return (
@@ -178,7 +174,7 @@ export function DropZone({
 				type="file"
 			/>
 			{typeof children === "function"
-				? children({ isDisabled, isDragging, openPicker })
+				? children({ isDragging, openPicker })
 				: (children ?? (
 						<>
 							<div

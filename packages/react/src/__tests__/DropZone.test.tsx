@@ -51,16 +51,6 @@ describe("DropZone", () => {
 		expect(zone.style.cursor).toBe("not-allowed");
 	});
 
-	it("applies disabledRoot styles only while disabled", () => {
-		const styles = { disabledRoot: { opacity: 0.3 }, root: { opacity: 0.9 } };
-
-		const { getByRole, rerender } = render(<DropZone styles={styles} />);
-		expect(getByRole("button").style.opacity).toBe("0.9");
-
-		rerender(<DropZone disabled styles={styles} />);
-		expect(getByRole("button").style.opacity).toBe("0.3");
-	});
-
 	it("disabled dimming is not clobbered by a consumer's root or style opacity", () => {
 		const { getByRole } = render(
 			<DropZone
@@ -71,18 +61,6 @@ describe("DropZone", () => {
 		);
 
 		expect(getByRole("button").style.opacity).toBe("0.6");
-	});
-
-	it("passes isDisabled to the children render-prop", () => {
-		const childFn = vi.fn(({ isDisabled }: { isDisabled: boolean }) => (
-			<span data-testid="disabled">{isDisabled.toString()}</span>
-		));
-
-		const { rerender } = render(<DropZone>{childFn}</DropZone>);
-		expect(screen.getByTestId("disabled").textContent).toBe("false");
-
-		rerender(<DropZone disabled>{childFn}</DropZone>);
-		expect(screen.getByTestId("disabled").textContent).toBe("true");
 	});
 
 	it("does not open picker when disabled", () => {
