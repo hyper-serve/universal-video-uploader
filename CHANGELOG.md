@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [video-uploader-adapter-hyperserve@0.1.3] — 2026-09-09
+
+### Changed
+
+- `@hyperserve/video-uploader-adapter-hyperserve` now requires
+  `@hyperserve/hyperserve-js@^0.2.0`. The adapter's own API is unchanged and its
+  build output is byte-identical to 0.1.2; only the bundled SDK moves. The
+  adapter touches the SDK solely through `putVideoToStorage`, whose behavior on
+  that path did not change in 0.2.0, so no adapter consumer has to change code.
+- If you also call the Hyperserve SDK directly from your own backend, note that
+  0.2.0 removes `fileSizeBytes` from `createVideo`; the API derives the size
+  server-side. Drop the field from your `POST /api/create-upload` handler when
+  you upgrade your own dependency. Releasing the adapter does not force that
+  upgrade, since your backend depends on the SDK directly.
+
 ## [video-uploader-react@0.1.3, video-uploader-react-native@0.1.4] — 2026-08-11
 
 ### Fixed
@@ -19,7 +34,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   protocol or stale sibling range in a consumer-facing dependency block, and
   releases publish from CI rather than from a laptop.
 
-## Unreleased
+## [0.1.1] — 2026-05-09
 
 ### Breaking changes
 

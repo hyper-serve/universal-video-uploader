@@ -25,11 +25,7 @@ function makeConfig() {
 		},
 		createUpload: async (file, options) => {
 			const r = await fetch("/api/create-upload", {
-				body: JSON.stringify({
-					filename: file.name,
-					fileSizeBytes: file.size,
-					...options,
-				}),
+				body: JSON.stringify({ filename: file.name, ...options }),
 				headers: { "Content-Type": "application/json" },
 				method: "POST",
 			});
