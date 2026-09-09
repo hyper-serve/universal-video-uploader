@@ -4,7 +4,7 @@ All notable changes to `@hyperserve/video-uploader-adapter-hyperserve` are
 documented in this file. This project adheres to
 [Semantic Versioning](https://semver.org).
 
-## Unreleased
+## [0.1.3] - 2026-09-09
 
 ### Changed
 
