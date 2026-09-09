@@ -266,7 +266,7 @@ const config = createHyperserveConfig({
     fetch("/api/create-upload", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: file.name, size: file.size, ...options }),
+      body: JSON.stringify({ name: file.name, ...options }),
     }).then((r) => r.json()),
   completeUpload: async (videoId) => {
     await fetch(`/api/complete-upload/${videoId}`, { method: "POST" });

@@ -18,7 +18,7 @@ const config = createHyperserveConfig({
     const raw = (file as import("@hyperserve/video-uploader").WebFileRef).raw;
     return fetch("/api/create-upload", {
       method: "POST",
-      body: JSON.stringify({ name: raw.name, size: raw.size, ...options }),
+      body: JSON.stringify({ name: raw.name, ...options }),
     }).then((r) => r.json());
   },
   completeUpload: async (videoId) => {

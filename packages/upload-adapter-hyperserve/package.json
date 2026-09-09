@@ -35,7 +35,7 @@
 		"prepublishOnly": "bun run build"
 	},
 	"dependencies": {
-		"@hyperserve/hyperserve-js": "^0.1.1"
+		"@hyperserve/hyperserve-js": "^0.2.0"
 	},
 	"peerDependencies": {
 		"@hyperserve/video-uploader": "^0.1.1",

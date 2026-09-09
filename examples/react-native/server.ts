@@ -23,11 +23,9 @@ Bun.serve({
 
 		try {
 			if (req.method === "POST" && pathname === "/create-upload") {
-				const { filename, fileSizeBytes, resolutions, isPublic } =
-					await req.json();
+				const { filename, resolutions, isPublic } = await req.json();
 				const result = await client.createVideo({
 					filename,
-					fileSizeBytes,
 					isPublic,
 					resolutions,
 				});
